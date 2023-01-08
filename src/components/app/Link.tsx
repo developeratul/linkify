@@ -9,7 +9,7 @@ import { z } from "zod";
 
 export type Link = {
   id: string;
-  icon: string;
+  icon?: string | null;
   text: string;
   url: string;
 };

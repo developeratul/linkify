@@ -8,7 +8,7 @@ import Links, { CreateLinkModal } from "./Link";
 
 export type Group = {
   id: string;
-  name: string | null;
+  name?: string | null;
   links: Link[];
 };
 
