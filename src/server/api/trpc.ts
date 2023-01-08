@@ -19,7 +19,7 @@
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 
-import { authorizeUser } from "../auth";
+import { getServerAuthSession } from "../auth";
 import { prisma } from "../db";
 
 type CreateContextOptions = {
@@ -51,7 +51,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
   // Get the session from the server using the unstable_getServerSession wrapper function
-  const session = await authorizeUser({ req, res });
+  const session = await getServerAuthSession({ req, res });
 
   return await createInnerTRPCContext({
     session,
