@@ -14,7 +14,6 @@ export const authRouter = createTRPCRouter({
 
       if (prevUser) {
         throw new TRPCError({
-          cause: { field: "username" },
           code: "CONFLICT",
           message: "Username already taken",
         });

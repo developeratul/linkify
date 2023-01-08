@@ -1,16 +1,20 @@
+import AppBar from "@/components/app/AppBar";
+import Groups, { CreateGroup } from "@/components/app/Groups";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
 import type { GetServerSideProps, NextPage } from "next";
-import { signOut } from "next-auth/react";
 
 const AppPage: NextPage = () => {
   return (
-    <div className="h-full w-full">
-      <Chakra.Heading>Hello world</Chakra.Heading>
-      <Chakra.Button onClick={() => signOut({ callbackUrl: "/auth" })}>
-        Logout
-      </Chakra.Button>
-    </div>
+    <Chakra.Box className="h-full w-full overflow-x-hidden" bg="gray.100">
+      <AppBar />
+      <Chakra.VStack w="full" p={5}>
+        <Chakra.VStack w="full" maxW="2xl" spacing={5}>
+          <CreateGroup />
+          <Groups />
+        </Chakra.VStack>
+      </Chakra.VStack>
+    </Chakra.Box>
   );
 };
 
@@ -24,8 +28,6 @@ export const getServerSideProps: GetServerSideProps = requireAuth(
         where: { id: session.user?.id },
         select: { username: true, bio: true },
       });
-
-      console.log({ user });
 
       if (!user?.username) {
         return {
