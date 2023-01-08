@@ -1,4 +1,5 @@
 import { Icons } from "@/Icons";
+import { AuthLayout } from "@/Layouts/auth";
 import { redirectAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
 import type { GetServerSideProps, NextPage } from "next";
@@ -10,39 +11,21 @@ const AuthPage: NextPage = () => {
     await signIn(provider);
   };
   return (
-    <Chakra.VStack
-      w="full"
-      h="full"
-      overflowX="hidden"
-      justify="center"
-      bg="gray.100"
-      p={2}
-    >
-      <Chakra.VStack gap={5} w="full" maxW="md">
-        <Chakra.Heading>Welcome to LinkTree 🎉</Chakra.Heading>
-        <Chakra.Card size="lg" w="full" bg="white">
-          <Chakra.CardBody>
-            <Chakra.VStack gap={1}>
-              <Chakra.Button
-                onClick={() => handleSignIn("github")}
-                leftIcon={Icons.Github}
-                w="full"
-                colorScheme="purple"
-              >
-                Sign in with Github
-              </Chakra.Button>
-              <Chakra.Button
-                leftIcon={Icons.Google}
-                w="full"
-                colorScheme="purple"
-              >
-                Sign in with Google
-              </Chakra.Button>
-            </Chakra.VStack>
-          </Chakra.CardBody>
-        </Chakra.Card>
+    <AuthLayout title="Welcome to LinkTree 🎉">
+      <Chakra.VStack spacing={3}>
+        <Chakra.Button
+          onClick={() => handleSignIn("github")}
+          leftIcon={Icons.Github}
+          w="full"
+          colorScheme="purple"
+        >
+          Sign in with Github
+        </Chakra.Button>
+        <Chakra.Button leftIcon={Icons.Google} w="full" colorScheme="purple">
+          Sign in with Google
+        </Chakra.Button>
       </Chakra.VStack>
-    </Chakra.VStack>
+    </AuthLayout>
   );
 };
 
