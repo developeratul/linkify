@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 
 export default function AppBar() {
   return (
-    <Chakra.Box p={3} className="sticky top-0 left-0">
+    <Chakra.Box zIndex="sticky" p={3} className="sticky top-0 left-0">
       <Chakra.Card bg="white" rounded="full" py={0}>
         <Chakra.CardBody className="flex items-center justify-between">
           <Chakra.Box>

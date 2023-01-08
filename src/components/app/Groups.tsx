@@ -4,7 +4,7 @@ import { Icons } from "@/Icons";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import type { Link } from "./Link";
-import Links from "./Link";
+import Links, { CreateLinkModal } from "./Link";
 
 export type Group = {
   id: string;
@@ -40,9 +40,7 @@ export function Group(props: GroupProps) {
 
       <Chakra.VStack w="full" spacing={5}>
         <Links links={group.links} />
-        <Chakra.Button w="full" colorScheme="blue" leftIcon={Icons.Add}>
-          Add new link
-        </Chakra.Button>
+        <CreateLinkModal groupId={group.id} />
       </Chakra.VStack>
     </Chakra.VStack>
   );
