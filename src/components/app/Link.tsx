@@ -1,9 +1,9 @@
 import { Icons } from "@/Icons";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -13,6 +13,65 @@ export type Link = {
   text: string;
   url: string;
 };
+
+export function DeleteLink(props: { linkId: string }) {
+  const { linkId } = props;
+  const { mutateAsync, isLoading } = api.app.deleteLink.useMutation();
+  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const cancelRef = React.useRef<HTMLButtonElement | null>(null);
+  const toast = Chakra.useToast();
+  const utils = api.useContext();
+
+  const handleClick = async () => {
+    try {
+      await mutateAsync(linkId);
+      onClose();
+      await utils.app.getGroupsWithLinks.invalidate();
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", title: "Error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Chakra.Box>
+      <Chakra.IconButton
+        onClick={onOpen}
+        colorScheme="red"
+        icon={Icons.Delete}
+        aria-label="Delete link"
+      />
+      <Chakra.AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+      >
+        <Chakra.AlertDialogOverlay />
+        <Chakra.AlertDialogContent>
+          <Chakra.AlertDialogHeader>Delete link?</Chakra.AlertDialogHeader>
+          <Chakra.AlertDialogCloseButton />
+          <Chakra.AlertDialogBody>
+            Are you sure? This action will cause permanent data loss.
+          </Chakra.AlertDialogBody>
+          <Chakra.AlertDialogFooter>
+            <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
+              No
+            </Chakra.Button>
+            <Chakra.Button
+              isLoading={isLoading}
+              onClick={handleClick}
+              colorScheme="purple"
+            >
+              Yes
+            </Chakra.Button>
+          </Chakra.AlertDialogFooter>
+        </Chakra.AlertDialogContent>
+      </Chakra.AlertDialog>
+    </Chakra.Box>
+  );
+}
 
 export type LinkProps = {
   link: Link;
@@ -42,11 +101,7 @@ export function Link(props: LinkProps) {
           <Chakra.HStack>
             <Chakra.IconButton icon={Icons.Icons} aria-label="Link icon" />
           </Chakra.HStack>
-          <Chakra.IconButton
-            colorScheme="red"
-            icon={Icons.Delete}
-            aria-label="Delete link"
-          />
+          <DeleteLink linkId={link.id} />
         </Chakra.HStack>
       </Chakra.CardFooter>
     </Chakra.Card>
@@ -84,7 +139,7 @@ export function CreateLinkModal(props: { groupId: string }) {
     });
   const { mutateAsync, isLoading } = api.app.createLink.useMutation();
   const utils = api.useContext();
-  const toast = useToast();
+  const toast = Chakra.useToast();
 
   const onSubmit = async (values: CreateLinkSchema) => {
     try {

@@ -1,4 +1,6 @@
 import { createLinkSchema } from "@/components/app/Link";
+import { authorizeAuthor } from "@/helpers/auth";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -48,5 +50,34 @@ export const appCoreRouter = createTRPCRouter({
       });
 
       return link;
+    }),
+
+  deleteLink: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const linkId = input;
+
+      const link = await ctx.prisma.link.findUnique({
+        where: { id: linkId },
+        select: { userId: true },
+      });
+
+      if (!link) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Link not found",
+        });
+      }
+
+      authorizeAuthor(link?.userId, ctx.session.user.id);
+
+      const deletedLink = await ctx.prisma.link.delete({
+        where: { id: linkId },
+        select: LinkSelections,
+      });
+
+      if (!deletedLink) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return deletedLink;
     }),
 });
