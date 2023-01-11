@@ -76,8 +76,37 @@ export const appCoreRouter = createTRPCRouter({
         select: LinkSelections,
       });
 
-      if (!deletedLink) throw new TRPCError({ code: "NOT_FOUND" });
-
       return deletedLink;
+    }),
+
+  deleteGroup: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const groupId = input;
+
+      const group = await ctx.prisma.group.findUnique({
+        where: { id: groupId },
+        select: { userId: true },
+      });
+
+      if (!group) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Group not found",
+        });
+      }
+
+      authorizeAuthor(group?.userId, ctx.session.user.id);
+
+      await ctx.prisma.link.deleteMany({
+        where: { groupId },
+      });
+
+      const deletedGroup = await ctx.prisma.group.delete({
+        where: { id: groupId },
+        select: GroupSelections,
+      });
+
+      return deletedGroup;
     }),
 });

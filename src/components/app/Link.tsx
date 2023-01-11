@@ -36,12 +36,15 @@ export function DeleteLink(props: { linkId: string }) {
 
   return (
     <Chakra.Box>
-      <Chakra.IconButton
-        onClick={onOpen}
-        colorScheme="red"
-        icon={Icons.Delete}
-        aria-label="Delete link"
-      />
+      <Chakra.Tooltip label="Delete link" hasArrow>
+        <Chakra.IconButton
+          isLoading={isLoading}
+          onClick={onOpen}
+          colorScheme="red"
+          icon={Icons.Delete}
+          aria-label="Delete link"
+        />
+      </Chakra.Tooltip>
       <Chakra.AlertDialog
         leastDestructiveRef={cancelRef}
         isOpen={isOpen}
