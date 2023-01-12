@@ -1,3 +1,4 @@
+import { editGroupSchema } from "@/components/app/Groups";
 import { createLinkSchema } from "@/components/app/Link";
 import { authorizeAuthor } from "@/helpers/auth";
 import { TRPCError } from "@trpc/server";
@@ -108,5 +109,33 @@ export const appCoreRouter = createTRPCRouter({
       });
 
       return deletedGroup;
+    }),
+
+  editGroup: protectedProcedure
+    .input(editGroupSchema.extend({ groupId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { groupId, ...update } = input;
+
+      const group = await ctx.prisma.group.findUnique({
+        where: { id: groupId },
+        select: { userId: true },
+      });
+
+      if (!group) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Group not found",
+        });
+      }
+
+      authorizeAuthor(group.userId, ctx.session.user.id);
+
+      const updatedGroup = await ctx.prisma.group.update({
+        where: { id: groupId },
+        data: { ...update },
+        select: GroupSelections,
+      });
+
+      return updatedGroup;
     }),
 });

@@ -3,8 +3,12 @@ import { EmptyMessage, ErrorMessage } from "@/components/common/Message";
 import { Icons } from "@/Icons";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import type { Link } from "./Link";
 import Links, { CreateLinkModal } from "./Link";
 
@@ -77,6 +81,94 @@ export function DeleteGroup(props: { groupId: string }) {
   );
 }
 
+export const editGroupSchema = z.object({
+  name: z.string().nullable(),
+});
+
+export type EditGroupSchema = z.infer<typeof editGroupSchema>;
+
+export function EditGroup(props: { group: Group }) {
+  const { group } = props;
+  const { register, formState, handleSubmit } = useForm<EditGroupSchema>({
+    resolver: zodResolver(editGroupSchema),
+    defaultValues: group,
+  });
+  const { mutateAsync, isLoading } = api.app.editGroup.useMutation();
+  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const btnRef = React.useRef<HTMLButtonElement | null>(null);
+  const toast = useToast();
+  const utils = api.useContext();
+
+  const onSubmit = async (values: EditGroupSchema) => {
+    try {
+      await mutateAsync({ ...values, groupId: group.id });
+      await utils.app.getGroupsWithLinks.invalidate();
+      onClose();
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Chakra.Box>
+      <Chakra.IconButton
+        isLoading={isLoading}
+        ref={btnRef}
+        onClick={onOpen}
+        colorScheme="blue"
+        aria-label="Edit Group"
+        icon={Icons.Edit}
+      />
+      <Chakra.Drawer
+        size="md"
+        placement="right"
+        finalFocusRef={btnRef}
+        onClose={onClose}
+        isOpen={isOpen}
+      >
+        <Chakra.DrawerOverlay />
+        <Chakra.DrawerContent>
+          <Chakra.DrawerHeader>
+            Edit &quot;{group.name ?? "Untitled"}&quot; group
+          </Chakra.DrawerHeader>
+          <Chakra.DrawerCloseButton />
+          <Chakra.DrawerBody>
+            <Chakra.VStack
+              as="form"
+              id="edit-group-form"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <Chakra.FormControl isInvalid={!!formState.errors.name}>
+                <Chakra.FormLabel>Name</Chakra.FormLabel>
+                <Chakra.Input {...register("name")} />
+                <Chakra.FormErrorMessage>
+                  {formState.errors.name?.message}
+                </Chakra.FormErrorMessage>
+              </Chakra.FormControl>
+            </Chakra.VStack>
+          </Chakra.DrawerBody>
+          <Chakra.DrawerFooter>
+            <Chakra.Button mr={3} onClick={onClose}>
+              Cancel
+            </Chakra.Button>
+            <Chakra.Button
+              type="submit"
+              form="edit-group-form"
+              colorScheme="purple"
+              isLoading={isLoading}
+              leftIcon={Icons.Save}
+            >
+              Save changes
+            </Chakra.Button>
+          </Chakra.DrawerFooter>
+        </Chakra.DrawerContent>
+      </Chakra.Drawer>
+    </Chakra.Box>
+  );
+}
+
 export type GroupProps = {
   group: Group;
 };
@@ -93,17 +185,14 @@ export function Group(props: GroupProps) {
       p={5}
       rounded="md"
     >
-      <Chakra.HStack align="center" w="full">
-        <Chakra.Editable
-          defaultValue={group.name ?? "Untitled"}
-          fontSize="lg"
-          fontWeight="medium"
-          w="full"
-        >
-          <Chakra.EditablePreview />
-          <Chakra.EditableInput />
-        </Chakra.Editable>
-        <DeleteGroup groupId={group.id} />
+      <Chakra.HStack justify="space-between" align="center" w="full">
+        <Chakra.HStack>
+          <Chakra.Heading size="md">{group.name ?? "Untitled"}</Chakra.Heading>
+        </Chakra.HStack>
+        <Chakra.HStack align="center" spacing={3}>
+          <EditGroup group={group} />
+          <DeleteGroup groupId={group.id} />
+        </Chakra.HStack>
       </Chakra.HStack>
       <Chakra.VStack w="full" spacing={5}>
         <Links links={group.links} />
