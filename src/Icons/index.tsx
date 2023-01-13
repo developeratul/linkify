@@ -1,4 +1,9 @@
-import { AiOutlineEdit, AiOutlineGoogle, AiOutlineSave } from "react-icons/ai";
+import {
+  AiOutlineDrag,
+  AiOutlineEdit,
+  AiOutlineGoogle,
+  AiOutlineSave,
+} from "react-icons/ai";
 import { FaIcons } from "react-icons/fa";
 import { FiGithub, FiShare2 } from "react-icons/fi";
 import { IoMdAdd, IoMdCreate } from "react-icons/io";
@@ -14,4 +19,5 @@ export const Icons = {
   Delete: <MdDelete />,
   Edit: <AiOutlineEdit />,
   Save: <AiOutlineSave />,
+  Drag: <AiOutlineDrag />,
 };

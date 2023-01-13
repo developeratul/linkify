@@ -71,6 +71,7 @@ model VerificationToken {
 
 model Group {
     id     String  @id @default(cuid())
+    index  Int     @default(autoincrement())
     name   String?
     links  Link[]
     user   User    @relation(fields: [userId], references: [id])

@@ -5,25 +5,24 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
+export const LinkSelections = { id: true, text: true, url: true, icon: true };
+
 export const GroupSelections = {
   id: true,
+  index: true,
   name: true,
   links: {
-    select: {
-      id: true,
-      icon: true,
-      text: true,
-      url: true,
-    },
+    select: LinkSelections,
   },
 };
-
-export const LinkSelections = { id: true, text: true, url: true, icon: true };
 
 export const appCoreRouter = createTRPCRouter({
   getGroupsWithLinks: protectedProcedure.query(async ({ ctx }) => {
     const groups = await ctx.prisma.group.findMany({
       select: GroupSelections,
+      orderBy: {
+        index: "asc",
+      },
     });
     return groups;
   }),
@@ -137,5 +136,37 @@ export const appCoreRouter = createTRPCRouter({
       });
 
       return updatedGroup;
+    }),
+
+  reorderGroups: protectedProcedure
+    .input(
+      z.object({
+        newOrder: z.array(z.string()),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { newOrder } = input;
+
+      newOrder.map(async (groupId) => {
+        const group = await ctx.prisma.group.findUnique({
+          where: { id: groupId },
+          select: { userId: true },
+        });
+
+        if (!group) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+          });
+        }
+
+        authorizeAuthor(group.userId, ctx.session.user.id);
+
+        await ctx.prisma.group.update({
+          where: { id: groupId },
+          data: { index: newOrder.indexOf(groupId) },
+        });
+      });
+
+      return;
     }),
 });

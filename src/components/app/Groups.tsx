@@ -7,6 +7,8 @@ import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import React from "react";
+import type { OnDragEndResponder } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import type { Link } from "./Link";
@@ -14,6 +16,7 @@ import Links, { CreateLinkModal } from "./Link";
 
 export type Group = {
   id: string;
+  index: number;
   name?: string | null;
   links: Link[];
 };
@@ -113,14 +116,16 @@ export function EditGroup(props: { group: Group }) {
 
   return (
     <Chakra.Box>
-      <Chakra.IconButton
-        isLoading={isLoading}
-        ref={btnRef}
-        onClick={onOpen}
-        colorScheme="blue"
-        aria-label="Edit Group"
-        icon={Icons.Edit}
-      />
+      <Chakra.Tooltip hasArrow label="Edit group">
+        <Chakra.IconButton
+          isLoading={isLoading}
+          ref={btnRef}
+          onClick={onOpen}
+          colorScheme="blue"
+          aria-label="Edit Group"
+          icon={Icons.Edit}
+        />
+      </Chakra.Tooltip>
       <Chakra.Drawer
         size="md"
         placement="right"
@@ -171,40 +176,83 @@ export function EditGroup(props: { group: Group }) {
 
 export type GroupProps = {
   group: Group;
+  index: number;
 };
 
 export function Group(props: GroupProps) {
-  const { group } = props;
+  const { group, index } = props;
   return (
-    <Chakra.VStack
-      w="full"
-      spacing={5}
-      borderWidth={2}
-      borderStyle="dashed"
-      borderColor="gray.300"
-      p={5}
-      rounded="md"
-    >
-      <Chakra.HStack justify="space-between" align="center" w="full">
-        <Chakra.HStack>
-          <Chakra.Heading size="md">{group.name ?? "Untitled"}</Chakra.Heading>
-        </Chakra.HStack>
-        <Chakra.HStack align="center" spacing={3}>
-          <EditGroup group={group} />
-          <DeleteGroup groupId={group.id} />
-        </Chakra.HStack>
-      </Chakra.HStack>
-      <Chakra.VStack w="full" spacing={5}>
-        <Links links={group.links} />
-        <CreateLinkModal groupId={group.id} />
-      </Chakra.VStack>
-    </Chakra.VStack>
+    <Draggable draggableId={group.id} index={index}>
+      {(provided) => (
+        <Chakra.VStack
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          w="full"
+          spacing={5}
+          borderWidth={2}
+          borderStyle="dashed"
+          borderColor="gray.300"
+          bg="gray.100"
+          p={5}
+          rounded="md"
+        >
+          <Chakra.HStack justify="space-between" align="center" w="full">
+            <Chakra.HStack align="center">
+              <Chakra.Tooltip hasArrow label="Drag n drop group">
+                <Chakra.IconButton
+                  {...provided.dragHandleProps}
+                  cursor="inherit"
+                  aria-label="Drag group"
+                  icon={Icons.Drag}
+                  size="sm"
+                />
+              </Chakra.Tooltip>
+              <Chakra.Heading size="md" fontWeight="medium">
+                {group.name ?? "Untitled"}
+              </Chakra.Heading>
+            </Chakra.HStack>
+            <Chakra.HStack align="center" spacing={3}>
+              <EditGroup group={group} />
+              <DeleteGroup groupId={group.id} />
+            </Chakra.HStack>
+          </Chakra.HStack>
+          <Chakra.VStack w="full" spacing={5}>
+            <Links links={group.links} />
+            <CreateLinkModal groupId={group.id} />
+          </Chakra.VStack>
+        </Chakra.VStack>
+      )}
+    </Draggable>
   );
 }
 
 export default function Groups() {
   const { data, isLoading, isError, error } =
     api.app.getGroupsWithLinks.useQuery();
+  const { mutateAsync } = api.app.reorderGroups.useMutation();
+  const utils = api.useContext();
+
+  const handleDragEnd: OnDragEndResponder = async (result) => {
+    const { destination, source, draggableId } = result;
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    const items = data;
+    const item = items?.find((group) => group.id === draggableId);
+    if (item) {
+      items?.splice(source.index, 1);
+      items?.splice(destination.index, 0, item);
+
+      await mutateAsync({
+        newOrder: items?.map((item) => item.id) as string[],
+      });
+      await utils.app.getGroupsWithLinks.invalidate();
+    }
+  };
 
   if (isLoading) return <SectionLoader />;
   if (isError) return <ErrorMessage description={error.message} />;
@@ -215,12 +263,24 @@ export default function Groups() {
         description="Group are sections where your links will be shown. Start by creating a group."
       />
     );
+
   return (
-    <>
-      {data.map((group) => (
-        <Group group={group} key={group.id} />
-      ))}
-    </>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="group-droppable">
+        {(provided) => (
+          <Chakra.VStack
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            w="full"
+          >
+            {data.map((group, index) => (
+              <Group group={group} index={index} key={group.id} />
+            ))}
+            {provided.placeholder}
+          </Chakra.VStack>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 }
 
