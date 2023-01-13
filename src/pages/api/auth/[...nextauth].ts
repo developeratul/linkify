@@ -33,6 +33,11 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  pages: {
+    newUser: "/auth",
+    signIn: "/auth",
+    signOut: "/auth",
+  },
 };
 
 export default NextAuth(authOptions);
