@@ -19,6 +19,7 @@ export const GroupSelections = {
 export const appCoreRouter = createTRPCRouter({
   getGroupsWithLinks: protectedProcedure.query(async ({ ctx }) => {
     const groups = await ctx.prisma.group.findMany({
+      where: { userId: ctx.session.user.id },
       select: GroupSelections,
       orderBy: {
         index: "asc",
