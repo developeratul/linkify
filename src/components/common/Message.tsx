@@ -13,7 +13,9 @@ export function EmptyMessage(props: { title: string; description: string }) {
       rounded="md"
     >
       <Chakra.VStack margin="auto" textAlign="center" w="full" maxW="md">
-        <Chakra.Heading size="lg">{title}</Chakra.Heading>
+        <Chakra.Heading size="lg" fontWeight="medium">
+          {title}
+        </Chakra.Heading>
         <Chakra.Text color="GrayText">{description}</Chakra.Text>
       </Chakra.VStack>
     </Chakra.Box>
@@ -33,7 +35,7 @@ export function ErrorMessage(props: { description: string }) {
       rounded="md"
     >
       <Chakra.VStack margin="auto" textAlign="center" w="full" maxW="md">
-        <Chakra.Heading size="lg" color="red.500">
+        <Chakra.Heading size="lg" color="red.500" fontWeight="medium">
           Application Error
         </Chakra.Heading>
         <Chakra.Text>{description}</Chakra.Text>

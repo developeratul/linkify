@@ -1,20 +1,28 @@
 import { editGroupSchema } from "@/components/app/Groups";
-import { createLinkSchema, editLinkSchema } from "@/components/app/Link";
+import { createLinkSchema, editLinkSchema } from "@/components/app/Links";
 import { authorizeAuthor } from "@/helpers/auth";
+import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const LinkSelections = { id: true, text: true, url: true, icon: true };
+export const LinkSelections = {
+  id: true,
+  text: true,
+  url: true,
+  icon: true,
+} satisfies Prisma.LinkSelect;
 
 export const GroupSelections = {
   id: true,
-  index: true,
   name: true,
   links: {
     select: LinkSelections,
+    orderBy: {
+      index: "asc",
+    },
   },
-};
+} satisfies Prisma.GroupSelect;
 
 export const appCoreRouter = createTRPCRouter({
   getGroupsWithLinks: protectedProcedure.query(async ({ ctx }) => {
@@ -106,6 +114,38 @@ export const appCoreRouter = createTRPCRouter({
       });
 
       return updatedLink;
+    }),
+
+  reorderLinks: protectedProcedure
+    .input(
+      z.object({
+        newOrder: z.array(z.string()),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { newOrder } = input;
+
+      newOrder.map(async (linkId) => {
+        const link = await ctx.prisma.link.findUnique({
+          where: { id: linkId },
+          select: { userId: true },
+        });
+
+        if (!link) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+          });
+        }
+
+        authorizeAuthor(link.userId, ctx.session.user.id);
+
+        await ctx.prisma.link.update({
+          where: { id: linkId },
+          data: { index: newOrder.indexOf(linkId) },
+        });
+      });
+
+      return;
     }),
 
   deleteGroup: protectedProcedure

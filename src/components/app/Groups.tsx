@@ -11,12 +11,11 @@ import type { OnDragEndResponder } from "react-beautiful-dnd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import type { Link } from "./Link";
-import Links, { CreateLinkModal } from "./Link";
+import type { Link } from "./Links";
+import Links, { CreateLinkModal } from "./Links";
 
 export type Group = {
   id: string;
-  index: number;
   name?: string | null;
   links: Link[];
 };
@@ -237,26 +236,33 @@ export default function Groups() {
     api.app.getGroupsWithLinks.useQuery();
   const { mutateAsync } = api.app.reorderGroups.useMutation();
   const utils = api.useContext();
+  const toast = useToast();
 
   const handleDragEnd: OnDragEndResponder = async (result) => {
-    const { destination, source, draggableId } = result;
-    if (!destination) return;
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return;
+    try {
+      const { destination, source, draggableId } = result;
+      if (!destination) return;
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      )
+        return;
 
-    const items = data;
-    const item = items?.find((group) => group.id === draggableId);
-    if (item) {
-      items?.splice(source.index, 1);
-      items?.splice(destination.index, 0, item);
+      const items = data;
+      const item = items?.find((group) => group.id === draggableId);
+      if (item) {
+        items?.splice(source.index, 1);
+        items?.splice(destination.index, 0, item);
 
-      await mutateAsync({
-        newOrder: items?.map((item) => item.id) as string[],
-      });
-      await utils.app.getGroupsWithLinks.invalidate();
+        await mutateAsync({
+          newOrder: items?.map((item) => item.id) as string[],
+        });
+        await utils.app.getGroupsWithLinks.invalidate();
+      }
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
     }
   };
 
@@ -266,7 +272,7 @@ export default function Groups() {
     return (
       <EmptyMessage
         title="No groups created"
-        description="Group are sections where your links will be shown. Start by creating a group."
+        description="Groups are sections where your links will be shown. Start by creating a group."
       />
     );
 

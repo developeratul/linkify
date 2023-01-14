@@ -5,6 +5,8 @@ import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import React from "react";
+import type { OnDragEndResponder } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -185,32 +187,54 @@ export function EditLink(props: { link: Link }) {
 
 export type LinkProps = {
   link: Link;
+  index: number;
 };
 
 export function Link(props: LinkProps) {
-  const { link } = props;
+  const { link, index } = props;
   return (
-    <Chakra.Card w="full" bg="white" size="lg">
-      <Chakra.CardBody>
-        <Chakra.VStack w="full" align="start">
-          <Chakra.Text fontSize="lg" fontWeight="medium">
-            {link.text}
-          </Chakra.Text>
-          <Chakra.Text>{link.url}</Chakra.Text>
-        </Chakra.VStack>
-      </Chakra.CardBody>
-      <Chakra.CardFooter pt={0}>
-        <Chakra.HStack w="full" justifyContent="space-between">
-          <Chakra.HStack>
-            <Chakra.IconButton icon={Icons.Icons} aria-label="Link icon" />
-          </Chakra.HStack>
-          <Chakra.HStack spacing={3}>
-            <EditLink link={link} />
-            <DeleteLink linkId={link.id} />
-          </Chakra.HStack>
-        </Chakra.HStack>
-      </Chakra.CardFooter>
-    </Chakra.Card>
+    <Draggable index={index} draggableId={link.id}>
+      {(provided) => (
+        <Chakra.Card
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          w="full"
+          bg="white"
+          size="lg"
+        >
+          <Chakra.CardBody>
+            <Chakra.VStack w="full" align="start">
+              <Chakra.Text fontSize="lg" fontWeight="medium">
+                {link.text}
+              </Chakra.Text>
+              <Chakra.Text>{link.url}</Chakra.Text>
+            </Chakra.VStack>
+          </Chakra.CardBody>
+          <Chakra.CardFooter pt={0}>
+            <Chakra.HStack w="full" justifyContent="space-between">
+              <Chakra.HStack>
+                <Chakra.IconButton
+                  colorScheme="purple"
+                  icon={Icons.Icons}
+                  aria-label="Link icon"
+                />
+                <Chakra.Tooltip label="Drag n drop link">
+                  <Chakra.IconButton
+                    {...provided.dragHandleProps}
+                    icon={Icons.Drag}
+                    aria-label="Drag link"
+                  />
+                </Chakra.Tooltip>
+              </Chakra.HStack>
+              <Chakra.HStack spacing={3}>
+                <EditLink link={link} />
+                <DeleteLink linkId={link.id} />
+              </Chakra.HStack>
+            </Chakra.HStack>
+          </Chakra.CardFooter>
+        </Chakra.Card>
+      )}
+    </Draggable>
   );
 }
 
@@ -220,12 +244,55 @@ export type LinksProps = {
 
 export default function Links(props: LinksProps) {
   const { links } = props;
+  const { mutateAsync } = api.app.reorderLinks.useMutation();
+  const utils = api.useContext();
+  const toast = useToast();
+
+  const handleDragEnd: OnDragEndResponder = async (result) => {
+    try {
+      const { destination, source, draggableId } = result;
+      if (!destination) return;
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      )
+        return;
+
+      const items = links;
+      const item = items?.find((link) => link.id === draggableId);
+      if (item) {
+        items?.splice(source.index, 1);
+        items?.splice(destination.index, 0, item);
+
+        await mutateAsync({
+          newOrder: items?.map((item) => item.id) as string[],
+        });
+        await utils.app.getGroupsWithLinks.invalidate();
+      }
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
+
   return (
-    <>
-      {links.map((link) => (
-        <Link link={link} key={link.id} />
-      ))}
-    </>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="link-droppable">
+        {(provided) => (
+          <Chakra.VStack
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            w="full"
+            spacing={3}
+          >
+            {links.map((link, index) => (
+              <Link link={link} key={link.id} index={index} />
+            ))}
+          </Chakra.VStack>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 }
 

@@ -80,6 +80,7 @@ model Group {
 
 model Link {
     id      String  @id @default(cuid())
+    index   Int     @default(autoincrement())
     text    String
     url     String
     icon    String?
