@@ -1,5 +1,5 @@
 import { editGroupSchema } from "@/components/app/Groups";
-import { createLinkSchema } from "@/components/app/Link";
+import { createLinkSchema, editLinkSchema } from "@/components/app/Link";
 import { authorizeAuthor } from "@/helpers/auth";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -78,6 +78,34 @@ export const appCoreRouter = createTRPCRouter({
       });
 
       return deletedLink;
+    }),
+
+  editLink: protectedProcedure
+    .input(editLinkSchema.extend({ linkId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { linkId, ...update } = input;
+
+      const link = await ctx.prisma.link.findUnique({
+        where: { id: linkId },
+        select: { userId: true },
+      });
+
+      if (!link) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Link not found",
+        });
+      }
+
+      authorizeAuthor(link.userId, ctx.session.user.id);
+
+      const updatedLink = await ctx.prisma.link.update({
+        where: { id: linkId },
+        data: { ...update },
+        select: LinkSelections,
+      });
+
+      return updatedLink;
     }),
 
   deleteGroup: protectedProcedure
