@@ -89,9 +89,6 @@ export function EditLink(props: { link: Link }) {
   const { register, formState, handleSubmit, reset } = useForm<EditLinkSchema>({
     resolver: zodResolver(editLinkSchema),
     defaultValues: link,
-    resetOptions: {
-      keepDefaultValues: true,
-    },
   });
   const { mutateAsync, isLoading } = api.app.editLink.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();

@@ -92,21 +92,29 @@ export type EditGroupSchema = z.infer<typeof editGroupSchema>;
 
 export function EditGroup(props: { group: Group }) {
   const { group } = props;
-  const { register, formState, handleSubmit } = useForm<EditGroupSchema>({
-    resolver: zodResolver(editGroupSchema),
-    defaultValues: group,
-  });
+  const { register, formState, handleSubmit, reset } = useForm<EditGroupSchema>(
+    {
+      resolver: zodResolver(editGroupSchema),
+      defaultValues: group,
+    }
+  );
   const { mutateAsync, isLoading } = api.app.editGroup.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const btnRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
   const utils = api.useContext();
 
+  const closeDrawer = () => {
+    onClose();
+    reset();
+  };
+
   const onSubmit = async (values: EditGroupSchema) => {
     try {
-      await mutateAsync({ ...values, groupId: group.id });
+      const updatedGroup = await mutateAsync({ ...values, groupId: group.id });
       await utils.app.getGroupsWithLinks.invalidate();
       onClose();
+      reset(updatedGroup);
     } catch (err) {
       if (err instanceof TRPCClientError) {
         toast({ status: "error", description: err.message });
@@ -130,14 +138,12 @@ export function EditGroup(props: { group: Group }) {
         size="md"
         placement="right"
         finalFocusRef={btnRef}
-        onClose={onClose}
+        onClose={closeDrawer}
         isOpen={isOpen}
       >
         <Chakra.DrawerOverlay />
         <Chakra.DrawerContent>
-          <Chakra.DrawerHeader>
-            Edit &quot;{group.name ?? "Untitled"}&quot; group
-          </Chakra.DrawerHeader>
+          <Chakra.DrawerHeader>Edit group</Chakra.DrawerHeader>
           <Chakra.DrawerCloseButton />
           <Chakra.DrawerBody>
             <Chakra.VStack
@@ -155,7 +161,7 @@ export function EditGroup(props: { group: Group }) {
             </Chakra.VStack>
           </Chakra.DrawerBody>
           <Chakra.DrawerFooter>
-            <Chakra.Button mr={3} onClick={onClose}>
+            <Chakra.Button mr={3} onClick={closeDrawer}>
               Cancel
             </Chakra.Button>
             <Chakra.Button
