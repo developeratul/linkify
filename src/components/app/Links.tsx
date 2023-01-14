@@ -19,7 +19,7 @@ export type Link = {
 
 export function DeleteLink(props: { linkId: string }) {
   const { linkId } = props;
-  const { mutateAsync, isLoading } = api.app.deleteLink.useMutation();
+  const { mutateAsync, isLoading } = api.link.delete.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = Chakra.useToast();
@@ -29,7 +29,7 @@ export function DeleteLink(props: { linkId: string }) {
     try {
       await mutateAsync(linkId);
       onClose();
-      await utils.app.getGroupsWithLinks.invalidate();
+      await utils.group.getWithLinks.invalidate();
     } catch (err) {
       if (err instanceof TRPCClientError) {
         toast({ status: "error", title: "Error", description: err.message });
@@ -92,7 +92,7 @@ export function EditLink(props: { link: Link }) {
     resolver: zodResolver(editLinkSchema),
     defaultValues: link,
   });
-  const { mutateAsync, isLoading } = api.app.editLink.useMutation();
+  const { mutateAsync, isLoading } = api.link.edit.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const btnRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
@@ -106,7 +106,7 @@ export function EditLink(props: { link: Link }) {
   const onSubmit = async (values: EditLinkSchema) => {
     try {
       const updatedLink = await mutateAsync({ ...values, linkId: link.id });
-      await utils.app.getGroupsWithLinks.invalidate();
+      await utils.group.getWithLinks.invalidate();
       onClose();
       reset(updatedLink);
     } catch (err) {
@@ -244,7 +244,7 @@ export type LinksProps = {
 
 export default function Links(props: LinksProps) {
   const { links } = props;
-  const { mutateAsync } = api.app.reorderLinks.useMutation();
+  const { mutateAsync } = api.link.reorder.useMutation();
   const utils = api.useContext();
   const toast = useToast();
 
@@ -267,7 +267,7 @@ export default function Links(props: LinksProps) {
         await mutateAsync({
           newOrder: items?.map((item) => item.id) as string[],
         });
-        await utils.app.getGroupsWithLinks.invalidate();
+        await utils.group.getWithLinks.invalidate();
       }
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -311,14 +311,14 @@ export function CreateLinkModal(props: { groupId: string }) {
     useForm<CreateLinkSchema>({
       resolver: zodResolver(createLinkSchema),
     });
-  const { mutateAsync, isLoading } = api.app.createLink.useMutation();
+  const { mutateAsync, isLoading } = api.link.create.useMutation();
   const utils = api.useContext();
   const toast = Chakra.useToast();
 
   const onSubmit = async (values: CreateLinkSchema) => {
     try {
       await mutateAsync({ ...values, groupId });
-      await utils.app.getGroupsWithLinks.invalidate();
+      await utils.group.getWithLinks.invalidate();
       onClose();
       reset();
     } catch (err) {

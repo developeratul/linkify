@@ -22,7 +22,7 @@ export type Group = {
 
 export function DeleteGroup(props: { groupId: string }) {
   const { groupId } = props;
-  const { mutateAsync, isLoading } = api.app.deleteGroup.useMutation();
+  const { mutateAsync, isLoading } = api.group.delete.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = Chakra.useToast();
@@ -32,7 +32,7 @@ export function DeleteGroup(props: { groupId: string }) {
     try {
       await mutateAsync(groupId);
       onClose();
-      await utils.app.getGroupsWithLinks.invalidate();
+      await utils.group.getWithLinks.invalidate();
     } catch (err) {
       if (err instanceof TRPCClientError) {
         toast({ status: "error", title: "Error", description: err.message });
@@ -97,7 +97,7 @@ export function EditGroup(props: { group: Group }) {
       defaultValues: group,
     }
   );
-  const { mutateAsync, isLoading } = api.app.editGroup.useMutation();
+  const { mutateAsync, isLoading } = api.group.edit.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const btnRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
@@ -111,7 +111,7 @@ export function EditGroup(props: { group: Group }) {
   const onSubmit = async (values: EditGroupSchema) => {
     try {
       const updatedGroup = await mutateAsync({ ...values, groupId: group.id });
-      await utils.app.getGroupsWithLinks.invalidate();
+      await utils.group.getWithLinks.invalidate();
       onClose();
       reset(updatedGroup);
     } catch (err) {
@@ -232,9 +232,8 @@ export function Group(props: GroupProps) {
 }
 
 export default function Groups() {
-  const { data, isLoading, isError, error } =
-    api.app.getGroupsWithLinks.useQuery();
-  const { mutateAsync } = api.app.reorderGroups.useMutation();
+  const { data, isLoading, isError, error } = api.group.getWithLinks.useQuery();
+  const { mutateAsync } = api.group.reorder.useMutation();
   const utils = api.useContext();
   const toast = useToast();
 
@@ -257,7 +256,7 @@ export default function Groups() {
         await mutateAsync({
           newOrder: items?.map((item) => item.id) as string[],
         });
-        await utils.app.getGroupsWithLinks.invalidate();
+        await utils.group.getWithLinks.invalidate();
       }
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -297,12 +296,12 @@ export default function Groups() {
 }
 
 export function CreateGroup() {
-  const { isLoading, mutateAsync } = api.app.createGroup.useMutation();
+  const { isLoading, mutateAsync } = api.group.create.useMutation();
   const utils = api.useContext();
 
   const handleClick = async () => {
     await mutateAsync();
-    await utils.app.getGroupsWithLinks.invalidate();
+    await utils.group.getWithLinks.invalidate();
   };
   return (
     <Chakra.Button

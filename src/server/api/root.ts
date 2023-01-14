@@ -1,6 +1,7 @@
-import { appCoreRouter } from "./routers/app";
 import { authRouter } from "./routers/auth";
 import { exampleRouter } from "./routers/example";
+import { groupRouter } from "./routers/group";
+import { linkRouter } from "./routers/link";
 import { createTRPCRouter } from "./trpc";
 
 /**
@@ -11,7 +12,8 @@ import { createTRPCRouter } from "./trpc";
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
   auth: authRouter,
-  app: appCoreRouter,
+  group: groupRouter,
+  link: linkRouter,
 });
 
 // export type definition of API
