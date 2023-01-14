@@ -289,6 +289,7 @@ export default function Links(props: LinksProps) {
             {links.map((link, index) => (
               <Link link={link} key={link.id} index={index} />
             ))}
+            {provided.placeholder}
           </Chakra.VStack>
         )}
       </Droppable>
