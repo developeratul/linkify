@@ -21,7 +21,7 @@ export function Link(props: { link: LinkType }) {
       href={link.url}
       rel="noreferrer"
     >
-      {link.icon && (
+      {link.thumbnail && (
         <Chakra.Image
           rounded="md"
           boxSize={50}

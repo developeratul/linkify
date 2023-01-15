@@ -9,7 +9,7 @@ export const LinkSelections = {
   id: true,
   text: true,
   url: true,
-  icon: true,
+  thumbnail: true,
 } satisfies Prisma.LinkSelect;
 
 export const linkRouter = createTRPCRouter({
