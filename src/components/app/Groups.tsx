@@ -213,7 +213,7 @@ export function Group(props: GroupProps) {
                 />
               </Chakra.Tooltip>
               <Chakra.Heading size="md" fontWeight="medium">
-                {group.name ?? "Untitled"}
+                {group.name || "Untitled"}
               </Chakra.Heading>
             </Chakra.HStack>
             <Chakra.HStack align="center" spacing={3}>
