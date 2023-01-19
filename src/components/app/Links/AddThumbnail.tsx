@@ -26,44 +26,58 @@ export function AddThumbnail(props: { link: Link }) {
   const [isEditingThumbnail, setEditingThumbnail] = React.useState(
     !!!thumbnail
   );
-  const [file, setFile] = React.useState<Blob | string | null>();
+  const [file, setFile] = React.useState<Blob | null>();
+  const [url, setUrl] = React.useState<string>("");
   const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
-  const formRef = React.useRef<HTMLFormElement | null>(null);
   const toast = useToast();
   const utils = api.useContext();
 
-  const closePopover = () => {
+  const closePopover = (resetEditing = true) => {
     onClose();
     setTimeout(() => {
       setFile(null);
-      formRef?.current?.reset();
+      setUrl("");
+      if (resetEditing) {
+        setEditingThumbnail(!!!thumbnail);
+      }
     }, 100);
   };
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
+      if (url) {
+        setUrl("");
+      }
     }
   };
 
   const handleUrlInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.value);
+    setUrl(e.target.value);
+    if (file) {
+      setFile(null);
+    }
   };
 
-  const handleSubmit: React.FormEventHandler<HTMLDivElement> = async (e) => {
-    e.preventDefault();
-    if (!file) return;
+  const handleSave = async () => {
+    if (file && url) {
+      toast({
+        status: "warning",
+        description: "Both file and url was provided at the same time",
+      });
+      return;
+    }
     setLoading(true);
     try {
-      if (file instanceof Blob) {
+      if (file) {
         const { secure_url, public_id } = await uploadFile(file);
         await mutateAsync({ linkId, publicId: public_id, url: secure_url });
-      } else if (typeof file === "string") {
-        await mutateAsync({ linkId, url: file });
+      } else {
+        await mutateAsync({ linkId, url });
       }
 
       await utils.group.getWithLinks.invalidate();
-      closePopover();
+      closePopover(false);
       setFile(null);
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -101,15 +115,15 @@ export function AddThumbnail(props: { link: Link }) {
         <Chakra.PopoverHeader>Thumbnail</Chakra.PopoverHeader>
         <Chakra.PopoverBody>
           {isEditingThumbnail ? (
-            <Chakra.VStack
-              as="form"
-              onSubmit={handleSubmit}
-              // ref={formRef as never}
-              id="add-thumbnail-form"
-            >
+            <Chakra.VStack>
               <Chakra.FormControl>
                 <Chakra.FormLabel>Enter public URL</Chakra.FormLabel>
-                <Chakra.Input size="sm" onChange={handleUrlInputChange} />
+                <Chakra.Input
+                  size="sm"
+                  onChange={handleUrlInputChange}
+                  name="url"
+                  value={url}
+                />
               </Chakra.FormControl>
               <Chakra.Text py={1} fontWeight="medium">
                 or
@@ -118,6 +132,7 @@ export function AddThumbnail(props: { link: Link }) {
                 <Chakra.FormLabel>Upload File</Chakra.FormLabel>
                 <Chakra.Input
                   onChange={handleFileInputChange}
+                  name="file"
                   size="sm"
                   type="file"
                   accept="image/jpeg, image/png, image/gif, image/svg+xml"
@@ -165,10 +180,8 @@ export function AddThumbnail(props: { link: Link }) {
                 <Chakra.Button
                   size="sm"
                   colorScheme="purple"
-                  type="submit"
-                  form="add-thumbnail-form"
+                  onClick={handleSave}
                   isLoading={isLoading}
-                  disabled={!file || isLoading}
                 >
                   Save
                 </Chakra.Button>
