@@ -27,7 +27,7 @@ export function Link(props: { link: LinkType }) {
           boxSize={50}
           fallbackSrc="https://via.placeholder.com/50"
           fit="cover"
-          src="https://d1fdloi71mui9q.cloudfront.net/VlhSQBNbSSK3Z4LosygC_sRj8B366YV898t4b"
+          src={link.thumbnail}
           alt="Rock image"
         />
       )}

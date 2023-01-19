@@ -79,13 +79,14 @@ model Group {
 }
 
 model Link {
-    id        String  @id @default(cuid())
-    index     Int     @default(autoincrement())
-    text      String
-    url       String
-    thumbnail String?
-    group     Group   @relation(fields: [groupId], references: [id])
-    groupId   String
-    user      User    @relation(fields: [userId], references: [id])
-    userId    String
+    id                String  @id @default(cuid())
+    index             Int     @default(autoincrement())
+    text              String
+    url               String
+    thumbnail         String?
+    thumbnailPublicId String?
+    group             Group   @relation(fields: [groupId], references: [id])
+    groupId           String
+    user              User    @relation(fields: [userId], references: [id])
+    userId            String
 }
