@@ -1,5 +1,6 @@
 import { editGroupSchema } from "@/components/app/Groups";
 import { authorizeAuthor } from "@/helpers/auth";
+import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -56,10 +57,24 @@ export const groupRouter = createTRPCRouter({
 
       authorizeAuthor(group?.userId, ctx.session.user.id);
 
+      // delete all the link thumbnails
+      const links = await ctx.prisma.link.findMany({
+        where: { groupId },
+        select: { thumbnail: true, thumbnailPublicId: true },
+      });
+
+      for (const link of links) {
+        if (link.thumbnail && link.thumbnailPublicId) {
+          await cloudinary.uploader.destroy(link.thumbnailPublicId);
+        }
+      }
+
+      // delete all the corresponding links
       await ctx.prisma.link.deleteMany({
         where: { groupId },
       });
 
+      // finally delete the group
       const deletedGroup = await ctx.prisma.group.delete({
         where: { id: groupId },
         select: GroupSelections,

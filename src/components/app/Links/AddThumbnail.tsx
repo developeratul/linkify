@@ -168,6 +168,7 @@ export function AddThumbnail(props: { link: Link }) {
                   type="submit"
                   form="add-thumbnail-form"
                   isLoading={isLoading}
+                  disabled={!file || isLoading}
                 >
                   Save
                 </Chakra.Button>
