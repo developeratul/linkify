@@ -1,8 +1,6 @@
-import {
-  addThumbnailSchema,
-  createLinkSchema,
-  editLinkSchema,
-} from "@/components/app/Links";
+import { addThumbnailSchema } from "@/components/app/Links/AddThumbnail";
+import { createLinkSchema } from "@/components/app/Links/CreateLink";
+import { editLinkSchema } from "@/components/app/Links/EditLink";
 import { authorizeAuthor } from "@/helpers/auth";
 import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
@@ -149,6 +147,36 @@ export const linkRouter = createTRPCRouter({
         where: { id: linkId },
         data: { thumbnail: url, thumbnailPublicId: publicId },
         select: LinkSelections,
+      });
+
+      return updatedLink;
+    }),
+
+  removeThumbnail: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const linkId = input;
+
+      const link = await ctx.prisma.link.findUnique({
+        where: { id: linkId },
+        select: { userId: true, thumbnail: true, thumbnailPublicId: true },
+      });
+
+      if (!link) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+        });
+      }
+
+      authorizeAuthor(link.userId, ctx.session.user.id);
+
+      if (link.thumbnail && link.thumbnailPublicId) {
+        await cloudinary.uploader.destroy(link.thumbnailPublicId);
+      }
+
+      const updatedLink = await ctx.prisma.link.update({
+        where: { id: linkId },
+        data: { thumbnail: null, thumbnailPublicId: null },
       });
 
       return updatedLink;

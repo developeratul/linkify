@@ -12,7 +12,8 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import type { Link } from "./Links";
-import Links, { CreateLinkModal } from "./Links";
+import Links from "./Links";
+import { CreateLinkModal } from "./Links/CreateLink";
 
 export type Group = {
   id: string;
