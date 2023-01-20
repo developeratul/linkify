@@ -4,8 +4,8 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function AppBar() {
   return (
-    <Chakra.Box zIndex="sticky" p={3} className="sticky top-0 left-0">
-      <Chakra.Card bg="white" size="sm" px={5} rounded="full">
+    <Chakra.Box zIndex="sticky" p={3} className="sticky top-0 left-0 h-24">
+      <Chakra.Card bg="white" size="sm" px={5} rounded="full" height="full">
         <Chakra.CardBody className="flex items-center justify-between">
           <Chakra.Box>
             <Chakra.Heading size="md">LOGO</Chakra.Heading>

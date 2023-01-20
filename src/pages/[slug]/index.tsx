@@ -76,6 +76,11 @@ const UserPage: NextPage<{ user: User }> = (
         w="full"
         h="full"
         overflowX="hidden"
+        css={{
+          "&::-webkit-scrollbar": {
+            width: 0,
+          },
+        }}
         className="bg-black/75 filter backdrop-blur-3xl"
         py={50}
         px={5}
