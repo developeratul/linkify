@@ -1,4 +1,5 @@
 import { Icons } from "@/Icons";
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
@@ -17,6 +18,7 @@ export const editLinkSchema = z.object({
 export type EditLinkSchema = z.infer<typeof editLinkSchema>;
 
 export function EditLink(props: { link: Link }) {
+  const previewContext = usePreviewContext();
   const { link } = props;
   const { register, formState, handleSubmit, reset } = useForm<EditLinkSchema>({
     resolver: zodResolver(editLinkSchema),
@@ -37,6 +39,7 @@ export function EditLink(props: { link: Link }) {
     try {
       const updatedLink = await mutateAsync({ ...values, linkId: link.id });
       await utils.group.getWithLinks.invalidate();
+      previewContext?.reload();
       onClose();
       reset(updatedLink);
     } catch (err) {

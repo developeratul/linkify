@@ -1,4 +1,5 @@
 import { Icons } from "@/Icons";
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +15,7 @@ export const createLinkSchema = z.object({
 export type CreateLinkSchema = z.infer<typeof createLinkSchema>;
 
 export function CreateLinkModal(props: { groupId: string }) {
+  const previewContext = usePreviewContext();
   const { groupId } = props;
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const { formState, register, handleSubmit, reset } =
@@ -28,6 +30,7 @@ export function CreateLinkModal(props: { groupId: string }) {
     try {
       await mutateAsync({ ...values, groupId });
       await utils.group.getWithLinks.invalidate();
+      previewContext?.reload();
       onClose();
       reset();
     } catch (err) {

@@ -1,3 +1,4 @@
+import { usePreviewContext } from "@/providers/preview";
 import * as Chakra from "@chakra-ui/react";
 
 export type PreviewPanelProps = {
@@ -5,7 +6,11 @@ export type PreviewPanelProps = {
 };
 
 export function PreviewPanel(props: PreviewPanelProps) {
+  const previewContext = usePreviewContext();
+  if (previewContext === undefined) return <></>;
+
   const { username } = props;
+  const { ref } = previewContext;
   return (
     <Chakra.VStack
       position="sticky"
@@ -16,9 +21,9 @@ export function PreviewPanel(props: PreviewPanelProps) {
       maxW={550}
       rounded="md"
       overflow="hidden"
-      as="iframe"
-      src={`/${username}`}
       bg="gray.300"
-    />
+    >
+      <iframe className="h-full w-full" src={`/${username}`} ref={ref} />
+    </Chakra.VStack>
   );
 }

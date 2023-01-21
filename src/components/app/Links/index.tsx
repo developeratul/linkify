@@ -1,4 +1,5 @@
 import { Icons } from "@/Icons";
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
@@ -70,6 +71,7 @@ export type LinksProps = {
 };
 
 export default function Links(props: LinksProps) {
+  const previewContext = usePreviewContext();
   const { links } = props;
   const { mutateAsync } = api.link.reorder.useMutation();
   const utils = api.useContext();
@@ -95,6 +97,7 @@ export default function Links(props: LinksProps) {
           newOrder: items?.map((item) => item.id) as string[],
         });
         await utils.group.getWithLinks.invalidate();
+        previewContext?.reload();
       }
     } catch (err) {
       if (err instanceof TRPCClientError) {

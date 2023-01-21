@@ -1,10 +1,12 @@
 import { Icons } from "@/Icons";
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import React from "react";
 
 export function DeleteLink(props: { linkId: string }) {
+  const previewContext = usePreviewContext();
   const { linkId } = props;
   const { mutateAsync, isLoading } = api.link.delete.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
@@ -17,6 +19,7 @@ export function DeleteLink(props: { linkId: string }) {
       await mutateAsync(linkId);
       onClose();
       await utils.group.getWithLinks.invalidate();
+      previewContext?.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
         toast({ status: "error", title: "Error", description: err.message });

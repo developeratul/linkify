@@ -1,6 +1,7 @@
 import { SectionLoader } from "@/components/common/Loader";
 import { EmptyMessage, ErrorMessage } from "@/components/common/Message";
 import { Icons } from "@/Icons";
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
@@ -22,6 +23,7 @@ export type Group = {
 };
 
 export function DeleteGroup(props: { groupId: string }) {
+  const previewContext = usePreviewContext();
   const { groupId } = props;
   const { mutateAsync, isLoading } = api.group.delete.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
@@ -32,6 +34,7 @@ export function DeleteGroup(props: { groupId: string }) {
   const handleClick = async () => {
     try {
       await mutateAsync(groupId);
+      previewContext?.reload();
       onClose();
       await utils.group.getWithLinks.invalidate();
     } catch (err) {
@@ -91,6 +94,7 @@ export const editGroupSchema = z.object({
 export type EditGroupSchema = z.infer<typeof editGroupSchema>;
 
 export function EditGroup(props: { group: Group }) {
+  const previewContext = usePreviewContext();
   const { group } = props;
   const { register, formState, handleSubmit, reset } = useForm<EditGroupSchema>(
     {
@@ -113,6 +117,7 @@ export function EditGroup(props: { group: Group }) {
     try {
       const updatedGroup = await mutateAsync({ ...values, groupId: group.id });
       await utils.group.getWithLinks.invalidate();
+      previewContext?.reload();
       onClose();
       reset(updatedGroup);
     } catch (err) {
@@ -233,6 +238,7 @@ export function Group(props: GroupProps) {
 }
 
 export default function Groups() {
+  const previewContext = usePreviewContext();
   const { data, isLoading, isError, error } = api.group.getWithLinks.useQuery();
   const { mutateAsync } = api.group.reorder.useMutation();
   const utils = api.useContext();
@@ -258,6 +264,7 @@ export default function Groups() {
           newOrder: items?.map((item) => item.id) as string[],
         });
         await utils.group.getWithLinks.invalidate();
+        previewContext?.reload();
       }
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -297,12 +304,14 @@ export default function Groups() {
 }
 
 export function CreateGroup() {
+  const previewContext = usePreviewContext();
   const { isLoading, mutateAsync } = api.group.create.useMutation();
   const utils = api.useContext();
 
   const handleClick = async () => {
     await mutateAsync();
     await utils.group.getWithLinks.invalidate();
+    previewContext?.reload();
   };
   return (
     <Chakra.Button

@@ -1,5 +1,6 @@
 import { Conditional } from "@/components/common/Conditional";
 import { Icons } from "@/Icons";
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
 import * as Chakra from "@chakra-ui/react";
@@ -18,6 +19,7 @@ export const addThumbnailSchema = z.object({
 });
 
 export function AddThumbnail(props: { link: Link }) {
+  const previewContext = usePreviewContext();
   const {
     link: { id: linkId, thumbnail },
   } = props;
@@ -77,6 +79,7 @@ export function AddThumbnail(props: { link: Link }) {
       }
 
       await utils.group.getWithLinks.invalidate();
+      previewContext?.reload();
       closePopover(false);
       setFile(null);
     } catch (err) {

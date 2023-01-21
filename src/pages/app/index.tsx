@@ -1,6 +1,7 @@
 import AppBar from "@/components/app/AppBar";
 import Groups, { CreateGroup } from "@/components/app/Groups";
 import { PreviewPanel } from "@/components/app/PreviewPanel";
+import { PreviewProvider } from "@/providers/preview";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
 import type {
@@ -17,13 +18,15 @@ const AppPage: NextPage = (
     <Chakra.Box className="h-full w-full overflow-x-hidden" bg="gray.100">
       <AppBar />
       <Chakra.HStack w="full" align="start">
-        <Chakra.Stack p={5} w="full" align="center">
-          <Chakra.VStack w="full" maxW="2xl" spacing={5}>
-            <CreateGroup />
-            <Groups />
-          </Chakra.VStack>
-        </Chakra.Stack>
-        <PreviewPanel username={username} />
+        <PreviewProvider>
+          <Chakra.Stack p={5} w="full" align="center">
+            <Chakra.VStack w="full" maxW="2xl" spacing={5}>
+              <CreateGroup />
+              <Groups />
+            </Chakra.VStack>
+          </Chakra.Stack>
+          <PreviewPanel username={username} />
+        </PreviewProvider>
       </Chakra.HStack>
     </Chakra.Box>
   );

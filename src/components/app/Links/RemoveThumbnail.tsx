@@ -1,9 +1,11 @@
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import React from "react";
 
 export function RemoveThumbnail(props: { linkId: string }) {
+  const previewContext = usePreviewContext();
   const { linkId } = props;
   const { mutateAsync, isLoading } = api.link.removeThumbnail.useMutation();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
@@ -15,6 +17,7 @@ export function RemoveThumbnail(props: { linkId: string }) {
     try {
       await mutateAsync(linkId);
       await utils.group.getWithLinks.invalidate();
+      previewContext?.reload();
       onClose();
     } catch (err) {
       if (err instanceof TRPCClientError) {
