@@ -1,4 +1,4 @@
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -34,7 +34,7 @@ export function DeleteLink(props: { linkId: string }) {
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
-          icon={Icons.Delete}
+          icon={<Icon name="Delete" />}
           aria-label="Delete link"
         />
       </Chakra.Tooltip>

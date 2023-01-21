@@ -1,4 +1,4 @@
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import * as Chakra from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
 
@@ -22,7 +22,7 @@ export default function AppBar() {
 
 export function ShareMenu() {
   return (
-    <Chakra.Button rounded="full" leftIcon={Icons.Share}>
+    <Chakra.Button rounded="full" leftIcon={<Icon name="Share" />}>
       Share
     </Chakra.Button>
   );

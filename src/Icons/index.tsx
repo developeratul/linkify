@@ -1,25 +1,33 @@
 import {
-  AiOutlineDrag,
-  AiOutlineEdit,
-  AiOutlineEye,
-  AiOutlineGoogle,
-  AiOutlineSave,
-} from "react-icons/ai";
-import { FaIcons } from "react-icons/fa";
-import { FiGithub, FiShare2 } from "react-icons/fi";
-import { IoMdAdd, IoMdCreate } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
+  Edit,
+  Eye,
+  Facebook,
+  Github,
+  GripVertical,
+  ImageIcon,
+  Pencil,
+  Plus,
+  Save,
+  Share2,
+  Trash,
+} from "lucide-react";
 
-export const Icons = {
-  Github: <FiGithub />,
-  Google: <AiOutlineGoogle />,
-  Share: <FiShare2 />,
-  Create: <IoMdCreate />,
-  Add: <IoMdAdd />,
-  Icons: <FaIcons />,
-  Delete: <MdDelete />,
-  Edit: <AiOutlineEdit />,
-  Save: <AiOutlineSave />,
-  Drag: <AiOutlineDrag />,
-  Preview: <AiOutlineEye />,
+export const icons = {
+  Github: Github,
+  Google: Facebook,
+  Share: Share2,
+  Create: Pencil,
+  Add: Plus,
+  Thumbnail: ImageIcon,
+  Delete: Trash,
+  Edit: Edit,
+  Save: Save,
+  Drag: GripVertical,
+  Preview: Eye,
 };
+
+export function Icon(props: { size?: number; name: keyof typeof icons }) {
+  const { size = 16, name } = props;
+  const IconElement = icons[name];
+  return <IconElement size={size} />;
+}

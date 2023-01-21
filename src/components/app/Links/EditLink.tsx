@@ -1,4 +1,4 @@
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -58,7 +58,7 @@ export function EditLink(props: { link: Link }) {
           onClick={onOpen}
           colorScheme="blue"
           aria-label="Edit Link"
-          icon={Icons.Edit}
+          icon={<Icon name="Edit" />}
         />
       </Chakra.Tooltip>
       <Chakra.Drawer
@@ -107,7 +107,7 @@ export function EditLink(props: { link: Link }) {
               form="edit-link-form"
               colorScheme="purple"
               isLoading={isLoading}
-              leftIcon={Icons.Save}
+              leftIcon={<Icon name="Save" />}
             >
               Save changes
             </Chakra.Button>

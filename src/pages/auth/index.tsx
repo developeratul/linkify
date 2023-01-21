@@ -1,4 +1,4 @@
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import { AuthLayout } from "@/Layouts/auth";
 import { redirectAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
@@ -15,13 +15,17 @@ const AuthPage: NextPage = () => {
       <Chakra.VStack spacing={3}>
         <Chakra.Button
           onClick={() => handleSignIn("github")}
-          leftIcon={Icons.Github}
+          leftIcon={<Icon name="Github" />}
           w="full"
           colorScheme="purple"
         >
           Sign in with Github
         </Chakra.Button>
-        <Chakra.Button leftIcon={Icons.Google} w="full" colorScheme="purple">
+        <Chakra.Button
+          leftIcon={<Icon name="Google" />}
+          w="full"
+          colorScheme="purple"
+        >
           Sign in with Google
         </Chakra.Button>
       </Chakra.VStack>

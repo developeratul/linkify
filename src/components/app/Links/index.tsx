@@ -1,4 +1,4 @@
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -49,7 +49,7 @@ export function Link(props: LinkProps) {
                 <Chakra.Tooltip label="Drag n drop link">
                   <Chakra.IconButton
                     {...provided.dragHandleProps}
-                    icon={Icons.Drag}
+                    icon={<Icon name="Drag" />}
                     aria-label="Drag link"
                   />
                 </Chakra.Tooltip>

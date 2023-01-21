@@ -1,6 +1,6 @@
 import { SectionLoader } from "@/components/common/Loader";
 import { EmptyMessage, ErrorMessage } from "@/components/common/Message";
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -51,7 +51,7 @@ export function DeleteGroup(props: { groupId: string }) {
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
-          icon={Icons.Delete}
+          icon={<Icon name="Delete" />}
           aria-label="Delete group"
         />
       </Chakra.Tooltip>
@@ -136,7 +136,7 @@ export function EditGroup(props: { group: Group }) {
           onClick={onOpen}
           colorScheme="blue"
           aria-label="Edit Group"
-          icon={Icons.Edit}
+          icon={<Icon name="Edit" />}
         />
       </Chakra.Tooltip>
       <Chakra.Drawer
@@ -174,7 +174,7 @@ export function EditGroup(props: { group: Group }) {
               form="edit-group-form"
               colorScheme="purple"
               isLoading={isLoading}
-              leftIcon={Icons.Save}
+              leftIcon={<Icon name="Save" />}
             >
               Save changes
             </Chakra.Button>
@@ -214,7 +214,7 @@ export function Group(props: GroupProps) {
                   {...provided.dragHandleProps}
                   cursor="inherit"
                   aria-label="Drag group"
-                  icon={Icons.Drag}
+                  icon={<Icon name="Drag" />}
                   size="sm"
                 />
               </Chakra.Tooltip>
@@ -319,7 +319,7 @@ export function CreateGroup() {
       onClick={handleClick}
       colorScheme="purple"
       w="full"
-      leftIcon={Icons.Create}
+      leftIcon={<Icon name="Create" />}
     >
       Create new group
     </Chakra.Button>

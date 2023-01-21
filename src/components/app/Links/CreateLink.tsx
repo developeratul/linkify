@@ -1,4 +1,4 @@
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -50,7 +50,7 @@ export function CreateLinkModal(props: { groupId: string }) {
         onClick={onOpen}
         w="full"
         colorScheme="blue"
-        leftIcon={Icons.Add}
+        leftIcon={<Icon name="Add" />}
       >
         Add new link
       </Chakra.Button>
@@ -95,7 +95,7 @@ export function CreateLinkModal(props: { groupId: string }) {
               type="submit"
               form="add-link-form"
               colorScheme="purple"
-              leftIcon={Icons.Add}
+              leftIcon={<Icon name="Add" />}
             >
               Add
             </Chakra.Button>

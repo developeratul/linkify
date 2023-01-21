@@ -1,5 +1,5 @@
 import { Conditional } from "@/components/common/Conditional";
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
@@ -108,7 +108,7 @@ export function AddThumbnail(props: { link: Link }) {
       <Chakra.PopoverTrigger>
         <Chakra.IconButton
           colorScheme="purple"
-          icon={Icons.Icons}
+          icon={<Icon name="Thumbnail" />}
           aria-label="Add Link thumbnail"
         />
       </Chakra.PopoverTrigger>

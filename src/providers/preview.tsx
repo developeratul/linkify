@@ -1,4 +1,4 @@
-import { Icons } from "@/Icons";
+import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
 import * as Chakra from "@chakra-ui/react";
 import React from "react";
@@ -43,7 +43,7 @@ export function PreviewProvider(props: PreviewProviderProps) {
       >
         <Chakra.Button
           size="sm"
-          leftIcon={Icons.Preview}
+          leftIcon={<Icon name="Preview" />}
           onClick={onOpen}
           colorScheme="purple"
         >
