@@ -1,6 +1,7 @@
 import {
   AiOutlineDrag,
   AiOutlineEdit,
+  AiOutlineEye,
   AiOutlineGoogle,
   AiOutlineSave,
 } from "react-icons/ai";
@@ -20,4 +21,5 @@ export const Icons = {
   Edit: <AiOutlineEdit />,
   Save: <AiOutlineSave />,
   Drag: <AiOutlineDrag />,
+  Preview: <AiOutlineEye />,
 };

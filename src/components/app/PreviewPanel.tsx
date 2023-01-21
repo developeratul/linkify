@@ -18,7 +18,8 @@ export function PreviewPanel(props: PreviewPanelProps) {
       right={0}
       w="full"
       h="calc(100vh - 96px)"
-      maxW={550}
+      maxW={{ base: "full", md: 350, lg: 450, xl: 500, "2xl": 550 }}
+      display={{ base: "none", md: "block" }}
       rounded="md"
       overflow="hidden"
       bg="gray.300"

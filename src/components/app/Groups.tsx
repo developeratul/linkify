@@ -204,7 +204,7 @@ export function Group(props: GroupProps) {
           borderStyle="dashed"
           borderColor="gray.300"
           bg="gray.100"
-          p={5}
+          p={{ base: 3, md: 5 }}
           rounded="md"
         >
           <Chakra.HStack justify="space-between" align="center" w="full">

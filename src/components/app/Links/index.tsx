@@ -32,7 +32,7 @@ export function Link(props: LinkProps) {
           {...provided.draggableProps}
           w="full"
           bg="white"
-          size="lg"
+          size={{ base: "md", md: "lg" }}
         >
           <Chakra.CardBody>
             <Chakra.VStack w="full" align="start">

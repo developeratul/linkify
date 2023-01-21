@@ -19,7 +19,7 @@ const AppPage: NextPage = (
       <AppBar />
       <Chakra.HStack w="full" align="start">
         <PreviewProvider>
-          <Chakra.Stack p={5} w="full" align="center">
+          <Chakra.Stack p={3} w="full" align="center">
             <Chakra.VStack w="full" maxW="2xl" spacing={5}>
               <CreateGroup />
               <Groups />
