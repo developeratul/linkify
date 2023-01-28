@@ -1,4 +1,5 @@
 import Groups, { CreateGroup } from "@/components/app/Groups";
+import { SEO } from "@/components/common/SEO";
 import { AppLayout } from "@/Layouts/app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
@@ -14,6 +15,10 @@ const AppPage: NextPage = (
   const { username } = props;
   return (
     <AppLayout username={username}>
+      <SEO
+        title="App"
+        description="The LinkVault editor where your page is customized"
+      />
       <Chakra.VStack w="full" maxW="2xl" spacing={5}>
         <CreateGroup />
         <Groups />

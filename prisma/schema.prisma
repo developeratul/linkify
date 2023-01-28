@@ -90,3 +90,25 @@ model Link {
     user              User    @relation(fields: [userId], references: [id])
     userId            String
 }
+
+model SocialLink {
+    id   String    @id @default(cuid())
+    type LinkTypes
+}
+
+enum LinkTypes {
+    facebook
+    instagram
+    twitter
+    linkedIn
+    youTube
+    pinterest
+    twitch
+    whatsapp
+    email
+    patreon
+    payment
+    signal
+    discord
+    other
+}

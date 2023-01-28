@@ -11,7 +11,7 @@ const AuthPage: NextPage = () => {
     await signIn(provider);
   };
   return (
-    <AuthLayout title="Welcome to LinkTree 🎉">
+    <AuthLayout title="Welcome to LinkVault 🎉">
       <Chakra.VStack spacing={3}>
         <Chakra.Button
           onClick={() => handleSignIn("github")}
