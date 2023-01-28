@@ -1,6 +1,7 @@
 import {
   IconBrandDiscord,
   IconBrandFacebook,
+  IconBrandGithub,
   IconBrandInstagram,
   IconBrandLinkedin,
   IconBrandPatreon,
@@ -14,9 +15,10 @@ import {
   IconMail,
 } from "@tabler/icons-react";
 
-const icons = {
+export const socialIcons = {
   facebook: IconBrandFacebook,
   instagram: IconBrandInstagram,
+  github: IconBrandGithub,
   twitter: IconBrandTwitter,
   linkedIn: IconBrandLinkedin,
   youTube: IconBrandYoutube,
@@ -30,8 +32,11 @@ const icons = {
   other: IconLink,
 };
 
-export function SocialIcon(props: { size?: number; name: keyof typeof icons }) {
+export function SocialIcon(props: {
+  size?: number;
+  name: keyof typeof socialIcons;
+}) {
   const { size = 24, name } = props;
-  const IconElement = icons[name];
+  const IconElement = socialIcons[name];
   return <IconElement size={size} />;
 }

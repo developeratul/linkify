@@ -1,4 +1,5 @@
-import Groups, { CreateGroup } from "@/components/app/Groups";
+import Groups from "@/components/app/Groups";
+import { SocialLinks } from "@/components/app/SocialLinks";
 import { SEO } from "@/components/common/SEO";
 import { AppLayout } from "@/Layouts/app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
@@ -19,9 +20,9 @@ const AppPage: NextPage = (
         title="App"
         description="The LinkVault editor where your page is customized"
       />
-      <Chakra.VStack w="full" maxW="2xl" spacing={5}>
-        <CreateGroup />
+      <Chakra.VStack w="full" maxW="2xl" spacing={14}>
         <Groups />
+        <SocialLinks />
       </Chakra.VStack>
     </AppLayout>
   );

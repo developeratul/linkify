@@ -285,20 +285,28 @@ export default function Groups() {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="group-droppable">
-        {(provided) => (
-          <Chakra.VStack
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            w="full"
-          >
-            {data.map((group, index) => (
-              <Group group={group} index={index} key={group.id} />
-            ))}
-            {provided.placeholder}
-          </Chakra.VStack>
-        )}
-      </Droppable>
+      <Chakra.VStack gap={5} w="full" align="start">
+        <Chakra.VStack w="full" align="start">
+          <Chakra.Heading size="md" color="purple.500" fontWeight="medium">
+            Groups
+          </Chakra.Heading>
+          <CreateGroup />
+        </Chakra.VStack>
+        <Droppable droppableId="group-droppable">
+          {(provided) => (
+            <Chakra.VStack
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              w="full"
+            >
+              {data.map((group, index) => (
+                <Group group={group} index={index} key={group.id} />
+              ))}
+              {provided.placeholder}
+            </Chakra.VStack>
+          )}
+        </Droppable>
+      </Chakra.VStack>
     </DragDropContext>
   );
 }
