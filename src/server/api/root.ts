@@ -15,7 +15,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   group: groupRouter,
   link: linkRouter,
-  sociaLink: socialLinkRouter,
+  socialLink: socialLinkRouter,
 });
 
 // export type definition of API

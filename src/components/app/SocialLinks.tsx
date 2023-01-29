@@ -1,53 +1,58 @@
 import { Icon } from "@/Icons";
-import { socialIcons } from "@/Icons/Social";
+import { SocialIcon, socialIcons } from "@/Icons/Social";
+import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SocialLink } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
+import type { OnDragEndResponder } from "react-beautiful-dnd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SectionLoader } from "../common/Loader";
 import { ErrorMessage } from "../common/Message";
 
-export function SocialLink(props: { socialLink: SocialLink; index: number }) {
-  const { socialLink, index } = props;
-  return (
-    <Draggable draggableId={socialLink.id} index={index}>
-      {(provided) => (
-        <Chakra.VStack
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          w="full"
-          spacing={5}
-          borderWidth={2}
-          borderStyle="dashed"
-          borderColor="gray.300"
-          bg="gray.100"
-          p={{ base: 3, md: 5 }}
-          rounded="md"
-        >
-          <Chakra.Heading {...provided.dragHandleProps}>
-            {socialLink.url}
-          </Chakra.Heading>
-        </Chakra.VStack>
-      )}
-    </Draggable>
-  );
-}
-
 export function SocialLinks() {
-  const { isLoading, isError, error, data } = api.sociaLink.get.useQuery();
+  const { isLoading, isError, error, data } = api.socialLink.get.useQuery();
+  const { mutateAsync } = api.socialLink.reorder.useMutation();
+  const utils = api.useContext();
+  const previewContext = usePreviewContext();
+  const toast = useToast();
 
-  const handleDragEnd = async () => {
-    //
+  const handleDragEnd: OnDragEndResponder = async (result) => {
+    try {
+      const { destination, source, draggableId } = result;
+      if (!destination) return;
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      )
+        return;
+
+      const items = data;
+      const item = items?.find((socialLink) => socialLink.id === draggableId);
+
+      if (item) {
+        items?.splice(source.index, 1);
+        items?.splice(destination.index, 0, item);
+
+        await mutateAsync({
+          newOrder: items?.map((item) => item.id) as string[],
+        });
+        await utils.socialLink.get.invalidate();
+        previewContext?.reload();
+      }
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
   };
 
   if (isLoading) return <SectionLoader />;
   if (isError) return <ErrorMessage description={error.message} />;
-  if (!data?.length) return <></>;
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -81,6 +86,49 @@ export function SocialLinks() {
   );
 }
 
+export function SocialLink(props: { socialLink: SocialLink; index: number }) {
+  const { socialLink, index } = props;
+  return (
+    <Draggable draggableId={socialLink.id} index={index}>
+      {(provided) => (
+        <Chakra.Flex
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          w="full"
+          bg="white"
+          p={5}
+          rounded="md"
+          shadow="sm"
+          justify="space-between"
+          align="center"
+        >
+          <Chakra.Flex gap={3} align="center">
+            <Chakra.IconButton
+              {...provided.dragHandleProps}
+              size="sm"
+              icon={<Icon name="Drag" />}
+              aria-label="Drag and drop social link"
+            />
+            <Chakra.HStack align="center" spacing={3}>
+              <Chakra.Text fontWeight="medium">{socialLink.url}</Chakra.Text>
+              <Chakra.Box color="gray.500">
+                <SocialIcon name={socialLink.type} size={20} />
+              </Chakra.Box>
+            </Chakra.HStack>
+          </Chakra.Flex>
+          <Chakra.Flex>
+            <Chakra.IconButton
+              colorScheme="red"
+              aria-label="Delete social link"
+              icon={<Icon name="Delete" />}
+            />
+          </Chakra.Flex>
+        </Chakra.Flex>
+      )}
+    </Draggable>
+  );
+}
+
 export const addSocialLinkSchema = z.object({
   url: z.string().url("Invalid URL"),
   type: z.enum([
@@ -109,7 +157,7 @@ export function CreateSocialLink() {
     resolver: zodResolver(addSocialLinkSchema),
   });
   const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
-  const { isLoading, mutateAsync } = api.sociaLink.create.useMutation();
+  const { isLoading, mutateAsync } = api.socialLink.create.useMutation();
   const toast = useToast();
   const utils = api.useContext();
   const closeModal = () => {

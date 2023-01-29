@@ -13,6 +13,7 @@ import {
   IconCash,
   IconLink,
   IconMail,
+  IconSignal4gPlus,
 } from "@tabler/icons-react";
 
 export const socialIcons = {
@@ -29,6 +30,7 @@ export const socialIcons = {
   patreon: IconBrandPatreon,
   payment: IconCash,
   discord: IconBrandDiscord,
+  signal: IconSignal4gPlus,
   other: IconLink,
 };
 
