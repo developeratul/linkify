@@ -68,7 +68,7 @@ export function SocialLinks() {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Chakra.VStack gap={5} w="full" align="start">
+      <Chakra.VStack gap={1} w="full" align="start">
         <Chakra.VStack w="full" align="start">
           <Chakra.Heading size="md" color="purple.500" fontWeight="medium">
             Social links
