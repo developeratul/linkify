@@ -279,7 +279,8 @@ export default function Groups() {
     return (
       <EmptyMessage
         title="No groups created"
-        description="Groups are sections where your links will be shown. Start by creating a group."
+        description="Groups are sections which will contain and display your links."
+        createButton={<CreateGroupModal />}
       />
     );
 
@@ -290,7 +291,7 @@ export default function Groups() {
           <Chakra.Heading size="md" color="purple.500" fontWeight="medium">
             Groups
           </Chakra.Heading>
-          <CreateGroup />
+          <CreateGroupModal />
         </Chakra.VStack>
         <Droppable droppableId="group-droppable">
           {(provided) => (
@@ -311,7 +312,7 @@ export default function Groups() {
   );
 }
 
-export function CreateGroup() {
+export function CreateGroupModal() {
   const previewContext = usePreviewContext();
   const { isLoading, mutateAsync } = api.group.create.useMutation();
   const utils = api.useContext();

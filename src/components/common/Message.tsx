@@ -1,7 +1,12 @@
 import * as Chakra from "@chakra-ui/react";
+import React from "react";
 
-export function EmptyMessage(props: { title: string; description: string }) {
-  const { title, description } = props;
+export function EmptyMessage(props: {
+  title: string;
+  description: string;
+  createButton?: React.ReactNode;
+}) {
+  const { title, description, createButton } = props;
   return (
     <Chakra.Box
       w="full"
@@ -12,11 +17,18 @@ export function EmptyMessage(props: { title: string; description: string }) {
       px={5}
       rounded="md"
     >
-      <Chakra.VStack margin="auto" textAlign="center" w="full" maxW="md">
-        <Chakra.Heading size="lg" fontWeight="medium">
+      <Chakra.VStack
+        margin="auto"
+        textAlign="center"
+        w="full"
+        maxW="md"
+        spacing={3}
+      >
+        <Chakra.Heading size="lg" fontWeight="medium" color="gray.500">
           {title}
         </Chakra.Heading>
-        <Chakra.Text color="GrayText">{description}</Chakra.Text>
+        <Chakra.Text color="gray.500">{description}</Chakra.Text>
+        {createButton && createButton}
       </Chakra.VStack>
     </Chakra.Box>
   );

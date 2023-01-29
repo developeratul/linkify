@@ -7,12 +7,13 @@ import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SocialLink } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
+import React from "react";
 import type { OnDragEndResponder } from "react-beautiful-dnd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SectionLoader } from "../common/Loader";
-import { ErrorMessage } from "../common/Message";
+import { EmptyMessage, ErrorMessage } from "../common/Message";
 
 export function SocialLinks() {
   const { isLoading, isError, error, data } = api.socialLink.get.useQuery();
@@ -56,6 +57,14 @@ export function SocialLinks() {
 
   if (isLoading) return <SectionLoader />;
   if (isError) return <ErrorMessage description={error.message} />;
+  if (!data?.length)
+    return (
+      <EmptyMessage
+        title="No Social Links"
+        description="You have no social links created. Click the button below to create one."
+        createButton={<AddSocialLinkModal />}
+      />
+    );
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -64,7 +73,7 @@ export function SocialLinks() {
           <Chakra.Heading size="md" color="purple.500" fontWeight="medium">
             Social links
           </Chakra.Heading>
-          <CreateSocialLink />
+          <AddSocialLinkModal />
         </Chakra.VStack>
         <Droppable droppableId="social-link-droppable">
           {(provided) => (
@@ -120,11 +129,7 @@ export function SocialLink(props: { socialLink: SocialLink; index: number }) {
             </Chakra.HStack>
           </Chakra.Flex>
           <Chakra.Flex>
-            <Chakra.IconButton
-              colorScheme="red"
-              aria-label="Delete social link"
-              icon={<Icon name="Delete" />}
-            />
+            <DeleteSocialLink socialLinkId={socialLink.id} />
           </Chakra.Flex>
         </Chakra.Flex>
       )}
@@ -155,12 +160,12 @@ export const addSocialLinkSchema = z.object({
 
 export type AddSocialLinkSchema = z.infer<typeof addSocialLinkSchema>;
 
-export function CreateSocialLink() {
+export function AddSocialLinkModal() {
   const form = useForm<AddSocialLinkSchema>({
     resolver: zodResolver(addSocialLinkSchema),
   });
   const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
-  const { isLoading, mutateAsync } = api.socialLink.create.useMutation();
+  const { isLoading, mutateAsync } = api.socialLink.add.useMutation();
   const toast = useToast();
   const utils = api.useContext();
   const closeModal = () => {
@@ -240,6 +245,71 @@ export function CreateSocialLink() {
           </Chakra.ModalFooter>
         </Chakra.ModalContent>
       </Chakra.Modal>
+    </Chakra.Box>
+  );
+}
+
+export function DeleteSocialLink(props: { socialLinkId: string }) {
+  const { socialLinkId } = props;
+  const previewContext = usePreviewContext();
+  const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
+  const cancelRef = React.useRef<HTMLButtonElement | null>(null);
+  const { isLoading, mutateAsync } = api.socialLink.delete.useMutation();
+  const toast = useToast();
+  const utils = api.useContext();
+
+  const handleClick = async () => {
+    try {
+      await mutateAsync(socialLinkId);
+      previewContext?.reload();
+      onClose();
+      await utils.socialLink.get.invalidate();
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", title: "Error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Chakra.Box>
+      <Chakra.Tooltip hasArrow label="Delete social link">
+        <Chakra.IconButton
+          onClick={onOpen}
+          colorScheme="red"
+          aria-label="Delete social link"
+          icon={<Icon name="Delete" />}
+        />
+      </Chakra.Tooltip>
+      <Chakra.AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+      >
+        <Chakra.AlertDialogOverlay />
+        <Chakra.AlertDialogContent>
+          <Chakra.AlertDialogHeader>
+            Delete Social Link?
+          </Chakra.AlertDialogHeader>
+          <Chakra.AlertDialogCloseButton />
+          <Chakra.AlertDialogBody>
+            Are you sure? This action will cause permanent data loss.
+          </Chakra.AlertDialogBody>
+          <Chakra.AlertDialogFooter>
+            <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
+              No
+            </Chakra.Button>
+            <Chakra.Button
+              isLoading={isLoading}
+              onClick={handleClick}
+              colorScheme="purple"
+            >
+              Yes
+            </Chakra.Button>
+          </Chakra.AlertDialogFooter>
+        </Chakra.AlertDialogContent>
+      </Chakra.AlertDialog>
     </Chakra.Box>
   );
 }

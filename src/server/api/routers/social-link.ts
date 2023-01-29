@@ -14,7 +14,7 @@ export const socialLinkRouter = createTRPCRouter({
     return socialLinks;
   }),
 
-  create: protectedProcedure
+  add: protectedProcedure
     .input(addSocialLinkSchema)
     .mutation(async ({ ctx, input }) => {
       const { type, url } = input;
@@ -24,6 +24,32 @@ export const socialLinkRouter = createTRPCRouter({
       });
 
       return link;
+    }),
+
+  delete: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const socialLinkId = input;
+
+      const socialLink = await ctx.prisma.socialLink.findUnique({
+        where: { id: socialLinkId },
+        select: { userId: true },
+      });
+
+      if (!socialLink) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Social link not found",
+        });
+      }
+
+      authorizeAuthor(socialLink?.userId, ctx.session.user.id);
+
+      const deletedSocialLink = await ctx.prisma.socialLink.delete({
+        where: { id: socialLinkId },
+      });
+
+      return deletedSocialLink;
     }),
 
   reorder: protectedProcedure

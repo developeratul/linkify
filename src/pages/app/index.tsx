@@ -20,7 +20,7 @@ const AppPage: NextPage = (
         title="App"
         description="The LinkVault editor where your page is customized"
       />
-      <Chakra.VStack w="full" maxW="2xl" spacing={14}>
+      <Chakra.VStack w="full" maxW="2xl" spacing={10}>
         <Groups />
         <SocialLinks />
       </Chakra.VStack>
