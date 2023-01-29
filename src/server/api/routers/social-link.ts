@@ -49,7 +49,7 @@ export const socialLinkRouter = createTRPCRouter({
 
         authorizeAuthor(socialLink.userId, ctx.session.user.id);
 
-        await ctx.prisma.link.update({
+        await ctx.prisma.socialLink.update({
           where: { id: socialLinkId },
           data: { index: newOrder.indexOf(socialLinkId) },
         });
