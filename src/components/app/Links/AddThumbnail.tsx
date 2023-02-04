@@ -62,12 +62,12 @@ export function AddThumbnail(props: { link: Link }) {
   };
 
   const handleSave = async () => {
-    if (file && url) {
-      toast({
-        status: "warning",
-        description: "Both file and url was provided at the same time",
+    if (!file && !url) return;
+    if (url && !z.string().url().safeParse(url).success) {
+      return toast({
+        status: "error",
+        description: "Invalid URL",
       });
-      return;
     }
     setLoading(true);
     try {

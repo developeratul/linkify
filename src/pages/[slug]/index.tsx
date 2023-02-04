@@ -82,7 +82,7 @@ export function SocialLinks(props: { socialLinks: SocialLink[] }) {
   );
 }
 
-const UserPage: NextPage<{ user: User }> = (
+const ProfilePage: NextPage<{ user: User }> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { user } = props;
@@ -151,7 +151,7 @@ const UserPage: NextPage<{ user: User }> = (
   );
 };
 
-export default UserPage;
+export default ProfilePage;
 
 export type User = {
   username: string;
