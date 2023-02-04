@@ -168,6 +168,7 @@ export function AddSocialLinkModal() {
   const { isLoading, mutateAsync } = api.socialLink.add.useMutation();
   const toast = useToast();
   const utils = api.useContext();
+  const previewContext = usePreviewContext();
   const closeModal = () => {
     onClose();
     form.reset();
@@ -176,6 +177,7 @@ export function AddSocialLinkModal() {
     try {
       await mutateAsync(values);
       await utils.socialLink.get.invalidate();
+      previewContext?.reload();
       closeModal();
     } catch (err) {
       if (err instanceof TRPCClientError) {

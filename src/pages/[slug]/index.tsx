@@ -12,12 +12,14 @@ import type {
 export function Link(props: { link: LinkType }) {
   const { link } = props;
   return (
-    <a
+    <Chakra.Box
+      as="a"
       target="_blank"
       referrerPolicy="no-referrer"
       className={clsx(
-        "bg-[rgba(0, 0, 0, 0.6)] flex w-full items-center rounded-md p-1 filter backdrop-blur-md"
+        "flex w-full items-center rounded-md p-1 filter backdrop-blur-md"
       )}
+      bg="blackAlpha.100"
       href={link.url}
       rel="noreferrer"
     >
@@ -34,7 +36,7 @@ export function Link(props: { link: LinkType }) {
       <p className={clsx("w-full py-3 text-center font-medium text-white")}>
         {link.text}
       </p>
-    </a>
+    </Chakra.Box>
   );
 }
 
@@ -56,6 +58,27 @@ export function Group(props: { group: GroupType }) {
         </Chakra.VStack>
       )}
     </Chakra.VStack>
+  );
+}
+
+export function SocialLinks(props: { socialLinks: SocialLink[] }) {
+  const { socialLinks } = props;
+  return (
+    <Chakra.SimpleGrid columns={{ base: 6, md: 8, lg: 10 }} spacing="1">
+      {socialLinks.map((link) => (
+        <Chakra.IconButton
+          as="a"
+          target="_blank"
+          href={link.url}
+          rel="noreferrer"
+          referrerPolicy="no-referrer"
+          colorScheme="blackAlpha"
+          icon={<SocialIcon name={link.type} />}
+          key={link.id}
+          aria-label={`${link.type} link`}
+        />
+      ))}
+    </Chakra.SimpleGrid>
   );
 }
 
@@ -81,7 +104,8 @@ const UserPage: NextPage<{ user: User }> = (
             width: 0,
           },
         }}
-        className="bg-black/75 filter backdrop-blur-3xl"
+        bg="blackAlpha.600"
+        className="filter backdrop-blur-3xl"
         py={50}
         px={5}
       >
@@ -111,6 +135,7 @@ const UserPage: NextPage<{ user: User }> = (
                   </Chakra.Text>
                 )}
               </Chakra.VStack>
+              <SocialLinks socialLinks={user.socialLinks} />
             </Chakra.VStack>
 
             {/* groups */}
@@ -134,9 +159,12 @@ export type User = {
   bio: string;
   image?: string | null;
   groups: GroupType[];
+  socialLinks: SocialLink[];
 };
 
+import { SocialIcon } from "@/Icons/Social";
 import { prisma } from "@/server/db";
+import type { SocialLink } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
   ctx
@@ -155,6 +183,11 @@ export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
       image: true,
       groups: {
         select: GroupSelections,
+        orderBy: {
+          index: "asc",
+        },
+      },
+      socialLinks: {
         orderBy: {
           index: "asc",
         },
