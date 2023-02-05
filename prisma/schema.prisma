@@ -60,6 +60,22 @@ model User {
     groups        Group[]
     links         Link[]
     socialLinks   SocialLink[]
+
+    theme               Theme               @default(LIGHT)
+    profileTitle        String?
+    seoTitle            String?
+    seoDescription      String?
+    socialIconPlacement SocialIconPlacement @default(TOP)
+}
+
+enum Theme {
+    LIGHT
+    DARK
+}
+
+enum SocialIconPlacement {
+    TOP
+    BOTTOM
 }
 
 model VerificationToken {

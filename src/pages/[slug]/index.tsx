@@ -131,7 +131,7 @@ const ProfilePage: NextPage<{ user: User }> = (
                   size="md"
                   fontWeight="medium"
                 >
-                  @{user.username}
+                  {user.profileTitle || `@${user.username}`}
                 </Chakra.Heading>
                 {user.bio && (
                   <Chakra.Text
@@ -168,6 +168,8 @@ export type User = {
   image?: string | null;
   groups: GroupType[];
   socialLinks: SocialLink[];
+
+  profileTitle?: string;
 };
 
 import { SocialIcon } from "@/Icons/Social";
@@ -189,6 +191,7 @@ export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
       name: true,
       bio: true,
       image: true,
+      profileTitle: true,
       groups: {
         select: GroupSelections,
         orderBy: {
