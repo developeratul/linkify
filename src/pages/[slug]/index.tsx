@@ -9,17 +9,44 @@ import type {
   NextPage,
 } from "next";
 
-export function Link(props: { link: LinkType }) {
-  const { link } = props;
+const colorSchemes = {
+  LIGHT: "whiteAlpha",
+  DARK: "blackAlpha",
+};
+
+const backgrounds = {
+  LIGHT: "whiteAlpha.600",
+  DARK: "blackAlpha.600",
+};
+
+const secondaryBackgrounds = {
+  LIGHT: "whiteAlpha.100",
+  DARK: "blackAlpha.100",
+};
+
+const colors = {
+  LIGHT: "black",
+  DARK: "white",
+};
+
+const secondaryColors = {
+  LIGHT: "rgba(0, 0, 0, 0.6)",
+  DARK: "rgba(255, 255, 255, 0.6)",
+};
+
+export function Link(props: { link: LinkType; theme: Theme }) {
+  const { link, theme } = props;
+  const background = secondaryBackgrounds[theme];
+  const color = colors[theme];
   return (
     <Chakra.Box
       as="a"
       target="_blank"
       referrerPolicy="no-referrer"
       className={clsx(
-        "flex w-full items-center rounded-md p-1 filter backdrop-blur-md"
+        "flex w-full transform items-center rounded-md p-1 filter backdrop-blur-md duration-75 hover:scale-105"
       )}
-      bg="blackAlpha.100"
+      bg={background}
       href={link.url}
       rel="noreferrer"
     >
@@ -33,15 +60,18 @@ export function Link(props: { link: LinkType }) {
           alt="Rock image"
         />
       )}
-      <p className={clsx("w-full py-3 text-center font-medium text-white")}>
+      <Chakra.Text
+        color={color}
+        className={clsx("w-full py-3 text-center font-medium")}
+      >
         {link.text}
-      </p>
+      </Chakra.Text>
     </Chakra.Box>
   );
 }
 
-export function Group(props: { group: GroupType }) {
-  const { group } = props;
+export function Group(props: { group: GroupType } & { theme: Theme }) {
+  const { group, theme } = props;
   if (!group.links.length) return <></>;
   return (
     <Chakra.VStack align="start" w="full" spacing={5}>
@@ -53,7 +83,7 @@ export function Group(props: { group: GroupType }) {
       {group.links.length > 0 && (
         <Chakra.VStack w="full" spacing={5}>
           {group.links.map((link) => (
-            <Link link={link} key={link.id} />
+            <Link theme={theme} link={link} key={link.id} />
           ))}
         </Chakra.VStack>
       )}
@@ -61,8 +91,13 @@ export function Group(props: { group: GroupType }) {
   );
 }
 
-export function SocialLinks(props: { socialLinks: SocialLink[] }) {
-  const { socialLinks } = props;
+export function SocialLinks(props: {
+  socialLinks: SocialLink[];
+  theme: Theme;
+}) {
+  const { socialLinks, theme } = props;
+  const colorScheme = colorSchemes[theme];
+  const color = secondaryColors[theme];
   return (
     <Chakra.Stack
       justify="center"
@@ -80,7 +115,8 @@ export function SocialLinks(props: { socialLinks: SocialLink[] }) {
           href={link.url}
           rel="noreferrer"
           referrerPolicy="no-referrer"
-          colorScheme="blackAlpha"
+          colorScheme={colorScheme}
+          color={color}
           icon={<SocialIcon name={link.type} />}
           key={link.id}
           aria-label={`${link.type} link`}
@@ -95,6 +131,11 @@ const ProfilePage: NextPage<{ user: User }> = (
 ) => {
   const { user } = props;
   const { groups } = user;
+
+  const theme = user.theme || "LIGHT";
+  const background = backgrounds[theme];
+  const color = colors[theme];
+  const secondaryColor = secondaryColors[theme];
   return (
     <Chakra.Box
       w="full"
@@ -112,7 +153,7 @@ const ProfilePage: NextPage<{ user: User }> = (
             width: 0,
           },
         }}
-        bg="blackAlpha.600"
+        bg={background}
         className="filter backdrop-blur-3xl"
         py={50}
         px={5}
@@ -126,30 +167,26 @@ const ProfilePage: NextPage<{ user: User }> = (
                 size="xl"
               />
               <Chakra.VStack>
-                <Chakra.Heading
-                  className="text-white"
-                  size="md"
-                  fontWeight="medium"
-                >
+                <Chakra.Heading color={color} size="md" fontWeight="medium">
                   {user.profileTitle || `@${user.username}`}
                 </Chakra.Heading>
                 {user.bio && (
                   <Chakra.Text
                     whiteSpace="pre-wrap"
-                    color="rgba(255, 255, 255, 0.6)"
+                    color={secondaryColor}
                     fontWeight="medium"
                   >
                     {user.bio}
                   </Chakra.Text>
                 )}
               </Chakra.VStack>
-              <SocialLinks socialLinks={user.socialLinks} />
+              <SocialLinks theme={theme} socialLinks={user.socialLinks} />
             </Chakra.VStack>
 
             {/* groups */}
             <Chakra.VStack w="full" spacing={10}>
               {groups.map((group) => (
-                <Group group={group} key={group.id} />
+                <Group theme={theme} group={group} key={group.id} />
               ))}
             </Chakra.VStack>
           </Chakra.VStack>
@@ -170,11 +207,12 @@ export type User = {
   socialLinks: SocialLink[];
 
   profileTitle?: string;
+  theme?: Theme;
 };
 
 import { SocialIcon } from "@/Icons/Social";
 import { prisma } from "@/server/db";
-import type { SocialLink } from "@prisma/client";
+import type { SocialLink, Theme } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
   ctx
@@ -192,6 +230,7 @@ export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
       bio: true,
       image: true,
       profileTitle: true,
+      theme: true,
       groups: {
         select: GroupSelections,
         orderBy: {
