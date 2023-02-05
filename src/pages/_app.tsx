@@ -2,6 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
+import ProgressBar from "nextjs-progressbar";
 
 import { RootLayout } from "@/Layouts/root";
 import { theme } from "@/styles/theme";
@@ -28,6 +29,7 @@ const MyApp = ({
   return (
     <SessionProvider session={session}>
       <ChakraProvider resetCSS theme={theme}>
+        <ProgressBar color="#805AD5" />
         <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
       </ChakraProvider>
     </SessionProvider>
