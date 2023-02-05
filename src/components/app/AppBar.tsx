@@ -18,7 +18,7 @@ function LinkButton(
       variant="ghost"
       colorScheme={isActive ? "purple" : "gray"}
       leftIcon={icon}
-      w="full"
+      w={{ base: "full", md: "auto" }}
     >
       {children}
     </Chakra.Button>
@@ -52,7 +52,7 @@ export default function AppBar() {
             </Chakra.Show>
             <Chakra.Show below="md">
               <Chakra.Menu>
-                <Chakra.MenuButton>
+                <Chakra.MenuButton as="div">
                   <Chakra.IconButton
                     icon={<Icon name="Menu" />}
                     aria-label="Links"
