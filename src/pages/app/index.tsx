@@ -2,20 +2,14 @@ import Groups from "@/components/app/Groups";
 import { SocialLinks } from "@/components/app/SocialLinks";
 import { SEO } from "@/components/common/SEO";
 import { AppLayout } from "@/Layouts/app";
+import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
-import type {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
+import type { GetServerSideProps } from "next";
 
-const AppPage: NextPage = (
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
-) => {
-  const { username } = props;
+const AppPage: NextPageWithLayout = () => {
   return (
-    <AppLayout username={username}>
+    <>
       <SEO
         title="App"
         description="The LinkVault editor where your page is customized"
@@ -24,11 +18,14 @@ const AppPage: NextPage = (
         <Groups />
         <SocialLinks />
       </Chakra.VStack>
-    </AppLayout>
+    </>
   );
 };
 
 export default AppPage;
+AppPage.getLayout = (page) => {
+  return <AppLayout>{page}</AppLayout>;
+};
 export const getServerSideProps: GetServerSideProps = requireAuth(
   async (ctx) => {
     const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });

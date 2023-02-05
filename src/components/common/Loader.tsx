@@ -1,10 +1,10 @@
-import { Spinner, VStack } from "@chakra-ui/react";
+import { Center, Spinner, VStack } from "@chakra-ui/react";
 
 export default function Loader() {
   return (
-    <VStack align="center">
+    <Center w="full" h="full">
       <Spinner />
-    </VStack>
+    </Center>
   );
 }
 

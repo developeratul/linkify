@@ -5,9 +5,13 @@ import {
   Github,
   GripVertical,
   ImageIcon,
+  LayoutTemplate,
+  Link,
+  LogOut,
   Pencil,
   Plus,
   Save,
+  Settings,
   Share2,
   Trash,
 } from "lucide-react";
@@ -24,6 +28,10 @@ export const icons = {
   Save: Save,
   Drag: GripVertical,
   Preview: Eye,
+  Link: Link,
+  Appearance: LayoutTemplate,
+  Settings: Settings,
+  Logout: LogOut,
 };
 
 export function Icon(props: { size?: number; name: keyof typeof icons }) {

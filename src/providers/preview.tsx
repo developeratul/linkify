@@ -1,25 +1,27 @@
+import Loader from "@/components/common/Loader";
 import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
 import * as Chakra from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
 import React from "react";
 
 export type PreviewContextState = {
   ref: React.MutableRefObject<HTMLIFrameElement | null>;
   reload: () => void;
   username: string;
+  isLoading: boolean;
 };
 
 export const PreviewContext = React.createContext<
   PreviewContextState | undefined
 >(undefined);
 
-export type PreviewProviderProps = AppProps & {
-  username: string;
-};
+export type PreviewProviderProps = AppProps;
 
 export function PreviewProvider(props: PreviewProviderProps) {
-  const { children, username } = props;
+  const { children } = props;
   const previewRef = React.useRef<HTMLIFrameElement | null>(null);
+  const { data, status } = useSession();
 
   const reloadPreview = () => {
     const iframe = previewRef.current;
@@ -32,7 +34,8 @@ export function PreviewProvider(props: PreviewProviderProps) {
   const values: PreviewContextState = {
     ref: previewRef,
     reload: reloadPreview,
-    username,
+    username: data?.user?.username as string,
+    isLoading: status === "loading",
   };
 
   return (
@@ -51,7 +54,7 @@ export function PreviewDrawer() {
   const previewContext = usePreviewContext();
   if (previewContext === undefined) return <></>;
 
-  const { ref, username } = previewContext;
+  const { ref, username, isLoading } = previewContext;
 
   return (
     <Chakra.Box
@@ -80,11 +83,15 @@ export function PreviewDrawer() {
           <Chakra.DrawerCloseButton />
           <Chakra.DrawerHeader>Preview</Chakra.DrawerHeader>
           <Chakra.DrawerBody p={1}>
-            <iframe
-              src={`/${username}`}
-              ref={ref}
-              className="mx-auto h-full w-full max-w-md rounded-md"
-            />
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <iframe
+                src={`/${username}`}
+                ref={ref}
+                className="mx-auto h-full w-full max-w-md rounded-md"
+              />
+            )}
           </Chakra.DrawerBody>
         </Chakra.DrawerContent>
       </Chakra.Drawer>
@@ -96,7 +103,7 @@ export function PreviewPanel() {
   const previewContext = usePreviewContext();
   if (previewContext === undefined) return <></>;
 
-  const { ref, username } = previewContext;
+  const { ref, username, isLoading } = previewContext;
 
   return (
     <Chakra.VStack
@@ -111,7 +118,11 @@ export function PreviewPanel() {
       overflow="hidden"
       bg="gray.300"
     >
-      <iframe className="h-full w-full" src={`/${username}`} ref={ref} />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <iframe className="h-full w-full" src={`/${username}`} ref={ref} />
+      )}
     </Chakra.VStack>
   );
 }

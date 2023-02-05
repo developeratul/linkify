@@ -64,7 +64,15 @@ export function Group(props: { group: GroupType }) {
 export function SocialLinks(props: { socialLinks: SocialLink[] }) {
   const { socialLinks } = props;
   return (
-    <Chakra.SimpleGrid columns={{ base: 6, md: 8, lg: 10 }} spacing="1">
+    <Chakra.Stack
+      justify="center"
+      align="center"
+      w="full"
+      direction="row"
+      spacing="2"
+      rowGap={2}
+      wrap="wrap"
+    >
       {socialLinks.map((link) => (
         <Chakra.IconButton
           as="a"
@@ -78,7 +86,7 @@ export function SocialLinks(props: { socialLinks: SocialLink[] }) {
           aria-label={`${link.type} link`}
         />
       ))}
-    </Chakra.SimpleGrid>
+    </Chakra.Stack>
   );
 }
 
