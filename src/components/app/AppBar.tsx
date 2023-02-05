@@ -18,6 +18,7 @@ function LinkButton(
       variant="ghost"
       colorScheme={isActive ? "purple" : "gray"}
       leftIcon={icon}
+      w="full"
     >
       {children}
     </Chakra.Button>
@@ -25,44 +26,50 @@ function LinkButton(
 }
 
 export default function AppBar() {
+  const links = (
+    <>
+      <LinkButton to="/app" icon={<Icon name="Link" />}>
+        Links
+      </LinkButton>
+      <LinkButton to="/app/appearance" icon={<Icon name="Appearance" />}>
+        Appearance
+      </LinkButton>
+      <LinkButton to="/app/settings" icon={<Icon name="Settings" />}>
+        Settings
+      </LinkButton>
+    </>
+  );
   return (
     <Chakra.Box zIndex="sticky" p={3} className="sticky top-0 left-0 h-24">
       <Chakra.Card bg="white" size="sm" px={5} rounded="full" height="full">
         <Chakra.CardBody className="flex items-center justify-between">
-          <Chakra.HStack spacing="10">
+          <Chakra.HStack spacing={{ base: "2", sm: "10" }}>
             <Chakra.Box>
               <Chakra.Heading size="md">LOGO</Chakra.Heading>
             </Chakra.Box>
-            <Chakra.HStack>
-              <LinkButton to="/app" icon={<Icon name="Link" />}>
-                Links
-              </LinkButton>
-              <LinkButton
-                to="/app/appearance"
-                icon={<Icon name="Appearance" />}
-              >
-                Appearance
-              </LinkButton>
-              <LinkButton to="/app/settings" icon={<Icon name="Settings" />}>
-                Settings
-              </LinkButton>
-            </Chakra.HStack>
+            <Chakra.Show above="md">
+              <Chakra.HStack>{links}</Chakra.HStack>
+            </Chakra.Show>
+            <Chakra.Show below="md">
+              <Chakra.Menu>
+                <Chakra.MenuButton>
+                  <Chakra.IconButton
+                    icon={<Icon name="Menu" />}
+                    aria-label="Links"
+                  />
+                </Chakra.MenuButton>
+                <Chakra.MenuList>
+                  <Chakra.VStack align="start">{links}</Chakra.VStack>
+                </Chakra.MenuList>
+              </Chakra.Menu>
+            </Chakra.Show>
           </Chakra.HStack>
           <Chakra.HStack align="center" spacing={5}>
-            <ShareMenu />
             <AppMenu />
           </Chakra.HStack>
         </Chakra.CardBody>
       </Chakra.Card>
     </Chakra.Box>
-  );
-}
-
-export function ShareMenu() {
-  return (
-    <Chakra.Button rounded="full" leftIcon={<Icon name="Share" />}>
-      Share
-    </Chakra.Button>
   );
 }
 

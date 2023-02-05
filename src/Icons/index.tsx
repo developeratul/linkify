@@ -8,6 +8,7 @@ import {
   LayoutTemplate,
   Link,
   LogOut,
+  Menu,
   Pencil,
   Plus,
   Save,
@@ -32,6 +33,7 @@ export const icons = {
   Appearance: LayoutTemplate,
   Settings: Settings,
   Logout: LogOut,
+  Menu: Menu,
 };
 
 export function Icon(props: { size?: number; name: keyof typeof icons }) {
