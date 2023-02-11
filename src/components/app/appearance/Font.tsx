@@ -41,7 +41,7 @@ export function Font() {
       </Chakra.Heading>
       <Chakra.Card w="full" size="lg" bg="white">
         <Chakra.CardBody>
-          <Chakra.HStack {...group}>
+          <Chakra.HStack flexWrap="wrap" {...group}>
             {(
               Object.keys(fonts) as [
                 "body",

@@ -153,6 +153,7 @@ const ProfilePage: NextPage<{ user: User }> = (
       overflow="hidden"
       fontFamily={font}
     >
+      <SEO title={user.seoTitle} description={user.seoDescription} />
       <Chakra.VStack
         w="full"
         h="full"
@@ -194,7 +195,9 @@ const ProfilePage: NextPage<{ user: User }> = (
                   </Chakra.Text>
                 )}
               </Chakra.VStack>
-              <SocialLinks theme={theme} socialLinks={user.socialLinks} />
+              {user.socialIconPlacement === "TOP" && (
+                <SocialLinks theme={theme} socialLinks={user.socialLinks} />
+              )}
             </Chakra.VStack>
 
             {/* groups */}
@@ -208,6 +211,9 @@ const ProfilePage: NextPage<{ user: User }> = (
                 />
               ))}
             </Chakra.VStack>
+            {user.socialIconPlacement === "BOTTOM" && (
+              <SocialLinks theme={theme} socialLinks={user.socialLinks} />
+            )}
           </Chakra.VStack>
         </Chakra.Box>
       </Chakra.VStack>
@@ -228,11 +234,20 @@ export type User = {
   profileTitle?: string;
   theme?: Theme;
   font?: Font;
+  seoTitle?: string;
+  seoDescription?: string;
+  socialIconPlacement?: SocialIconPlacement;
 };
 
+import { SEO } from "@/components/common/SEO";
 import { SocialIcon } from "@/Icons/Social";
 import { prisma } from "@/server/db";
-import type { Font, SocialLink, Theme } from "@prisma/client";
+import type {
+  Font,
+  SocialIconPlacement,
+  SocialLink,
+  Theme,
+} from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
   ctx
@@ -252,6 +267,9 @@ export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
       profileTitle: true,
       theme: true,
       font: true,
+      seoTitle: true,
+      seoDescription: true,
+      socialIconPlacement: true,
       groups: {
         select: GroupSelections,
         orderBy: {
