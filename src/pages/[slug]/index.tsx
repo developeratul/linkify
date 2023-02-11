@@ -70,13 +70,20 @@ export function Link(props: { link: LinkType; theme: Theme }) {
   );
 }
 
-export function Group(props: { group: GroupType } & { theme: Theme }) {
-  const { group, theme } = props;
+export function Group(
+  props: { group: GroupType } & { theme: Theme; font: Font }
+) {
+  const { group, theme, font } = props;
   if (!group.links.length) return <></>;
   return (
     <Chakra.VStack align="start" w="full" spacing={5}>
       {group.name && (
-        <Chakra.Heading size="md" color="white" fontWeight="normal">
+        <Chakra.Heading
+          fontFamily={font}
+          size="md"
+          color={colors[theme]}
+          fontWeight="normal"
+        >
           {group.name}
         </Chakra.Heading>
       )}
@@ -133,6 +140,7 @@ const ProfilePage: NextPage<{ user: User }> = (
   const { groups } = user;
 
   const theme = user.theme || "LIGHT";
+  const font = (user.font || "body").replace("_", "-");
   const background = backgrounds[theme];
   const color = colors[theme];
   const secondaryColor = secondaryColors[theme];
@@ -143,6 +151,7 @@ const ProfilePage: NextPage<{ user: User }> = (
       bgImage={user.image || ""}
       className={clsx(`bg-cover bg-fixed bg-center bg-no-repeat`)}
       overflow="hidden"
+      fontFamily={font}
     >
       <Chakra.VStack
         w="full"
@@ -167,7 +176,12 @@ const ProfilePage: NextPage<{ user: User }> = (
                 size="xl"
               />
               <Chakra.VStack>
-                <Chakra.Heading color={color} size="md" fontWeight="medium">
+                <Chakra.Heading
+                  fontFamily={font}
+                  color={color}
+                  size="md"
+                  fontWeight="medium"
+                >
                   {user.profileTitle || `@${user.username}`}
                 </Chakra.Heading>
                 {user.bio && (
@@ -186,7 +200,12 @@ const ProfilePage: NextPage<{ user: User }> = (
             {/* groups */}
             <Chakra.VStack w="full" spacing={10}>
               {groups.map((group) => (
-                <Group theme={theme} group={group} key={group.id} />
+                <Group
+                  font={font as Font}
+                  theme={theme}
+                  group={group}
+                  key={group.id}
+                />
               ))}
             </Chakra.VStack>
           </Chakra.VStack>
@@ -208,11 +227,12 @@ export type User = {
 
   profileTitle?: string;
   theme?: Theme;
+  font?: Font;
 };
 
 import { SocialIcon } from "@/Icons/Social";
 import { prisma } from "@/server/db";
-import type { SocialLink, Theme } from "@prisma/client";
+import type { Font, SocialLink, Theme } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
   ctx
@@ -231,6 +251,7 @@ export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
       image: true,
       profileTitle: true,
       theme: true,
+      font: true,
       groups: {
         select: GroupSelections,
         orderBy: {

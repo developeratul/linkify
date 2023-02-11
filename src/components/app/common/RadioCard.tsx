@@ -16,11 +16,11 @@ export function RadioCard(props: RadioCardProps) {
       <Chakra.Box
         {...checkbox}
         cursor="pointer"
+        userSelect="none"
         borderWidth={3}
         rounded="lg"
         borderColor="transparent"
         _checked={{
-          color: "white",
           borderColor: "purple.500",
         }}
         _focus={{

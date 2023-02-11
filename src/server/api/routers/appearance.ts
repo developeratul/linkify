@@ -45,9 +45,34 @@ const appearanceRouter = createTRPCRouter({
       const user = await ctx.prisma.user.update({
         where: { id: ctx.session.user.id },
         data: { theme: updatedTheme },
+        select: { theme: true },
       });
 
       return user.theme;
+    }),
+
+  getFont: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: { font: true },
+    });
+    return user?.font;
+  }),
+
+  updateFont: protectedProcedure
+    .input(
+      z.enum(["body", "serif", "sans_serif", "monospace", "cursive", "fantasy"])
+    )
+    .mutation(async ({ input, ctx }) => {
+      const updatedFont = input;
+
+      const user = await ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: { font: updatedFont },
+        select: { font: true },
+      });
+
+      return user.font;
     }),
 });
 

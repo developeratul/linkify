@@ -1,3 +1,4 @@
+import { Font } from "@/components/app/appearance/Font";
 import { Profile } from "@/components/app/appearance/Profile";
 import { Theme } from "@/components/app/appearance/Theme";
 import { AppLayout } from "@/Layouts/app";
@@ -9,6 +10,7 @@ const AppearancePage: NextPageWithLayout = () => {
     <Chakra.VStack w="full" maxW="2xl" spacing="10">
       <Profile />
       <Theme />
+      <Font />
     </Chakra.VStack>
   );
 };

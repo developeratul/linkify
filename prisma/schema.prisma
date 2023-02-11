@@ -62,6 +62,7 @@ model User {
     socialLinks   SocialLink[]
 
     theme               Theme               @default(LIGHT)
+    font                Font                @default(body)
     profileTitle        String?
     seoTitle            String?
     seoDescription      String?
@@ -71,6 +72,15 @@ model User {
 enum Theme {
     LIGHT
     DARK
+}
+
+enum Font {
+    body
+    serif
+    sans_serif
+    monospace
+    cursive
+    fantasy
 }
 
 enum SocialIconPlacement {
