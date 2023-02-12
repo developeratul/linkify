@@ -5,6 +5,7 @@ import { useToast } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import React from "react";
 import { Conditional } from "../common/Conditional";
 
 function LinkButton(
@@ -100,12 +101,18 @@ export function AppMenu() {
 
 export function SharePopover() {
   const { status, data } = useSession();
-  const link = `${window.origin}/${data?.user?.username}`;
+  const [link, setLink] = React.useState("");
   const toast = useToast();
+
   const handleCopy = () => {
     navigator.clipboard.writeText(link);
     toast({ status: "info", description: "Linked copied!" });
   };
+
+  React.useEffect(() => {
+    setLink(`${window.origin}/${data?.user?.username}`);
+  }, [data]);
+
   return (
     <Conditional
       condition={status === "authenticated"}
