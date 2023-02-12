@@ -1,7 +1,7 @@
+import { IconBrandGoogle } from "@tabler/icons-react";
 import {
   Edit,
   Eye,
-  Facebook,
   Github,
   GripVertical,
   ImageIcon,
@@ -19,7 +19,7 @@ import {
 
 export const icons = {
   Github: Github,
-  Google: Facebook,
+  Google: IconBrandGoogle,
   Share: Share2,
   Create: Pencil,
   Add: Plus,

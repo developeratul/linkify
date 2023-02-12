@@ -25,6 +25,7 @@ const AuthPage: NextPage = () => {
           leftIcon={<Icon name="Google" />}
           w="full"
           colorScheme="purple"
+          onClick={() => handleSignIn("google")}
         >
           Sign in with Google
         </Chakra.Button>
