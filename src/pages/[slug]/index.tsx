@@ -148,7 +148,7 @@ const ProfilePage: NextPage<{ user: User }> = (
     <Chakra.Box
       w="full"
       h="full"
-      bgImage={user.image || ""}
+      bgImage={user.backgroundImage || user.image || ""}
       className={clsx(`bg-cover bg-fixed bg-center bg-no-repeat`)}
       overflow="hidden"
       fontFamily={font}
@@ -228,6 +228,7 @@ export type User = {
   name?: string | null;
   bio: string;
   image?: string | null;
+  backgroundImage?: string;
   groups: GroupType[];
   socialLinks: SocialLink[];
 
@@ -264,6 +265,7 @@ export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
       name: true,
       bio: true,
       image: true,
+      backgroundImage: true,
       profileTitle: true,
       theme: true,
       font: true,

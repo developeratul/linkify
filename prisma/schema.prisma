@@ -61,12 +61,14 @@ model User {
     links         Link[]
     socialLinks   SocialLink[]
 
-    theme               Theme               @default(LIGHT)
-    font                Font                @default(body)
-    profileTitle        String?
-    seoTitle            String?
-    seoDescription      String?
-    socialIconPlacement SocialIconPlacement @default(TOP)
+    theme                   Theme               @default(LIGHT)
+    font                    Font                @default(body)
+    backgroundImage         String?
+    backgroundImagePublicId String?
+    profileTitle            String?
+    seoTitle                String?
+    seoDescription          String?
+    socialIconPlacement     SocialIconPlacement @default(TOP)
 }
 
 enum Theme {

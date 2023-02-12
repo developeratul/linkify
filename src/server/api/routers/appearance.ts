@@ -1,4 +1,6 @@
 import { updateProfileSchema } from "@/components/app/appearance/Profile";
+import cloudinary from "@/utils/cloudinary";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -73,6 +75,45 @@ const appearanceRouter = createTRPCRouter({
       });
 
       return user.font;
+    }),
+
+  getBackgroundImage: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: { backgroundImage: true, image: true },
+    });
+    return user?.backgroundImage || user?.image;
+  }),
+
+  updateBackgroundImage: protectedProcedure
+    .input(
+      z.object({
+        url: z.string(),
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, url } = input;
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.session.user.id },
+        select: { backgroundImage: true, backgroundImagePublicId: true },
+      });
+
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const { backgroundImage, backgroundImagePublicId } = user;
+
+      if (backgroundImage && backgroundImagePublicId) {
+        await cloudinary.uploader.destroy(backgroundImagePublicId);
+      }
+
+      await ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: { backgroundImage: url, backgroundImagePublicId: id },
+      });
+
+      return;
     }),
 });
 
