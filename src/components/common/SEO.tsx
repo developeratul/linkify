@@ -9,7 +9,7 @@ export function SEO(props: SeoProps) {
   const { title, description } = props;
   return (
     <Head>
-      <title>{`LinkVault${title ? ` / ${title}` : null}`}</title>
+      <title>{`LinkVault${title ? ` / ${title}` : ""}`}</title>
       {description && <meta name="description" content={description} />}
     </Head>
   );
