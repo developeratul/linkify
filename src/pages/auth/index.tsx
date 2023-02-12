@@ -1,3 +1,4 @@
+import { SEO } from "@/components/common/SEO";
 import { Icon } from "@/Icons";
 import { AuthLayout } from "@/Layouts/auth";
 import { redirectAuth } from "@/server/auth";
@@ -12,6 +13,10 @@ const AuthPage: NextPage = () => {
   };
   return (
     <AuthLayout title="Welcome to LinkVault 🎉">
+      <SEO
+        title="Sign in"
+        description="Sign into LinkVault to start setting up your tree!"
+      />
       <Chakra.VStack spacing={3}>
         <Chakra.Button
           onClick={() => handleSignIn("github")}

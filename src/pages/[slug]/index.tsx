@@ -8,6 +8,7 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import NextLink from "next/link";
 
 const colorSchemes = {
   LIGHT: "whiteAlpha",
@@ -82,7 +83,7 @@ export function Group(
           fontFamily={font}
           size="md"
           color={colors[theme]}
-          fontWeight="normal"
+          fontWeight="medium"
         >
           {group.name}
         </Chakra.Heading>
@@ -214,6 +215,30 @@ const ProfilePage: NextPage<{ user: User }> = (
             {user.socialIconPlacement === "BOTTOM" && (
               <SocialLinks theme={theme} socialLinks={user.socialLinks} />
             )}
+            <NextLink href="/">
+              <Chakra.HStack spacing="5">
+                <Chakra.Text
+                  fontFamily="cursive"
+                  color={color}
+                  fontWeight="medium"
+                  fontSize="2xl"
+                >
+                  Made with
+                </Chakra.Text>
+                <Chakra.Box
+                  bg={user.theme === "DARK" ? "black" : "white"}
+                  p={5}
+                  rounded="lg"
+                >
+                  <Image
+                    src="/logo.png"
+                    alt="LinkVault logo"
+                    width={100}
+                    height={20}
+                  />
+                </Chakra.Box>
+              </Chakra.HStack>
+            </NextLink>
           </Chakra.VStack>
         </Chakra.Box>
       </Chakra.VStack>
@@ -249,6 +274,7 @@ import type {
   SocialLink,
   Theme,
 } from "@prisma/client";
+import Image from "next/image";
 
 export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
   ctx

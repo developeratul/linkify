@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { Conditional } from "../common/Conditional";
+import Logo from "../common/Logo";
 
 function LinkButton(
   props: AppProps & { icon: React.ReactElement; to: string }
@@ -48,7 +49,7 @@ export default function AppBar() {
         <Chakra.CardBody className="flex items-center justify-between">
           <Chakra.HStack spacing={{ base: "2", sm: "10" }}>
             <Chakra.Box>
-              <Chakra.Heading size="md">LOGO</Chakra.Heading>
+              <Logo />
             </Chakra.Box>
             <Chakra.Show above="md">
               <Chakra.HStack>{links}</Chakra.HStack>
@@ -114,51 +115,53 @@ export function SharePopover() {
   }, [data]);
 
   return (
-    <Conditional
-      condition={status === "authenticated"}
-      component={
-        <Chakra.Popover strategy="fixed">
-          <Chakra.PopoverTrigger>
-            <Chakra.Button
-              variant="outline"
-              rounded="full"
-              leftIcon={<Icon name="Share" />}
-            >
-              Share
-            </Chakra.Button>
-          </Chakra.PopoverTrigger>
-          <Chakra.PopoverContent>
-            <Chakra.PopoverArrow />
-            <Chakra.PopoverBody>
-              <Chakra.VStack spacing="3">
-                <Chakra.Text>
-                  Once you have finished setting up your tree, you can now share
-                  this link on media platforms!
-                </Chakra.Text>
-                <Chakra.InputGroup size="md">
-                  <Chakra.Input
-                    fontSize="sm"
-                    pr="4.5rem"
-                    value={link}
-                    readOnly
-                  />
-                  <Chakra.InputRightElement width="4.5rem">
-                    <Chakra.Button
-                      onClick={handleCopy}
-                      colorScheme="blue"
-                      h="1.75rem"
-                      size="xs"
-                    >
-                      Copy
-                    </Chakra.Button>
-                  </Chakra.InputRightElement>
-                </Chakra.InputGroup>
-              </Chakra.VStack>
-            </Chakra.PopoverBody>
-          </Chakra.PopoverContent>
-        </Chakra.Popover>
-      }
-      fallback={<></>}
-    />
+    <Chakra.Show above="md">
+      <Conditional
+        condition={status === "authenticated"}
+        component={
+          <Chakra.Popover strategy="fixed">
+            <Chakra.PopoverTrigger>
+              <Chakra.Button
+                variant="outline"
+                rounded="full"
+                leftIcon={<Icon name="Share" />}
+              >
+                Share
+              </Chakra.Button>
+            </Chakra.PopoverTrigger>
+            <Chakra.PopoverContent>
+              <Chakra.PopoverArrow />
+              <Chakra.PopoverBody>
+                <Chakra.VStack spacing="3">
+                  <Chakra.Text>
+                    Once you have finished setting up your tree, you can now
+                    share this link on media platforms!
+                  </Chakra.Text>
+                  <Chakra.InputGroup size="md">
+                    <Chakra.Input
+                      fontSize="sm"
+                      pr="4.5rem"
+                      value={link}
+                      readOnly
+                    />
+                    <Chakra.InputRightElement width="4.5rem">
+                      <Chakra.Button
+                        onClick={handleCopy}
+                        colorScheme="blue"
+                        h="1.75rem"
+                        size="xs"
+                      >
+                        Copy
+                      </Chakra.Button>
+                    </Chakra.InputRightElement>
+                  </Chakra.InputGroup>
+                </Chakra.VStack>
+              </Chakra.PopoverBody>
+            </Chakra.PopoverContent>
+          </Chakra.Popover>
+        }
+        fallback={<></>}
+      />
+    </Chakra.Show>
   );
 }
