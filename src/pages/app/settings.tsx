@@ -42,7 +42,6 @@ const SettingsPage: NextPageWithLayout<{ settings: Settings }> = (
       previewContext?.reload();
       toast({ status: "success", description: data.message });
     } catch (err) {
-      console.log({ err });
     } finally {
       setProcessing(false);
     }

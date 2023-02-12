@@ -39,12 +39,9 @@ export function SocialLinks() {
         items?.splice(source.index, 1);
         items?.splice(destination.index, 0, item);
 
-        console.log({ items });
-
         const data = await mutateAsync({
           newOrder: items?.map((item) => item.id) as string[],
         });
-        console.log({ data });
         await utils.socialLink.get.invalidate();
         previewContext?.reload();
       }

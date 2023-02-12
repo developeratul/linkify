@@ -1,9 +1,11 @@
 import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
 import * as Chakra from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Conditional } from "../common/Conditional";
 
 function LinkButton(
   props: AppProps & { icon: React.ReactElement; to: string }
@@ -65,6 +67,7 @@ export default function AppBar() {
             </Chakra.Show>
           </Chakra.HStack>
           <Chakra.HStack align="center" spacing={5}>
+            <SharePopover />
             <AppMenu />
           </Chakra.HStack>
         </Chakra.CardBody>
@@ -92,5 +95,63 @@ export function AppMenu() {
         </Chakra.MenuItem>
       </Chakra.MenuList>
     </Chakra.Menu>
+  );
+}
+
+export function SharePopover() {
+  const { status, data } = useSession();
+  const link = `${window.origin}/${data?.user?.username}`;
+  const toast = useToast();
+  const handleCopy = () => {
+    navigator.clipboard.writeText(link);
+    toast({ status: "info", description: "Linked copied!" });
+  };
+  return (
+    <Conditional
+      condition={status === "authenticated"}
+      component={
+        <Chakra.Popover strategy="fixed">
+          <Chakra.PopoverTrigger>
+            <Chakra.Button
+              variant="outline"
+              rounded="full"
+              leftIcon={<Icon name="Share" />}
+            >
+              Share
+            </Chakra.Button>
+          </Chakra.PopoverTrigger>
+          <Chakra.PopoverContent>
+            <Chakra.PopoverArrow />
+            <Chakra.PopoverBody>
+              <Chakra.VStack spacing="3">
+                <Chakra.Text>
+                  Once you have finished setting up your tree, you can now share
+                  this link on media platforms!
+                </Chakra.Text>
+                <Chakra.InputGroup size="md">
+                  <Chakra.Input
+                    fontSize="sm"
+                    pr="4.5rem"
+                    value={link}
+                    readOnly
+                  />
+                  <Chakra.InputRightElement width="4.5rem">
+                    <Chakra.Button
+                      onClick={handleCopy}
+                      colorScheme="blue"
+                      h="1.75rem"
+                      size="xs"
+                    >
+                      Copy
+                    </Chakra.Button>
+                  </Chakra.InputRightElement>
+                </Chakra.InputGroup>
+              </Chakra.VStack>
+            </Chakra.PopoverBody>
+          </Chakra.PopoverContent>
+        </Chakra.Popover>
+      }
+      fallback={<></>}
+    />
   );
 }
