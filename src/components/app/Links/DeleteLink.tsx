@@ -34,6 +34,7 @@ export function DeleteLink(props: { linkId: string }) {
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
+          variant="ghost"
           icon={<Icon name="Delete" />}
           aria-label="Delete link"
         />

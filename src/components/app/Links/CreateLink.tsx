@@ -49,8 +49,9 @@ export function CreateLinkModal(props: { groupId: string }) {
       <Chakra.Button
         onClick={onOpen}
         w="full"
-        colorScheme="blue"
+        colorScheme="purple"
         leftIcon={<Icon name="Add" />}
+        variant="outline"
       >
         Add new link
       </Chakra.Button>

@@ -6,7 +6,6 @@ export const theme = extendTheme({
     "sans-serif": "Noto Sans",
     monospace: "Space Mono",
     cursive: "Caveat",
-    fantasy: "fantasy",
   },
   colors: {
     purple: {

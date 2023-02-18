@@ -34,7 +34,7 @@ const MyApp = ({
   return (
     <SessionProvider session={session}>
       <ChakraProvider resetCSS theme={theme}>
-        <ProgressBar color="#805AD5" />
+        <ProgressBar color="#7559FF" />
         <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
       </ChakraProvider>
     </SessionProvider>

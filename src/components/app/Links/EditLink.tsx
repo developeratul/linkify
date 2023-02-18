@@ -57,6 +57,7 @@ export function EditLink(props: { link: Link }) {
           ref={btnRef}
           onClick={onOpen}
           colorScheme="blue"
+          variant="ghost"
           aria-label="Edit Link"
           icon={<Icon name="Edit" />}
         />

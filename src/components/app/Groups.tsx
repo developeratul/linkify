@@ -51,6 +51,7 @@ export function DeleteGroup(props: { groupId: string }) {
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
+          variant="outline"
           icon={<Icon name="Delete" />}
           aria-label="Delete group"
         />
@@ -133,6 +134,7 @@ export function EditGroup(props: { group: Group }) {
         <Chakra.IconButton
           isLoading={isLoading}
           ref={btnRef}
+          variant="outline"
           onClick={onOpen}
           colorScheme="blue"
           aria-label="Edit Group"
@@ -202,8 +204,8 @@ export function Group(props: GroupProps) {
           spacing={5}
           borderWidth={2}
           borderStyle="dashed"
-          borderColor="gray.300"
-          bg="gray.100"
+          borderColor="purple.300"
+          bg="purple.100"
           p={{ base: 3, md: 5 }}
           rounded="md"
         >
@@ -213,6 +215,8 @@ export function Group(props: GroupProps) {
                 <Chakra.IconButton
                   {...provided.dragHandleProps}
                   cursor="inherit"
+                  colorScheme="purple"
+                  variant="ghost"
                   aria-label="Drag group"
                   icon={<Icon name="Drag" />}
                   size="sm"

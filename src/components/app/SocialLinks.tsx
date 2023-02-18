@@ -116,6 +116,8 @@ export function SocialLink(props: { socialLink: SocialLink; index: number }) {
               {...provided.dragHandleProps}
               size={{ base: "xs", sm: "sm" }}
               icon={<Icon name="Drag" />}
+              colorScheme="purple"
+              variant="ghost"
               aria-label="Drag and drop social link"
             />
             <Chakra.HStack align="center" spacing={3}>
@@ -282,6 +284,7 @@ export function DeleteSocialLink(props: { socialLinkId: string }) {
           size={{ base: "sm", sm: "md" }}
           onClick={onOpen}
           colorScheme="red"
+          variant="ghost"
           aria-label="Delete social link"
           icon={<Icon name="Delete" />}
         />

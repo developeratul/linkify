@@ -48,6 +48,8 @@ export function Link(props: LinkProps) {
                 <AddThumbnail link={link} />
                 <Chakra.Tooltip label="Drag n drop link">
                   <Chakra.IconButton
+                    variant="ghost"
+                    colorScheme="purple"
                     {...provided.dragHandleProps}
                     icon={<Icon name="Drag" />}
                     aria-label="Drag link"
