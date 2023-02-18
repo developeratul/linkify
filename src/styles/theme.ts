@@ -4,23 +4,11 @@ export const theme = extendTheme({
   fonts: {
     serif: "EB Garamond",
     "sans-serif": "Noto Sans",
-    monospace: "Jetbrains Mono",
+    monospace: "Space Mono",
     cursive: "Caveat",
     fantasy: "fantasy",
   },
   colors: {
-    gray: {
-      50: "#F4F3F6",
-      100: "#E8E8EE",
-      200: "#CCCBD8",
-      300: "#ACAAC0",
-      400: "#7F7C9D",
-      500: "#22212C",
-      600: "#191820",
-      700: "#191820",
-      800: "#191820",
-      900: "#000000",
-    },
     purple: {
       50: "#F7F5FF",
       100: "#EEEBFF",

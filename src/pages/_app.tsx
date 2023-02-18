@@ -12,8 +12,8 @@ import { api } from "../utils/api";
 
 import "@fontsource/caveat";
 import "@fontsource/eb-garamond";
-import "@fontsource/jetbrains-mono";
 import "@fontsource/noto-sans";
+import "@fontsource/space-mono";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
