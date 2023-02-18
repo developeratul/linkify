@@ -1,10 +1,13 @@
+import LogoImage from "@/../public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
+
+export const LogoSrc = LogoImage;
 
 export default function Logo() {
   return (
     <Link href="/">
-      <Image src="/logo.png" width={100} height={15} alt="LinkVault logo" />
+      <Image src={LogoSrc} width={100} alt="LinkVault logo" />
     </Link>
   );
 }
