@@ -14,7 +14,7 @@ export function AuthLayout(props: AuthLayoutProps) {
       h="full"
       overflowX="hidden"
       justify="center"
-      bg="gray.100"
+      bg="purple.50"
       p={2}
     >
       <Chakra.VStack spacing={10} w="full" maxW="md">

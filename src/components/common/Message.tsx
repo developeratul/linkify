@@ -24,10 +24,10 @@ export function EmptyMessage(props: {
         maxW="md"
         spacing={3}
       >
-        <Chakra.Heading size="lg" fontWeight="medium" color="gray.500">
+        <Chakra.Heading size="lg" fontWeight="medium" color="purple.500">
           {title}
         </Chakra.Heading>
-        <Chakra.Text color="gray.500">{description}</Chakra.Text>
+        <Chakra.Text color="gray.600">{description}</Chakra.Text>
         {createButton && createButton}
       </Chakra.VStack>
     </Chakra.Box>

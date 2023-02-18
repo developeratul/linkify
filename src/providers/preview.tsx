@@ -116,7 +116,7 @@ export function PreviewPanel() {
       display={{ base: "none", md: "block" }}
       rounded="md"
       overflow="hidden"
-      bg="gray.300"
+      bg="purple.200"
     >
       {isLoading ? (
         <Loader />

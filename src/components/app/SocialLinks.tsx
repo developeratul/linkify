@@ -127,7 +127,7 @@ export function SocialLink(props: { socialLink: SocialLink; index: number }) {
               >
                 {socialLink.url}
               </Chakra.Text>
-              <Chakra.Box color="gray.500">
+              <Chakra.Box color="purple.500">
                 <SocialIcon name={socialLink.type} size={20} />
               </Chakra.Box>
             </Chakra.HStack>
