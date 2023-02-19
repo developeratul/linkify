@@ -38,8 +38,13 @@ export function Link(props: LinkProps) {
           boxShadow="base"
           p={5}
         >
-          <Chakra.HStack justify="space-between" align="center">
-            <Chakra.HStack spacing={3}>
+          <Chakra.HStack spacing={3} justify="space-between" align="center">
+            <Chakra.HStack
+              w="full"
+              align="center"
+              justify="stretch"
+              spacing={3}
+            >
               <AddThumbnail link={link}>
                 {link.thumbnail ? (
                   <Chakra.Image
@@ -60,16 +65,18 @@ export function Link(props: LinkProps) {
               </AddThumbnail>
               <Chakra.Tooltip label="Edit link">
                 <Chakra.VStack
-                  userSelect="none"
+                  align="start"
+                  w="full"
                   cursor="pointer"
                   onClick={onOpen}
-                  w="full"
-                  align="start"
+                  spacing="1"
                 >
-                  <Chakra.Text fontSize="lg" fontWeight="medium">
+                  <Chakra.Heading noOfLines={1} size="sm" fontWeight="medium">
                     {link.text}
+                  </Chakra.Heading>
+                  <Chakra.Text noOfLines={1} fontSize="sm">
+                    {link.url}
                   </Chakra.Text>
-                  <Chakra.Text>{link.url}</Chakra.Text>
                 </Chakra.VStack>
               </Chakra.Tooltip>
             </Chakra.HStack>
@@ -96,18 +103,6 @@ export function Link(props: LinkProps) {
               </Chakra.Tooltip>
             </Chakra.HStack>
           </Chakra.HStack>
-          {/* <Chakra.HStack w="full" justifyContent="space-between">
-            <Chakra.HStack>
-              <AddThumbnail link={link} />
-              <Chakra.Tag size="lg" colorScheme="purple">
-                <Chakra.TagLabel>{link.clickCount} clicks</Chakra.TagLabel>
-              </Chakra.Tag>
-            </Chakra.HStack>
-            <Chakra.HStack spacing={3}>
-              <EditLink link={link} />
-              <DeleteLink linkId={link.id} />
-            </Chakra.HStack>
-          </Chakra.HStack> */}
           <EditLinkModal link={link} isOpen={isOpen} onClose={onClose} />
         </Chakra.Box>
       )}

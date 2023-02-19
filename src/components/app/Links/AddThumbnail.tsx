@@ -105,11 +105,7 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
 
   return (
     <Chakra.Popover onOpen={onOpen} isOpen={isOpen} onClose={closePopover}>
-      <Chakra.PopoverTrigger>
-        <Chakra.Box w="full" cursor="pointer">
-          {children}
-        </Chakra.Box>
-      </Chakra.PopoverTrigger>
+      <Chakra.PopoverTrigger>{children}</Chakra.PopoverTrigger>
       <Chakra.PopoverContent>
         <Chakra.PopoverArrow />
         <Chakra.PopoverCloseButton />

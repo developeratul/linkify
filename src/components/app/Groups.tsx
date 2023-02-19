@@ -290,7 +290,7 @@ export default function Groups() {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Chakra.VStack gap={1} w="full" align="start">
+      <Chakra.VStack gap={2} w="full" align="start">
         <Chakra.VStack w="full" align="start">
           <Chakra.Heading size="md" color="purple.500" fontWeight="medium">
             Groups
@@ -303,6 +303,7 @@ export default function Groups() {
               {...provided.droppableProps}
               ref={provided.innerRef}
               w="full"
+              spacing="4"
             >
               {data.map((group, index) => (
                 <Group group={group} index={index} key={group.id} />
