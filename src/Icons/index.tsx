@@ -9,6 +9,7 @@ import {
   Link,
   LogOut,
   Menu,
+  MousePointerClick,
   Pencil,
   Plus,
   Save,
@@ -34,6 +35,7 @@ export const icons = {
   Settings: Settings,
   Logout: LogOut,
   Menu: Menu,
+  Click: MousePointerClick,
 };
 
 export function Icon(props: { size?: number; name: keyof typeof icons }) {

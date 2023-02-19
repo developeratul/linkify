@@ -7,14 +7,15 @@ import { TRPCClientError } from "@trpc/client";
 import type { OnDragEndResponder } from "react-beautiful-dnd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AddThumbnail } from "./AddThumbnail";
-import { DeleteLink } from "./DeleteLink";
-import { EditLink } from "./EditLink";
+import { EditLinkModal } from "./EditLinkModal";
 
 export type Link = {
   id: string;
   thumbnail?: string | null;
   text: string;
   url: string;
+  clickCount: number;
+  hidden: boolean;
 };
 
 export type LinkProps = {
@@ -24,45 +25,91 @@ export type LinkProps = {
 
 export function Link(props: LinkProps) {
   const { link, index } = props;
+  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   return (
     <Draggable index={index} draggableId={link.id}>
       {(provided) => (
-        <Chakra.Card
+        <Chakra.Box
           ref={provided.innerRef}
           {...provided.draggableProps}
           w="full"
           bg="white"
-          size={{ base: "md", md: "lg" }}
+          rounded="lg"
+          boxShadow="base"
+          p={5}
         >
-          <Chakra.CardBody>
-            <Chakra.VStack w="full" align="start">
-              <Chakra.Text fontSize="lg" fontWeight="medium">
-                {link.text}
-              </Chakra.Text>
-              <Chakra.Text>{link.url}</Chakra.Text>
-            </Chakra.VStack>
-          </Chakra.CardBody>
-          <Chakra.CardFooter pt={0}>
-            <Chakra.HStack w="full" justifyContent="space-between">
-              <Chakra.HStack>
-                <AddThumbnail link={link} />
-                <Chakra.Tooltip label="Drag n drop link">
-                  <Chakra.IconButton
-                    variant="ghost"
-                    colorScheme="purple"
-                    {...provided.dragHandleProps}
-                    icon={<Icon name="Drag" />}
-                    aria-label="Drag link"
+          <Chakra.HStack justify="space-between" align="center">
+            <Chakra.HStack spacing={3}>
+              <AddThumbnail link={link}>
+                {link.thumbnail ? (
+                  <Chakra.Image
+                    rounded="md"
+                    fallbackSrc="https://via.placeholder.com/50"
+                    fit="cover"
+                    boxSize={50}
+                    src={link.thumbnail}
                   />
-                </Chakra.Tooltip>
-              </Chakra.HStack>
-              <Chakra.HStack spacing={3}>
-                <EditLink link={link} />
-                <DeleteLink linkId={link.id} />
-              </Chakra.HStack>
+                ) : (
+                  <Chakra.Image
+                    rounded="md"
+                    src={`https://via.placeholder.com/50/EEEBFF/6647FF`}
+                    fit="cover"
+                    boxSize={50}
+                  />
+                )}
+              </AddThumbnail>
+              <Chakra.Tooltip label="Edit link">
+                <Chakra.VStack
+                  userSelect="none"
+                  cursor="pointer"
+                  onClick={onOpen}
+                  w="full"
+                  align="start"
+                >
+                  <Chakra.Text fontSize="lg" fontWeight="medium">
+                    {link.text}
+                  </Chakra.Text>
+                  <Chakra.Text>{link.url}</Chakra.Text>
+                </Chakra.VStack>
+              </Chakra.Tooltip>
             </Chakra.HStack>
-          </Chakra.CardFooter>
-        </Chakra.Card>
+            <Chakra.HStack spacing="3" pr={3}>
+              <Chakra.Tooltip label="Clicks">
+                <Chakra.HStack
+                  align="center"
+                  color={link.hidden ? "gray.600" : "purple.600"}
+                >
+                  <Icon name="Click" />
+                  <Chakra.Text fontWeight="medium">
+                    {link.clickCount}
+                  </Chakra.Text>
+                </Chakra.HStack>
+              </Chakra.Tooltip>
+              <Chakra.Tooltip label="Drag n drop link">
+                <Chakra.IconButton
+                  variant="ghost"
+                  colorScheme="purple"
+                  {...provided.dragHandleProps}
+                  icon={<Icon name="Drag" />}
+                  aria-label="Drag link"
+                />
+              </Chakra.Tooltip>
+            </Chakra.HStack>
+          </Chakra.HStack>
+          {/* <Chakra.HStack w="full" justifyContent="space-between">
+            <Chakra.HStack>
+              <AddThumbnail link={link} />
+              <Chakra.Tag size="lg" colorScheme="purple">
+                <Chakra.TagLabel>{link.clickCount} clicks</Chakra.TagLabel>
+              </Chakra.Tag>
+            </Chakra.HStack>
+            <Chakra.HStack spacing={3}>
+              <EditLink link={link} />
+              <DeleteLink linkId={link.id} />
+            </Chakra.HStack>
+          </Chakra.HStack> */}
+          <EditLinkModal link={link} isOpen={isOpen} onClose={onClose} />
+        </Chakra.Box>
       )}
     </Draggable>
   );

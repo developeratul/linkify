@@ -1,5 +1,4 @@
 import { Conditional } from "@/components/common/Conditional";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
@@ -18,10 +17,11 @@ export const addThumbnailSchema = z.object({
   publicId: z.string().optional(),
 });
 
-export function AddThumbnail(props: { link: Link }) {
+export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
   const previewContext = usePreviewContext();
   const {
     link: { id: linkId, thumbnail },
+    children,
   } = props;
   const { mutateAsync } = api.link.addThumbnail.useMutation();
   const [isLoading, setLoading] = React.useState(false);
@@ -106,11 +106,9 @@ export function AddThumbnail(props: { link: Link }) {
   return (
     <Chakra.Popover onOpen={onOpen} isOpen={isOpen} onClose={closePopover}>
       <Chakra.PopoverTrigger>
-        <Chakra.IconButton
-          colorScheme="purple"
-          icon={<Icon name="Thumbnail" />}
-          aria-label="Add Link thumbnail"
-        />
+        <Chakra.Box w="full" cursor="pointer">
+          {children}
+        </Chakra.Box>
       </Chakra.PopoverTrigger>
       <Chakra.PopoverContent>
         <Chakra.PopoverArrow />

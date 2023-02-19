@@ -119,6 +119,8 @@ model Link {
     groupId           String
     user              User    @relation(fields: [userId], references: [id])
     userId            String
+    clickCount        Int     @default(0)
+    hidden            Boolean @default(false)
 }
 
 model SocialLink {

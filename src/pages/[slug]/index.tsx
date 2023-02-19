@@ -1,6 +1,5 @@
 import { type Group as GroupType } from "@/components/app/Groups";
 import { type Link as LinkType } from "@/components/app/Links";
-import { GroupSelections } from "@/server/api/routers/group";
 import * as Chakra from "@chakra-ui/react";
 import clsx from "clsx";
 import type {
@@ -37,19 +36,30 @@ const secondaryColors = {
 
 export function Link(props: { link: LinkType; theme: Theme }) {
   const { link, theme } = props;
+  const { mutateAsync } = api.link.captureClick.useMutation();
   const background = secondaryBackgrounds[theme];
   const color = colors[theme];
+  const utils = api.useContext();
+
+  const handleClick = async () => {
+    const a = document.createElement("a");
+    a.setAttribute("href", link.url);
+    a.setAttribute("target", "_blank");
+    a.setAttribute("rel", "noreferrer");
+    a.setAttribute("referrerPolicy", "no-referrer");
+    a.click();
+    await mutateAsync({ linkId: link.id });
+    await utils.group.getWithLinks.invalidate();
+  };
+
   return (
     <Chakra.Box
-      as="a"
-      target="_blank"
-      referrerPolicy="no-referrer"
+      cursor="pointer"
+      onClick={handleClick}
       className={clsx(
         "flex w-full transform items-center rounded-md p-1 filter backdrop-blur-md duration-75 hover:scale-105"
       )}
       bg={background}
-      href={link.url}
-      rel="noreferrer"
     >
       {link.thumbnail && (
         <Chakra.Image
@@ -230,12 +240,7 @@ const ProfilePage: NextPage<{ user: User }> = (
                   p={5}
                   rounded="lg"
                 >
-                  <Image
-                    src="/logo.png"
-                    alt="LinkVault logo"
-                    width={100}
-                    height={20}
-                  />
+                  <Image src={LogoSrc} alt="LinkVault logo" width={100} />
                 </Chakra.Box>
               </Chakra.HStack>
             </NextLink>
@@ -265,9 +270,11 @@ export type User = {
   socialIconPlacement?: SocialIconPlacement;
 };
 
+import { LogoSrc } from "@/components/common/Logo";
 import { SEO } from "@/components/common/SEO";
 import { SocialIcon } from "@/Icons/Social";
 import { prisma } from "@/server/db";
+import { api } from "@/utils/api";
 import type {
   Font,
   SocialIconPlacement,
@@ -299,7 +306,24 @@ export const getServerSideProps: GetServerSideProps<{ user: User }> = async (
       seoDescription: true,
       socialIconPlacement: true,
       groups: {
-        select: GroupSelections,
+        select: {
+          id: true,
+          name: true,
+          links: {
+            where: { hidden: false },
+            select: {
+              id: true,
+              text: true,
+              url: true,
+              thumbnail: true,
+              clickCount: true,
+              hidden: true,
+            },
+            orderBy: {
+              index: "asc",
+            },
+          },
+        },
         orderBy: {
           index: "asc",
         },
