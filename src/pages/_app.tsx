@@ -12,7 +12,7 @@ import { api } from "../utils/api";
 
 import "@fontsource/caveat";
 import "@fontsource/eb-garamond";
-import "@fontsource/noto-sans";
+import "@fontsource/poppins";
 import "@fontsource/space-mono";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
