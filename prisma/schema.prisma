@@ -147,5 +147,9 @@ enum LinkTypes {
     payment
     signal
     discord
+    spotify
+    medium
+    google_play
+    figma
     other
 }

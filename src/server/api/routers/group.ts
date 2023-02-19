@@ -1,4 +1,3 @@
-import { editGroupSchema } from "@/components/app/Groups";
 import { authorizeAuthor } from "@/helpers/auth";
 import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
@@ -84,7 +83,7 @@ export const groupRouter = createTRPCRouter({
     }),
 
   edit: protectedProcedure
-    .input(editGroupSchema.extend({ groupId: z.string() }))
+    .input(z.object({ groupId: z.string(), name: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { groupId, ...update } = input;
 

@@ -1,11 +1,15 @@
 import {
   IconBrandDiscord,
   IconBrandFacebook,
+  IconBrandFigma,
   IconBrandGithub,
+  IconBrandGooglePlay,
   IconBrandInstagram,
   IconBrandLinkedin,
+  IconBrandMedium,
   IconBrandPatreon,
   IconBrandPinterest,
+  IconBrandSpotify,
   IconBrandTwitch,
   IconBrandTwitter,
   IconBrandWhatsapp,
@@ -31,6 +35,10 @@ export const socialIcons = {
   payment: IconCash,
   discord: IconBrandDiscord,
   signal: IconSignal4gPlus,
+  spotify: IconBrandSpotify,
+  medium: IconBrandMedium,
+  google_play: IconBrandGooglePlay,
+  figma: IconBrandFigma,
   other: IconLink,
 };
 

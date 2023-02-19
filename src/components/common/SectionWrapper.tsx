@@ -1,0 +1,23 @@
+import * as Chakra from "@chakra-ui/react";
+import React from "react";
+
+type Props = {
+  children: React.ReactNode;
+  title: string;
+  cta: React.ReactNode;
+};
+
+export default function SectionWrapper(props: Props) {
+  const { title, children, cta } = props;
+  return (
+    <Chakra.VStack gap={2} w="full" align="start">
+      <Chakra.VStack w="full" align="start">
+        <Chakra.Heading size="md" color="purple.600" fontWeight="medium">
+          {title}
+        </Chakra.Heading>
+        {cta}
+      </Chakra.VStack>
+      {children}
+    </Chakra.VStack>
+  );
+}

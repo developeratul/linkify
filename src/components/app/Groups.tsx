@@ -5,13 +5,11 @@ import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import React from "react";
 import type { OnDragEndResponder } from "react-beautiful-dnd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import SectionWrapper from "../common/SectionWrapper";
 import type { Link } from "./Links";
 import Links from "./Links";
 import { CreateLinkModal } from "./Links/CreateLink";
@@ -51,7 +49,7 @@ export function DeleteGroup(props: { groupId: string }) {
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
-          variant="outline"
+          variant="ghost"
           icon={<Icon name="Delete" />}
           aria-label="Delete group"
         />
@@ -88,105 +86,6 @@ export function DeleteGroup(props: { groupId: string }) {
   );
 }
 
-export const editGroupSchema = z.object({
-  name: z.string().nullable(),
-});
-
-export type EditGroupSchema = z.infer<typeof editGroupSchema>;
-
-export function EditGroup(props: { group: Group }) {
-  const previewContext = usePreviewContext();
-  const { group } = props;
-  const { register, formState, handleSubmit, reset } = useForm<EditGroupSchema>(
-    {
-      resolver: zodResolver(editGroupSchema),
-      defaultValues: group,
-    }
-  );
-  const { mutateAsync, isLoading } = api.group.edit.useMutation();
-  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
-  const btnRef = React.useRef<HTMLButtonElement | null>(null);
-  const toast = useToast();
-  const utils = api.useContext();
-
-  const closeDrawer = () => {
-    onClose();
-    reset();
-  };
-
-  const onSubmit = async (values: EditGroupSchema) => {
-    try {
-      const updatedGroup = await mutateAsync({ ...values, groupId: group.id });
-      await utils.group.getWithLinks.invalidate();
-      previewContext?.reload();
-      onClose();
-      reset(updatedGroup);
-    } catch (err) {
-      if (err instanceof TRPCClientError) {
-        toast({ status: "error", description: err.message });
-      }
-    }
-  };
-
-  return (
-    <Chakra.Box>
-      <Chakra.Tooltip hasArrow label="Edit group">
-        <Chakra.IconButton
-          isLoading={isLoading}
-          ref={btnRef}
-          variant="outline"
-          onClick={onOpen}
-          colorScheme="blue"
-          aria-label="Edit Group"
-          icon={<Icon name="Edit" />}
-        />
-      </Chakra.Tooltip>
-      <Chakra.Drawer
-        size="md"
-        placement="right"
-        finalFocusRef={btnRef}
-        onClose={closeDrawer}
-        isOpen={isOpen}
-      >
-        <Chakra.DrawerOverlay />
-        <Chakra.DrawerContent>
-          <Chakra.DrawerHeader>Edit group</Chakra.DrawerHeader>
-          <Chakra.DrawerCloseButton />
-          <Chakra.DrawerBody>
-            <Chakra.VStack
-              as="form"
-              id="edit-group-form"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <Chakra.FormControl isInvalid={!!formState.errors.name}>
-                <Chakra.FormLabel>Name</Chakra.FormLabel>
-                <Chakra.Input {...register("name")} />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.name?.message}
-                </Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-            </Chakra.VStack>
-          </Chakra.DrawerBody>
-          <Chakra.DrawerFooter>
-            <Chakra.Button mr={3} onClick={closeDrawer}>
-              Cancel
-            </Chakra.Button>
-            <Chakra.Button
-              type="submit"
-              form="edit-group-form"
-              colorScheme="purple"
-              isLoading={isLoading}
-              leftIcon={<Icon name="Save" />}
-            >
-              Save changes
-            </Chakra.Button>
-          </Chakra.DrawerFooter>
-        </Chakra.DrawerContent>
-      </Chakra.Drawer>
-    </Chakra.Box>
-  );
-}
-
 export type GroupProps = {
   group: Group;
   index: number;
@@ -194,6 +93,18 @@ export type GroupProps = {
 
 export function Group(props: GroupProps) {
   const { group, index } = props;
+  const [name, setName] = React.useState(group.name || "Untitled");
+  const { mutateAsync } = api.group.edit.useMutation();
+  const utils = api.useContext();
+  const previewContext = usePreviewContext();
+  const handleUpdateName: Chakra.UseEditableProps["onSubmit"] = async (
+    value
+  ) => {
+    if (name === "") setName("Untitled");
+    await mutateAsync({ groupId: group.id, name: value });
+    await utils.group.getWithLinks.invalidate();
+    previewContext?.reload();
+  };
   return (
     <Draggable draggableId={group.id} index={index}>
       {(provided) => (
@@ -222,12 +133,26 @@ export function Group(props: GroupProps) {
                   size="sm"
                 />
               </Chakra.Tooltip>
-              <Chakra.Heading size="md" fontWeight="medium">
-                {group.name || "Untitled"}
-              </Chakra.Heading>
+              <Chakra.Editable
+                onSubmit={handleUpdateName}
+                value={name}
+                onChange={(value) => setName(value)}
+              >
+                <Chakra.EditablePreview
+                  as={Chakra.Text}
+                  fontSize="lg"
+                  noOfLines={1}
+                  color="purple.600"
+                  fontWeight="medium"
+                />
+                <Chakra.EditableInput
+                  fontWeight="medium"
+                  fontSize="lg"
+                  color="purple.600"
+                />
+              </Chakra.Editable>
             </Chakra.HStack>
             <Chakra.HStack align="center" spacing={3}>
-              <EditGroup group={group} />
               <DeleteGroup groupId={group.id} />
             </Chakra.HStack>
           </Chakra.HStack>
@@ -290,13 +215,7 @@ export default function Groups() {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Chakra.VStack gap={2} w="full" align="start">
-        <Chakra.VStack w="full" align="start">
-          <Chakra.Heading size="md" color="purple.500" fontWeight="medium">
-            Groups
-          </Chakra.Heading>
-          <CreateGroupModal />
-        </Chakra.VStack>
+      <SectionWrapper title="Groups" cta={<CreateGroupModal />}>
         <Droppable droppableId="group-droppable">
           {(provided) => (
             <Chakra.VStack
@@ -312,7 +231,7 @@ export default function Groups() {
             </Chakra.VStack>
           )}
         </Droppable>
-      </Chakra.VStack>
+      </SectionWrapper>
     </DragDropContext>
   );
 }

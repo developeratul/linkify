@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SectionLoader } from "../common/Loader";
 import { EmptyMessage, ErrorMessage } from "../common/Message";
+import SectionWrapper from "../common/SectionWrapper";
 
 export function SocialLinks() {
   const { isLoading, isError, error, data } = api.socialLink.get.useQuery();
@@ -39,7 +40,7 @@ export function SocialLinks() {
         items?.splice(source.index, 1);
         items?.splice(destination.index, 0, item);
 
-        const data = await mutateAsync({
+        await mutateAsync({
           newOrder: items?.map((item) => item.id) as string[],
         });
         await utils.socialLink.get.invalidate();
@@ -65,19 +66,14 @@ export function SocialLinks() {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Chakra.VStack gap={1} w="full" align="start">
-        <Chakra.VStack w="full" align="start">
-          <Chakra.Heading size="md" color="purple.500" fontWeight="medium">
-            Social links
-          </Chakra.Heading>
-          <AddSocialLinkModal />
-        </Chakra.VStack>
+      <SectionWrapper title="Social links" cta={<AddSocialLinkModal />}>
         <Droppable droppableId="social-link-droppable">
           {(provided) => (
             <Chakra.VStack
               {...provided.droppableProps}
               ref={provided.innerRef}
               w="full"
+              spacing="2"
             >
               {data.map((socialLink, index) => (
                 <SocialLink
@@ -90,7 +86,7 @@ export function SocialLinks() {
             </Chakra.VStack>
           )}
         </Droppable>
-      </Chakra.VStack>
+      </SectionWrapper>
     </DragDropContext>
   );
 }
@@ -105,7 +101,7 @@ export function SocialLink(props: { socialLink: SocialLink; index: number }) {
           {...provided.draggableProps}
           w="full"
           bg="white"
-          p={{ base: 2, sm: 5 }}
+          p={{ base: 2, sm: 4 }}
           rounded="md"
           shadow="base"
           justify="space-between"
@@ -121,12 +117,13 @@ export function SocialLink(props: { socialLink: SocialLink; index: number }) {
               aria-label="Drag and drop social link"
             />
             <Chakra.HStack align="center" spacing={3}>
-              <Chakra.Text
-                fontSize={{ base: "sm", sm: "md" }}
+              <Chakra.Heading
+                size={{ base: "sm" }}
+                noOfLines={1}
                 fontWeight="medium"
               >
                 {socialLink.url}
-              </Chakra.Text>
+              </Chakra.Heading>
               <Chakra.Box color="purple.500">
                 <SocialIcon name={socialLink.type} size={20} />
               </Chakra.Box>
@@ -158,6 +155,10 @@ export const addSocialLinkSchema = z.object({
     "payment",
     "signal",
     "discord",
+    "spotify",
+    "medium",
+    "google_play",
+    "figma",
     "other",
   ]),
 });
@@ -228,7 +229,8 @@ export function AddSocialLinkModal() {
                 <Chakra.Select placeholder="Select" {...form.register("type")}>
                   {Object.keys(socialIcons).map((key) => (
                     <option value={key} key={key}>
-                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                      {key.charAt(0).toUpperCase() +
+                        key.slice(1).replace("_", " ")}
                     </option>
                   ))}
                 </Chakra.Select>
@@ -236,12 +238,10 @@ export function AddSocialLinkModal() {
             </Chakra.VStack>
           </Chakra.ModalBody>
           <Chakra.ModalFooter>
-            <Chakra.Button onClick={closeModal} mr={3}>
-              Cancel
-            </Chakra.Button>
             <Chakra.Button
               isLoading={isLoading}
               colorScheme="purple"
+              w="full"
               leftIcon={<Icon name="Add" />}
               type="submit"
               form="add-social-link"
