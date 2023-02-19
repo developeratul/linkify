@@ -39,9 +39,13 @@ const SettingsPage: NextPageWithLayout<{ settings: Settings }> = (
         body: JSON.stringify(values),
       });
       const data = await res.json();
+      if (!res.ok) {
+        return toast({ status: "error", description: data.message });
+      }
       previewContext?.reload();
       toast({ status: "success", description: data.message });
     } catch (err) {
+      //
     } finally {
       setProcessing(false);
     }
@@ -103,7 +107,7 @@ export type Settings = {
 
 export const getServerSideProps: GetServerSideProps = requireAuth(
   async (ctx) => {
-    const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
+    const session = await getServerAuthSession(ctx);
 
     const user = await prisma?.user.findUnique({
       where: { id: session?.user?.id },

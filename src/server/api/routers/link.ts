@@ -1,5 +1,5 @@
+import { addLinkSchema } from "@/components/app/Links/AddLink";
 import { addThumbnailSchema } from "@/components/app/Links/AddThumbnail";
-import { createLinkSchema } from "@/components/app/Links/CreateLink";
 import { editLinkSchema } from "@/components/app/Links/EditLinkModal";
 import { authorizeAuthor } from "@/helpers/auth";
 import cloudinary from "@/utils/cloudinary";
@@ -18,9 +18,9 @@ export const LinkSelections = {
 } satisfies Prisma.LinkSelect;
 
 export const linkRouter = createTRPCRouter({
-  create: protectedProcedure
+  add: protectedProcedure
     .input(
-      createLinkSchema.extend({
+      addLinkSchema.extend({
         groupId: z.string(),
       })
     )

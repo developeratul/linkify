@@ -12,7 +12,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import SectionWrapper from "../common/SectionWrapper";
 import type { Link } from "./Links";
 import Links from "./Links";
-import { CreateLinkModal } from "./Links/CreateLink";
+import { AddLinkMOdal } from "./Links/AddLink";
 
 export type Group = {
   id: string;
@@ -100,10 +100,15 @@ export function Group(props: GroupProps) {
   const handleUpdateName: Chakra.UseEditableProps["onSubmit"] = async (
     value
   ) => {
-    if (name === "") setName("Untitled");
-    await mutateAsync({ groupId: group.id, name: value });
-    await utils.group.getWithLinks.invalidate();
-    previewContext?.reload();
+    try {
+      if (name === "") setName("Untitled");
+      if (name === "Untitled") return;
+      await mutateAsync({ groupId: group.id, name: value });
+      await utils.group.getWithLinks.invalidate();
+      previewContext?.reload();
+    } catch (err) {
+      //
+    }
   };
   return (
     <Draggable draggableId={group.id} index={index}>
@@ -157,7 +162,7 @@ export function Group(props: GroupProps) {
           </Chakra.HStack>
           <Chakra.VStack w="full" spacing={5}>
             <Links links={group.links} />
-            <CreateLinkModal groupId={group.id} />
+            <AddLinkMOdal groupId={group.id} />
           </Chakra.VStack>
         </Chakra.VStack>
       )}

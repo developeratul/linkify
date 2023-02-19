@@ -5,7 +5,9 @@ import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
 import * as Chakra from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TRPCClientError } from "@trpc/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -33,13 +35,18 @@ export function Profile() {
     api.appearance.updateProfileImage.useMutation();
   const utils = api.useContext();
   const previewContext = usePreviewContext();
+  const toast = useToast();
 
   const onSubmit = async (values: UpdateProfileSchema) => {
     try {
       await mutateAsync(values);
       await utils.appearance.getProfile.invalidate();
       previewContext?.reload();
-    } catch (err) {}
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
   };
 
   const handleFileInputChange = async (

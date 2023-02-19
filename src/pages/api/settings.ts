@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    const session = await getServerAuthSession({ req, res });
+    const session = await getServerAuthSession({ req });
 
     if (!session?.user) {
       return res.status(401).json({ success: false, message: "Unauthorized" });

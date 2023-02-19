@@ -7,26 +7,25 @@ import { TRPCClientError } from "@trpc/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const createLinkSchema = z.object({
+export const addLinkSchema = z.object({
   text: z.string().min(1, "Link text is required"),
   url: z.string().url("Invalid URL"),
 });
 
-export type CreateLinkSchema = z.infer<typeof createLinkSchema>;
+export type AddLinkSchema = z.infer<typeof addLinkSchema>;
 
-export function CreateLinkModal(props: { groupId: string }) {
+export function AddLinkMOdal(props: { groupId: string }) {
   const previewContext = usePreviewContext();
   const { groupId } = props;
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
-  const { formState, register, handleSubmit, reset } =
-    useForm<CreateLinkSchema>({
-      resolver: zodResolver(createLinkSchema),
-    });
-  const { mutateAsync, isLoading } = api.link.create.useMutation();
+  const { formState, register, handleSubmit, reset } = useForm<AddLinkSchema>({
+    resolver: zodResolver(addLinkSchema),
+  });
+  const { mutateAsync, isLoading } = api.link.add.useMutation();
   const utils = api.useContext();
   const toast = Chakra.useToast();
 
-  const onSubmit = async (values: CreateLinkSchema) => {
+  const onSubmit = async (values: AddLinkSchema) => {
     try {
       await mutateAsync({ ...values, groupId });
       await utils.group.getWithLinks.invalidate();
@@ -88,10 +87,8 @@ export function CreateLinkModal(props: { groupId: string }) {
             </Chakra.VStack>
           </Chakra.ModalBody>
           <Chakra.ModalFooter>
-            <Chakra.Button onClick={onClose} mr={3}>
-              cancel
-            </Chakra.Button>
             <Chakra.Button
+              w="full"
               isLoading={isLoading}
               type="submit"
               form="add-link-form"

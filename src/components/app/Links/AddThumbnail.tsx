@@ -164,25 +164,15 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
           <Conditional
             condition={isEditingThumbnail}
             component={
-              <>
-                <Chakra.Button
-                  size="sm"
-                  mr={3}
-                  onClick={() =>
-                    thumbnail ? setEditingThumbnail(false) : closePopover()
-                  }
-                >
-                  Cancel
-                </Chakra.Button>
-                <Chakra.Button
-                  size="sm"
-                  colorScheme="purple"
-                  onClick={handleSave}
-                  isLoading={isLoading}
-                >
-                  Save
-                </Chakra.Button>
-              </>
+              <Chakra.Button
+                w="full"
+                size="sm"
+                colorScheme="purple"
+                onClick={handleSave}
+                isLoading={isLoading}
+              >
+                Save
+              </Chakra.Button>
             }
             fallback={
               <Chakra.HStack>
