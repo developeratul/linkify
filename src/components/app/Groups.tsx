@@ -113,8 +113,7 @@ export function Group(props: GroupProps) {
           {...provided.draggableProps}
           w="full"
           spacing={5}
-          borderWidth={2}
-          borderStyle="dashed"
+          borderWidth={1}
           borderColor="purple.300"
           bg="purple.100"
           p={{ base: 3, md: 5 }}
@@ -251,10 +250,9 @@ export function CreateGroupModal() {
       isLoading={isLoading}
       onClick={handleClick}
       colorScheme="purple"
-      w="full"
       leftIcon={<Icon name="Create" />}
     >
-      Create new group
+      Create new
     </Chakra.Button>
   );
 }

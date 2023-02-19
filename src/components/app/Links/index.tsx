@@ -52,12 +52,14 @@ export function Link(props: LinkProps) {
                     fallbackSrc="https://via.placeholder.com/50"
                     fit="cover"
                     boxSize={50}
+                    cursor="pointer"
                     src={link.thumbnail}
                   />
                 ) : (
                   <Chakra.Image
                     rounded="md"
                     src={`https://via.placeholder.com/50/EEEBFF/6647FF`}
+                    cursor="pointer"
                     fit="cover"
                     boxSize={50}
                   />
@@ -71,10 +73,15 @@ export function Link(props: LinkProps) {
                   onClick={onOpen}
                   spacing="1"
                 >
-                  <Chakra.Heading noOfLines={1} size="sm" fontWeight="medium">
+                  <Chakra.Heading
+                    w="full"
+                    noOfLines={1}
+                    size="sm"
+                    fontWeight="medium"
+                  >
                     {link.text}
                   </Chakra.Heading>
-                  <Chakra.Text noOfLines={1} fontSize="sm">
+                  <Chakra.Text w="full" noOfLines={1} fontSize="sm">
                     {link.url}
                   </Chakra.Text>
                 </Chakra.VStack>
@@ -83,13 +90,14 @@ export function Link(props: LinkProps) {
             <Chakra.HStack spacing="3" pr={3}>
               <Chakra.Tooltip label="Clicks">
                 <Chakra.HStack
+                  display={{ base: "none", sm: "flex" }}
                   align="center"
                   color={link.hidden ? "gray.600" : "purple.600"}
                 >
-                  <Icon name="Click" />
                   <Chakra.Text fontWeight="medium">
                     {link.clickCount}
                   </Chakra.Text>
+                  <Icon name="Click" />
                 </Chakra.HStack>
               </Chakra.Tooltip>
               <Chakra.Tooltip label="Drag n drop link">

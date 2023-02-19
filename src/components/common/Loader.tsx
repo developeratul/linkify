@@ -13,8 +13,6 @@ export function SectionLoader() {
     <VStack
       w="full"
       borderWidth={2}
-      borderStyle="dashed"
-      bg="purple.100"
       borderColor="purple.300"
       py={10}
       px={5}

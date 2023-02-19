@@ -10,9 +10,8 @@ export function EmptyMessage(props: {
   return (
     <Chakra.Box
       w="full"
-      borderWidth={2}
-      borderStyle="dashed"
-      borderColor="gray.300"
+      borderWidth={1}
+      borderColor="purple.300"
       py={10}
       px={5}
       rounded="md"
@@ -40,7 +39,6 @@ export function ErrorMessage(props: { description: string }) {
     <Chakra.Box
       w="full"
       borderWidth={2}
-      borderStyle="dashed"
       borderColor="red.300"
       py={10}
       px={5}

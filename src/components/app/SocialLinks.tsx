@@ -191,14 +191,13 @@ export function AddSocialLinkModal() {
     }
   };
   return (
-    <Chakra.Box w="full">
+    <Chakra.Box>
       <Chakra.Button
         onClick={onOpen}
-        w="full"
         leftIcon={<Icon name="Add" />}
         colorScheme="purple"
       >
-        Add social link
+        Add new
       </Chakra.Button>
       <Chakra.Modal isOpen={isOpen} onClose={closeModal}>
         <Chakra.ModalOverlay />
