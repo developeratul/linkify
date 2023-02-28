@@ -12,11 +12,8 @@ const AuthPage: NextPage = () => {
     await signIn(provider);
   };
   return (
-    <AuthLayout title="Welcome to LinkVault 🎉">
-      <SEO
-        title="Sign in"
-        description="Sign into LinkVault to start setting up your tree!"
-      />
+    <AuthLayout title="Welcome to Linkify 🎉">
+      <SEO title="Sign in" description="Sign into Linkify to start setting up your tree!" />
       <Chakra.VStack spacing={3}>
         <Chakra.Button
           onClick={() => handleSignIn("github")}

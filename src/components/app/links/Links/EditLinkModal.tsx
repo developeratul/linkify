@@ -43,7 +43,7 @@ export function EditLinkModal(props: EditLinkProps) {
   const onSubmit = async (values: EditLinkSchema) => {
     try {
       const updatedLink = await mutateAsync({ ...values, linkId: link.id });
-      await utils.group.getWithLinks.invalidate();
+      await utils.section.getWithLinks.invalidate();
       previewContext?.reload();
       onClose();
       reset(updatedLink);
@@ -55,44 +55,26 @@ export function EditLinkModal(props: EditLinkProps) {
   };
 
   return (
-    <Chakra.Modal
-      size="lg"
-      scrollBehavior="inside"
-      onClose={closeModal}
-      isOpen={isOpen}
-    >
+    <Chakra.Modal size="lg" scrollBehavior="inside" onClose={closeModal} isOpen={isOpen}>
       <Chakra.ModalOverlay />
       <Chakra.ModalContent>
         <Chakra.ModalHeader>Edit link</Chakra.ModalHeader>
         <Chakra.ModalCloseButton />
         <Chakra.ModalBody>
-          <Chakra.VStack
-            as="form"
-            id="edit-link-form"
-            onSubmit={handleSubmit(onSubmit)}
-            spacing={5}
-          >
+          <Chakra.VStack as="form" id="edit-link-form" onSubmit={handleSubmit(onSubmit)} spacing={5}>
             <Chakra.FormControl isRequired isInvalid={!!formState.errors.text}>
               <Chakra.FormLabel>Text</Chakra.FormLabel>
               <Chakra.Input {...register("text")} />
-              <Chakra.FormErrorMessage>
-                {formState.errors.text?.message}
-              </Chakra.FormErrorMessage>
+              <Chakra.FormErrorMessage>{formState.errors.text?.message}</Chakra.FormErrorMessage>
             </Chakra.FormControl>
             <Chakra.FormControl isRequired isInvalid={!!formState.errors.url}>
               <Chakra.FormLabel>URL</Chakra.FormLabel>
               <Chakra.Input {...register("url")} />
-              <Chakra.FormErrorMessage>
-                {formState.errors.url?.message}
-              </Chakra.FormErrorMessage>
+              <Chakra.FormErrorMessage>{formState.errors.url?.message}</Chakra.FormErrorMessage>
             </Chakra.FormControl>
             <Chakra.HStack justify="space-between" w="full">
               <DeleteLink linkId={link.id} />
-              <Chakra.Switch
-                {...register("hidden")}
-                colorScheme="purple"
-                fontWeight="medium"
-              >
+              <Chakra.Switch {...register("hidden")} colorScheme="purple" fontWeight="medium">
                 Hide
               </Chakra.Switch>
             </Chakra.HStack>

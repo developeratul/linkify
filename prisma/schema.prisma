@@ -14,12 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -47,6 +41,14 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
 model User {
     id            String       @id @default(cuid())
     name          String?
@@ -58,32 +60,14 @@ model User {
     imagePublicId String?
     accounts      Account[]
     sessions      Session[]
-    groups        Group[]
+    sections      Section[]
     links         Link[]
     socialLinks   SocialLink[]
 
-    theme                   Theme               @default(LIGHT)
-    font                    Font                @default(body)
-    backgroundImage         String?
-    backgroundImagePublicId String?
-    profileTitle            String?
-    seoTitle                String?
-    seoDescription          String?
-    socialIconPlacement     SocialIconPlacement @default(TOP)
-}
-
-enum Theme {
-    LIGHT
-    DARK
-}
-
-enum Font {
-    body
-    serif
-    sans_serif
-    monospace
-    cursive
-    fantasy
+    profileTitle        String?
+    seoTitle            String?
+    seoDescription      String?
+    socialIconPlacement SocialIconPlacement @default(TOP)
 }
 
 enum SocialIconPlacement {
@@ -91,15 +75,7 @@ enum SocialIconPlacement {
     BOTTOM
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
-
-    @@unique([identifier, token])
-}
-
-model Group {
+model Section {
     id     String  @id @default(cuid())
     index  Int     @default(autoincrement())
     name   String?
@@ -115,41 +91,19 @@ model Link {
     url               String
     thumbnail         String?
     thumbnailPublicId String?
-    group             Group   @relation(fields: [groupId], references: [id])
-    groupId           String
     user              User    @relation(fields: [userId], references: [id])
     userId            String
     clickCount        Int     @default(0)
     hidden            Boolean @default(false)
+    section           Section @relation(fields: [sectionId], references: [id])
+    sectionId         String
 }
 
 model SocialLink {
-    id     String    @id @default(cuid())
-    index  Int       @default(autoincrement())
-    type   LinkTypes
+    id     String @id @default(cuid())
+    index  Int    @default(autoincrement())
     url    String
-    User   User      @relation(fields: [userId], references: [id])
+    icon   String
+    User   User   @relation(fields: [userId], references: [id])
     userId String
-}
-
-enum LinkTypes {
-    facebook
-    instagram
-    github
-    twitter
-    linkedIn
-    youTube
-    pinterest
-    twitch
-    whatsapp
-    email
-    patreon
-    payment
-    signal
-    discord
-    spotify
-    medium
-    google_play
-    figma
-    other
 }

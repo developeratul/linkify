@@ -6,12 +6,10 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { Conditional } from "../common/Conditional";
-import Logo from "../common/Logo";
+import { Conditional } from "../../common/Conditional";
+import Logo from "../../common/Logo";
 
-function LinkButton(
-  props: AppProps & { icon: React.ReactElement; to: string }
-) {
+function LinkButton(props: AppProps & { icon: React.ReactElement; to: string }) {
   const { children, icon, to } = props;
   const router = useRouter();
   const isActive = router.pathname === to;
@@ -57,10 +55,7 @@ export default function AppBar() {
             <Chakra.Show below="md">
               <Chakra.Menu>
                 <Chakra.MenuButton as="div">
-                  <Chakra.IconButton
-                    icon={<Icon name="Menu" />}
-                    aria-label="Links"
-                  />
+                  <Chakra.IconButton icon={<Icon name="Menu" />} aria-label="Links" />
                 </Chakra.MenuButton>
                 <Chakra.MenuList>
                   <Chakra.VStack align="start">{links}</Chakra.VStack>
@@ -83,16 +78,10 @@ export function AppMenu() {
   return (
     <Chakra.Menu>
       <Chakra.MenuButton>
-        <Chakra.Avatar
-          src={data?.user?.image as string}
-          name={data?.user?.name as string}
-        />
+        <Chakra.Avatar src={data?.user?.image as string} name={data?.user?.name as string} />
       </Chakra.MenuButton>
       <Chakra.MenuList>
-        <Chakra.MenuItem
-          icon={<Icon name="Logout" />}
-          onClick={() => signOut()}
-        >
+        <Chakra.MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>
           Logout from app
         </Chakra.MenuItem>
       </Chakra.MenuList>
@@ -121,11 +110,7 @@ export function SharePopover() {
         component={
           <Chakra.Popover strategy="fixed">
             <Chakra.PopoverTrigger>
-              <Chakra.Button
-                variant="outline"
-                rounded="full"
-                leftIcon={<Icon name="Share" />}
-              >
+              <Chakra.Button variant="outline" rounded="full" leftIcon={<Icon name="Share" />}>
                 Share
               </Chakra.Button>
             </Chakra.PopoverTrigger>
@@ -134,23 +119,12 @@ export function SharePopover() {
               <Chakra.PopoverBody>
                 <Chakra.VStack spacing="3">
                   <Chakra.Text>
-                    Once you have finished setting up your tree, you can now
-                    share this link on media platforms!
+                    Once you have finished setting up your tree, you can now share this link on media platforms!
                   </Chakra.Text>
                   <Chakra.InputGroup size="md">
-                    <Chakra.Input
-                      fontSize="sm"
-                      pr="4.5rem"
-                      value={link}
-                      readOnly
-                    />
+                    <Chakra.Input fontSize="sm" pr="4.5rem" value={link} readOnly />
                     <Chakra.InputRightElement width="4.5rem">
-                      <Chakra.Button
-                        onClick={handleCopy}
-                        colorScheme="blue"
-                        h="1.75rem"
-                        size="xs"
-                      >
+                      <Chakra.Button onClick={handleCopy} colorScheme="blue" h="1.75rem" size="xs">
                         Copy
                       </Chakra.Button>
                     </Chakra.InputRightElement>

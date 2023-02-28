@@ -1,6 +1,6 @@
-import { addLinkSchema } from "@/components/app/Links/AddLink";
-import { addThumbnailSchema } from "@/components/app/Links/AddThumbnail";
-import { editLinkSchema } from "@/components/app/Links/EditLinkModal";
+import { addLinkSchema } from "@/components/app/links/Links/AddLinkModal";
+import { addThumbnailSchema } from "@/components/app/links/Links/AddThumbnail";
+import { editLinkSchema } from "@/components/app/links/Links/EditLinkModal";
 import { authorizeAuthor } from "@/helpers/auth";
 import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
@@ -21,74 +21,70 @@ export const linkRouter = createTRPCRouter({
   add: protectedProcedure
     .input(
       addLinkSchema.extend({
-        groupId: z.string(),
+        sectionId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { groupId, text, url } = input;
+      const { sectionId, text, url } = input;
 
       const link = await ctx.prisma.link.create({
-        data: { text, url, groupId, userId: ctx.session.user.id },
+        data: { text, url, sectionId, userId: ctx.session.user.id },
         select: LinkSelections,
       });
 
       return link;
     }),
 
-  delete: protectedProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {
-      const linkId = input;
+  delete: protectedProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const linkId = input;
 
-      const link = await ctx.prisma.link.findUnique({
-        where: { id: linkId },
-        select: { userId: true },
+    const link = await ctx.prisma.link.findUnique({
+      where: { id: linkId },
+      select: { userId: true },
+    });
+
+    if (!link) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Link not found",
       });
+    }
 
-      if (!link) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Link not found",
-        });
-      }
+    authorizeAuthor(link?.userId, ctx.session.user.id);
 
-      authorizeAuthor(link?.userId, ctx.session.user.id);
+    const deletedLink = await ctx.prisma.link.delete({
+      where: { id: linkId },
+      select: LinkSelections,
+    });
 
-      const deletedLink = await ctx.prisma.link.delete({
-        where: { id: linkId },
-        select: LinkSelections,
+    return deletedLink;
+  }),
+
+  edit: protectedProcedure.input(editLinkSchema.extend({ linkId: z.string() })).mutation(async ({ ctx, input }) => {
+    const { linkId, ...update } = input;
+
+    const link = await ctx.prisma.link.findUnique({
+      where: { id: linkId },
+      select: { userId: true },
+    });
+
+    if (!link) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Link not found",
       });
+    }
 
-      return deletedLink;
-    }),
+    authorizeAuthor(link.userId, ctx.session.user.id);
 
-  edit: protectedProcedure
-    .input(editLinkSchema.extend({ linkId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { linkId, ...update } = input;
+    const updatedLink = await ctx.prisma.link.update({
+      where: { id: linkId },
+      data: { ...update },
+      select: LinkSelections,
+    });
 
-      const link = await ctx.prisma.link.findUnique({
-        where: { id: linkId },
-        select: { userId: true },
-      });
-
-      if (!link) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Link not found",
-        });
-      }
-
-      authorizeAuthor(link.userId, ctx.session.user.id);
-
-      const updatedLink = await ctx.prisma.link.update({
-        where: { id: linkId },
-        data: { ...update },
-        select: LinkSelections,
-      });
-
-      return updatedLink;
-    }),
+    return updatedLink;
+  }),
 
   reorder: protectedProcedure
     .input(
@@ -154,53 +150,49 @@ export const linkRouter = createTRPCRouter({
       return updatedLink;
     }),
 
-  removeThumbnail: protectedProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {
-      const linkId = input;
+  removeThumbnail: protectedProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const linkId = input;
 
-      const link = await ctx.prisma.link.findUnique({
-        where: { id: linkId },
-        select: { userId: true, thumbnail: true, thumbnailPublicId: true },
+    const link = await ctx.prisma.link.findUnique({
+      where: { id: linkId },
+      select: { userId: true, thumbnail: true, thumbnailPublicId: true },
+    });
+
+    if (!link) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
       });
+    }
 
-      if (!link) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-        });
-      }
+    authorizeAuthor(link.userId, ctx.session.user.id);
 
-      authorizeAuthor(link.userId, ctx.session.user.id);
+    if (link.thumbnail && link.thumbnailPublicId) {
+      await cloudinary.uploader.destroy(link.thumbnailPublicId);
+    }
 
-      if (link.thumbnail && link.thumbnailPublicId) {
-        await cloudinary.uploader.destroy(link.thumbnailPublicId);
-      }
+    const updatedLink = await ctx.prisma.link.update({
+      where: { id: linkId },
+      data: { thumbnail: null, thumbnailPublicId: null },
+    });
 
-      const updatedLink = await ctx.prisma.link.update({
-        where: { id: linkId },
-        data: { thumbnail: null, thumbnailPublicId: null },
-      });
+    return updatedLink;
+  }),
 
-      return updatedLink;
-    }),
+  captureClick: publicProcedure.input(z.object({ linkId: z.string() })).mutation(async ({ ctx, input }) => {
+    const { linkId } = input;
 
-  captureClick: publicProcedure
-    .input(z.object({ linkId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { linkId } = input;
+    const link = await ctx.prisma.link.findUnique({
+      where: { id: linkId },
+      select: { clickCount: true },
+    });
 
-      const link = await ctx.prisma.link.findUnique({
-        where: { id: linkId },
-        select: { clickCount: true },
-      });
+    if (!link) throw new TRPCError({ code: "NOT_FOUND" });
 
-      if (!link) throw new TRPCError({ code: "NOT_FOUND" });
+    await ctx.prisma.link.update({
+      where: { id: linkId },
+      data: { clickCount: (link.clickCount || 0) + 1 },
+    });
 
-      await ctx.prisma.link.update({
-        where: { id: linkId },
-        data: { clickCount: (link.clickCount || 0) + 1 },
-      });
-
-      return;
-    }),
+    return;
+  }),
 });

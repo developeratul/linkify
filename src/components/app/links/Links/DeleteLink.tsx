@@ -18,7 +18,7 @@ export function DeleteLink(props: { linkId: string }) {
     try {
       await mutateAsync(linkId);
       onClose();
-      await utils.group.getWithLinks.invalidate();
+      await utils.section.getWithLinks.invalidate();
       previewContext?.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -29,36 +29,20 @@ export function DeleteLink(props: { linkId: string }) {
 
   return (
     <Chakra.Box>
-      <Chakra.Button
-        onClick={onOpen}
-        leftIcon={<Icon name="Delete" />}
-        variant="ghost"
-        colorScheme="red"
-      >
+      <Chakra.Button onClick={onOpen} leftIcon={<Icon name="Delete" />} variant="ghost" colorScheme="red">
         Delete
       </Chakra.Button>
-      <Chakra.AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered
-      >
+      <Chakra.AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose} isCentered>
         <Chakra.AlertDialogOverlay />
         <Chakra.AlertDialogContent>
           <Chakra.AlertDialogHeader>Delete link?</Chakra.AlertDialogHeader>
           <Chakra.AlertDialogCloseButton />
-          <Chakra.AlertDialogBody>
-            Are you sure? This action will cause permanent data loss.
-          </Chakra.AlertDialogBody>
+          <Chakra.AlertDialogBody>Are you sure? This action will cause permanent data loss.</Chakra.AlertDialogBody>
           <Chakra.AlertDialogFooter>
             <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
               No
             </Chakra.Button>
-            <Chakra.Button
-              isLoading={isLoading}
-              onClick={handleClick}
-              colorScheme="purple"
-            >
+            <Chakra.Button isLoading={isLoading} onClick={handleClick} colorScheme="purple">
               Yes
             </Chakra.Button>
           </Chakra.AlertDialogFooter>

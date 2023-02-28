@@ -29,10 +29,8 @@ export function Profile() {
       bio: data?.bio || "",
     },
   });
-  const { mutateAsync, isLoading: isProcessing } =
-    api.appearance.updateProfile.useMutation();
-  const { mutateAsync: updateProfileImage } =
-    api.appearance.updateProfileImage.useMutation();
+  const { mutateAsync, isLoading: isProcessing } = api.appearance.updateProfile.useMutation();
+  const { mutateAsync: updateProfileImage } = api.appearance.updateProfileImage.useMutation();
   const utils = api.useContext();
   const previewContext = usePreviewContext();
   const toast = useToast();
@@ -49,9 +47,7 @@ export function Profile() {
     }
   };
 
-  const handleFileInputChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageProcessing(true);
     try {
       if (e.target.files && e.target.files[0]) {
@@ -76,50 +72,26 @@ export function Profile() {
         <Chakra.CardBody>
           <Chakra.HStack align="start" spacing="5">
             <div className="group relative overflow-hidden rounded-full">
-              <Chakra.Avatar
-                size="xl"
-                src={data?.image || ""}
-                name={formState.defaultValues?.profileTitle}
-              />
+              <Chakra.Avatar size="xl" src={data?.image || ""} name={formState.defaultValues?.profileTitle} />
               <label className="absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100 group-hover:opacity-100">
                 <Conditional
                   condition={isImageProcessing}
                   component={<Loader />}
                   fallback={<Icon name="Add" size={30} />}
                 />
-                <input
-                  hidden
-                  accept="image/*"
-                  type="file"
-                  onChange={handleFileInputChange}
-                />
+                <input hidden accept="image/*" type="file" onChange={handleFileInputChange} />
               </label>
             </div>
-            <Chakra.VStack
-              flex={1}
-              as="form"
-              spacing="3"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <Chakra.FormControl
-                isDisabled={isLoading}
-                isInvalid={!!formState.errors.profileTitle}
-              >
+            <Chakra.VStack flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
+              <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.profileTitle}>
                 <Chakra.FormLabel>Title</Chakra.FormLabel>
                 <Chakra.Input {...register("profileTitle")} />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.profileTitle?.message}
-                </Chakra.FormErrorMessage>
+                <Chakra.FormErrorMessage>{formState.errors.profileTitle?.message}</Chakra.FormErrorMessage>
               </Chakra.FormControl>
-              <Chakra.FormControl
-                isDisabled={isLoading}
-                isInvalid={!!formState.errors.bio}
-              >
+              <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.bio}>
                 <Chakra.FormLabel>Bio</Chakra.FormLabel>
                 <Chakra.Textarea {...register("bio")} />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.bio?.message}
-                </Chakra.FormErrorMessage>
+                <Chakra.FormErrorMessage>{formState.errors.bio?.message}</Chakra.FormErrorMessage>
               </Chakra.FormControl>
               <Chakra.Button
                 isLoading={isProcessing}

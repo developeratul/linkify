@@ -25,9 +25,7 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
   } = props;
   const { mutateAsync } = api.link.addThumbnail.useMutation();
   const [isLoading, setLoading] = React.useState(false);
-  const [isEditingThumbnail, setEditingThumbnail] = React.useState(
-    !!!thumbnail
-  );
+  const [isEditingThumbnail, setEditingThumbnail] = React.useState(!!!thumbnail);
   const [file, setFile] = React.useState<Blob | null>();
   const [url, setUrl] = React.useState<string>("");
   const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
@@ -78,7 +76,7 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
         await mutateAsync({ linkId, url });
       }
 
-      await utils.group.getWithLinks.invalidate();
+      await utils.section.getWithLinks.invalidate();
       previewContext?.reload();
       closePopover(false);
       setFile(null);
@@ -115,12 +113,7 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
             <Chakra.VStack>
               <Chakra.FormControl>
                 <Chakra.FormLabel>Enter public URL</Chakra.FormLabel>
-                <Chakra.Input
-                  size="sm"
-                  onChange={handleUrlInputChange}
-                  name="url"
-                  value={url}
-                />
+                <Chakra.Input size="sm" onChange={handleUrlInputChange} name="url" value={url} />
               </Chakra.FormControl>
               <Chakra.Text py={1} fontWeight="medium">
                 or
@@ -140,19 +133,9 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
             <Chakra.Box>
               <Conditional
                 condition={!!thumbnail}
-                component={
-                  <Chakra.Image
-                    src={thumbnail as string}
-                    alt={thumbnail as string}
-                  />
-                }
+                component={<Chakra.Image src={thumbnail as string} alt={thumbnail as string} />}
                 fallback={
-                  <Chakra.Text
-                    textAlign="center"
-                    py={5}
-                    color="GrayText"
-                    fontWeight="medium"
-                  >
+                  <Chakra.Text textAlign="center" py={5} color="GrayText" fontWeight="medium">
                     No thumbnail
                   </Chakra.Text>
                 }
@@ -164,23 +147,13 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
           <Conditional
             condition={isEditingThumbnail}
             component={
-              <Chakra.Button
-                w="full"
-                size="sm"
-                colorScheme="purple"
-                onClick={handleSave}
-                isLoading={isLoading}
-              >
+              <Chakra.Button w="full" size="sm" colorScheme="purple" onClick={handleSave} isLoading={isLoading}>
                 Save
               </Chakra.Button>
             }
             fallback={
               <Chakra.HStack>
-                <Chakra.Button
-                  onClick={() => setEditingThumbnail(true)}
-                  size="sm"
-                  colorScheme="purple"
-                >
+                <Chakra.Button onClick={() => setEditingThumbnail(true)} size="sm" colorScheme="purple">
                   Edit
                 </Chakra.Button>
                 <RemoveThumbnail linkId={linkId} />

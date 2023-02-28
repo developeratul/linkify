@@ -7,7 +7,7 @@ export const LogoSrc = LogoImage;
 export default function Logo() {
   return (
     <Link href="/">
-      <Image src={LogoSrc} width={100} alt="LinkVault logo" />
+      <Image src={LogoSrc} width={100} alt="Linkify logo" />
     </Link>
   );
 }

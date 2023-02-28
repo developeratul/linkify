@@ -6,7 +6,6 @@ export const theme = extendTheme({
     "sans-serif": "Poppins",
     monospace: "Space Mono",
     cursive: "Caveat",
-    body: "Poppins",
   },
   colors: {
     purple: {

@@ -9,15 +9,10 @@ export default function TopBar() {
       <Chakra.Container maxW="container.xl">
         <Chakra.HStack justify="space-between">
           <Link href="/">
-            <Image src={LogoSrc} width={150} alt="LinkVault logo" />
+            <Image src={LogoSrc} width={150} alt="Linkify logo" />
           </Link>
           <Chakra.HStack>
-            <Chakra.Button
-              as={Link}
-              href="/app"
-              fontWeight="light"
-              colorScheme="purple"
-            >
+            <Chakra.Button as={Link} href="/app" fontWeight="light" colorScheme="purple">
               Get Started
             </Chakra.Button>
           </Chakra.HStack>

@@ -54,11 +54,7 @@ const SettingsPage: NextPageWithLayout<{ settings: Settings }> = (
     <Chakra.VStack maxW="2xl" w="full" align="start">
       <Chakra.Card w="full" bg="white" size="lg">
         <Chakra.CardBody>
-          <Chakra.VStack
-            spacing="5"
-            as="form"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <Chakra.VStack spacing="5" as="form" onSubmit={handleSubmit(onSubmit)}>
             <Chakra.FormControl>
               <Chakra.FormLabel>SEO Title</Chakra.FormLabel>
               <Chakra.Input {...register("seoTitle")} />
@@ -105,34 +101,32 @@ export type Settings = {
   socialIconPlacement: "TOP" | "BOTTOM";
 };
 
-export const getServerSideProps: GetServerSideProps = requireAuth(
-  async (ctx) => {
-    const session = await getServerAuthSession(ctx);
+export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) => {
+  const session = await getServerAuthSession(ctx);
 
-    const user = await prisma?.user.findUnique({
-      where: { id: session?.user?.id },
-      select: {
-        username: true,
-        bio: true,
-        seoTitle: true,
-        seoDescription: true,
-        socialIconPlacement: true,
-      },
-    });
+  const user = await prisma?.user.findUnique({
+    where: { id: session?.user?.id },
+    select: {
+      username: true,
+      bio: true,
+      seoTitle: true,
+      seoDescription: true,
+      socialIconPlacement: true,
+    },
+  });
 
-    if (!user?.username) {
-      return {
-        redirect: { destination: "/auth/onboarding", permanent: false },
-      };
-    }
-
-    const { seoTitle, seoDescription, socialIconPlacement } = user;
-
+  if (!user?.username) {
     return {
-      props: { settings: { seoTitle, seoDescription, socialIconPlacement } },
+      redirect: { destination: "/auth/onboarding", permanent: false },
     };
   }
-);
+
+  const { seoTitle, seoDescription, socialIconPlacement } = user;
+
+  return {
+    props: { settings: { seoTitle, seoDescription, socialIconPlacement } },
+  };
+});
 
 SettingsPage.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;

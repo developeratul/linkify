@@ -13,17 +13,8 @@ export default function Hero() {
             fontFamily="monospace"
             fontWeight="bold"
           >
-            The single link that handles all of your links
+            The one link that connects your audience
           </Chakra.Heading>
-          <Chakra.Text
-            maxW="container.md"
-            fontSize={{ base: "16", sm: "18", xl: "20" }}
-            color="gray.600"
-          >
-            LinkVault enables you to showcase your links in one single profile
-            while being able to collect testimonials and run your newsletter
-            (Coming soon...)
-          </Chakra.Text>
           <Chakra.Button
             as={Link}
             href="/app"

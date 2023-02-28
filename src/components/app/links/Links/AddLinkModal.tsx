@@ -14,9 +14,9 @@ export const addLinkSchema = z.object({
 
 export type AddLinkSchema = z.infer<typeof addLinkSchema>;
 
-export function AddLinkMOdal(props: { groupId: string }) {
+export function AddLinkModal(props: { sectionId: string }) {
   const previewContext = usePreviewContext();
-  const { groupId } = props;
+  const { sectionId } = props;
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const { formState, register, handleSubmit, reset } = useForm<AddLinkSchema>({
     resolver: zodResolver(addLinkSchema),
@@ -27,8 +27,8 @@ export function AddLinkMOdal(props: { groupId: string }) {
 
   const onSubmit = async (values: AddLinkSchema) => {
     try {
-      await mutateAsync({ ...values, groupId });
-      await utils.group.getWithLinks.invalidate();
+      await mutateAsync({ ...values, sectionId });
+      await utils.section.getWithLinks.invalidate();
       previewContext?.reload();
       onClose();
       reset();
@@ -45,13 +45,7 @@ export function AddLinkMOdal(props: { groupId: string }) {
 
   return (
     <Chakra.Box w="full">
-      <Chakra.Button
-        onClick={onOpen}
-        w="full"
-        colorScheme="purple"
-        leftIcon={<Icon name="Add" />}
-        variant="outline"
-      >
+      <Chakra.Button onClick={onOpen} w="full" colorScheme="purple" leftIcon={<Icon name="Add" />} variant="outline">
         Add new link
       </Chakra.Button>
       <Chakra.Modal isOpen={isOpen} onClose={onClose}>
@@ -60,29 +54,16 @@ export function AddLinkMOdal(props: { groupId: string }) {
           <Chakra.ModalHeader>Add link</Chakra.ModalHeader>
           <Chakra.ModalCloseButton />
           <Chakra.ModalBody>
-            <Chakra.VStack
-              as="form"
-              id="add-link-form"
-              onSubmit={handleSubmit(onSubmit)}
-              w="full"
-              spacing={5}
-            >
-              <Chakra.FormControl
-                isRequired
-                isInvalid={!!formState.errors.text}
-              >
+            <Chakra.VStack as="form" id="add-link-form" onSubmit={handleSubmit(onSubmit)} w="full" spacing={5}>
+              <Chakra.FormControl isRequired isInvalid={!!formState.errors.text}>
                 <Chakra.FormLabel>Link text</Chakra.FormLabel>
                 <Chakra.Input {...register("text")} />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.text?.message}
-                </Chakra.FormErrorMessage>
+                <Chakra.FormErrorMessage>{formState.errors.text?.message}</Chakra.FormErrorMessage>
               </Chakra.FormControl>
               <Chakra.FormControl isRequired isInvalid={!!formState.errors.url}>
                 <Chakra.FormLabel>Link URL</Chakra.FormLabel>
                 <Chakra.Input {...register("url")} />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.url?.message}
-                </Chakra.FormErrorMessage>
+                <Chakra.FormErrorMessage>{formState.errors.url?.message}</Chakra.FormErrorMessage>
               </Chakra.FormControl>
             </Chakra.VStack>
           </Chakra.ModalBody>

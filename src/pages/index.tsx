@@ -9,7 +9,7 @@ const Home: NextPage = () => {
     <Chakra.Box>
       <SEO
         title="Home"
-        description="LinkVault enables you to showcase your links in one single profile while being able to collect testimonials and run your newsletter"
+        description="Linkify enables you to showcase your links in one single profile while being able to collect testimonials and run your newsletter"
       />
       <Chakra.Box
         backgroundImage="/hero-bg.svg"
