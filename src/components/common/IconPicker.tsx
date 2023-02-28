@@ -1,12 +1,9 @@
+import { SocialIcon } from "@/Icons";
 import { formatter } from "@/utils/number-formatter";
 import * as Chakra from "@chakra-ui/react";
 import * as Icons from "@tabler/icons-react";
 import React from "react";
 import { Conditional } from "./Conditional";
-
-interface IconType {
-  [key: string]: any;
-}
 
 type IconPickerProps = {
   title?: string;
@@ -16,14 +13,13 @@ type IconPickerProps = {
 };
 
 const iconNamesList = Object.keys(Icons).filter((key) => key !== "createReactComponent");
-const iconsObj = Icons as IconType;
 const initialIcons = iconNamesList.slice(0, 140);
 
 export default function IconPicker(props: IconPickerProps) {
   const { title, trigger, setStateAction, selectedIcon } = props;
   const [searchTerm, setSearchTerm] = React.useState("");
   const [currentIcons, setCurrentIcons] = React.useState(initialIcons);
-  const [_, startTransition] = React.useTransition();
+  const [, startTransition] = React.useTransition();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -67,18 +63,16 @@ export default function IconPicker(props: IconPickerProps) {
                   </Chakra.Text>
                 }
                 component={
-                  <Chakra.SimpleGrid columns={6} spacing={3}>
+                  <Chakra.SimpleGrid columns={7} spacing={3}>
                     {currentIcons.map((iconName) => {
-                      const Icon = iconsObj[iconName];
                       const isSelected = selectedIcon === iconName;
                       return (
                         <Chakra.IconButton
                           colorScheme={isSelected ? "purple" : "gray"}
                           onClick={() => handleSelect(iconName)}
-                          size="lg"
                           key={iconName}
                           aria-label={iconName}
-                          icon={<Icon />}
+                          icon={<SocialIcon name={iconName} />}
                         />
                       );
                     })}

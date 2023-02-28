@@ -43,3 +43,12 @@ export function Icon(props: { size?: number; name: keyof typeof icons }) {
   const IconElement = icons[name];
   return <IconElement size={size} />;
 }
+
+import * as TablerIcons from "@tabler/icons-react";
+
+export function SocialIcon(props: { name: string }) {
+  const { name } = props;
+  const iconsObj = TablerIcons as { [key: string]: any };
+  const IconElement = iconsObj[name];
+  return <IconElement />;
+}

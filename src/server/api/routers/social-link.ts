@@ -21,15 +21,17 @@ export const socialLinkRouter = createTRPCRouter({
     return socialLinks;
   }),
 
-  // add: protectedProcedure.input(addSocialLinkSchema).mutation(async ({ ctx, input }) => {
-  //   const { type, url } = input;
+  add: protectedProcedure
+    .input(z.object({ url: z.string().url(), icon: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { icon, url } = input;
 
-  //   const link = await ctx.prisma.socialLink.create({
-  //     data: { type, url, userId: ctx.session.user.id },
-  //   });
+      const socialLink = await ctx.prisma.socialLink.create({
+        data: { icon, url, userId: ctx.session.user.id },
+      });
 
-  //   return link;
-  // }),
+      return socialLink;
+    }),
 
   delete: protectedProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
     const socialLinkId = input;

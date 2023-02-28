@@ -1,4 +1,4 @@
-import { Icon } from "@/Icons";
+import { Icon, SocialIcon } from "@/Icons";
 import type { SocialLink as SocialLinkType } from "@/types";
 import * as Chakra from "@chakra-ui/react";
 import { Draggable } from "react-beautiful-dnd";
@@ -33,9 +33,9 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
               <Chakra.Heading size={{ base: "sm" }} noOfLines={1} fontWeight="medium">
                 {socialLink.url}
               </Chakra.Heading>
-              {/* <Chakra.Box color="purple.500">
-                <SocialIcon name={socialLink.type} size={20} />
-              </Chakra.Box> */}
+              <Chakra.Box color="purple.500">
+                <SocialIcon name={socialLink.icon} />
+              </Chakra.Box>
             </Chakra.HStack>
           </Chakra.Flex>
           <Chakra.Flex>
