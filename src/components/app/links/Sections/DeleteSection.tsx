@@ -29,24 +29,29 @@ export default function DeleteSection(props: { sectionId: string }) {
 
   return (
     <Chakra.Box>
-      <Chakra.Tooltip hasArrow label="Delete group">
+      <Chakra.Tooltip hasArrow label="Delete section">
         <Chakra.IconButton
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
           variant="ghost"
           icon={<Icon name="Delete" />}
-          aria-label="Delete group"
+          aria-label="Delete section"
         />
       </Chakra.Tooltip>
-      <Chakra.AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose} isCentered>
+      <Chakra.AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+      >
         <Chakra.AlertDialogOverlay />
         <Chakra.AlertDialogContent>
-          <Chakra.AlertDialogHeader>Delete Group?</Chakra.AlertDialogHeader>
+          <Chakra.AlertDialogHeader>Delete Section?</Chakra.AlertDialogHeader>
           <Chakra.AlertDialogCloseButton />
           <Chakra.AlertDialogBody>
-            Are you sure? This action will cause permanent data loss. All the links inside this group will also get
-            deleted.
+            Are you sure? This action will cause permanent data loss. All the links inside this
+            section will also get deleted.
           </Chakra.AlertDialogBody>
           <Chakra.AlertDialogFooter>
             <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>

@@ -47,18 +47,22 @@ export default function Section(props: SectionProps) {
         >
           <Chakra.HStack justify="space-between" align="center" w="full">
             <Chakra.HStack align="center">
-              <Chakra.Tooltip hasArrow label="Drag n drop group">
+              <Chakra.Tooltip hasArrow label="Drag n drop section">
                 <Chakra.IconButton
                   {...provided.dragHandleProps}
                   cursor="inherit"
                   colorScheme="purple"
                   variant="ghost"
-                  aria-label="Drag group"
+                  aria-label="Drag section"
                   icon={<Icon name="Drag" />}
                   size="sm"
                 />
               </Chakra.Tooltip>
-              <Chakra.Editable onSubmit={handleUpdateName} value={name} onChange={(value) => setName(value)}>
+              <Chakra.Editable
+                onSubmit={handleUpdateName}
+                value={name}
+                onChange={(value) => setName(value)}
+              >
                 <Chakra.EditablePreview
                   as={Chakra.Text}
                   fontSize="lg"

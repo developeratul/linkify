@@ -71,9 +71,13 @@ export function Profile() {
       <Chakra.Card w="full" size="lg" bg="white">
         <Chakra.CardBody>
           <Chakra.HStack align="start" spacing="5">
-            <div className="group relative overflow-hidden rounded-full">
-              <Chakra.Avatar size="xl" src={data?.image || ""} name={formState.defaultValues?.profileTitle} />
-              <label className="absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100 group-hover:opacity-100">
+            <div className="section relative overflow-hidden rounded-full">
+              <Chakra.Avatar
+                size="xl"
+                src={data?.image || ""}
+                name={formState.defaultValues?.profileTitle}
+              />
+              <label className="section-hover:opacity-100 absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100">
                 <Conditional
                   condition={isImageProcessing}
                   component={<Loader />}
@@ -83,10 +87,15 @@ export function Profile() {
               </label>
             </div>
             <Chakra.VStack flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
-              <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.profileTitle}>
+              <Chakra.FormControl
+                isDisabled={isLoading}
+                isInvalid={!!formState.errors.profileTitle}
+              >
                 <Chakra.FormLabel>Title</Chakra.FormLabel>
                 <Chakra.Input {...register("profileTitle")} />
-                <Chakra.FormErrorMessage>{formState.errors.profileTitle?.message}</Chakra.FormErrorMessage>
+                <Chakra.FormErrorMessage>
+                  {formState.errors.profileTitle?.message}
+                </Chakra.FormErrorMessage>
               </Chakra.FormControl>
               <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.bio}>
                 <Chakra.FormLabel>Bio</Chakra.FormLabel>

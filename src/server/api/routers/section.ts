@@ -19,14 +19,14 @@ export const SectionSelections = {
 
 export const sectionRouter = createTRPCRouter({
   getWithLinks: protectedProcedure.query(async ({ ctx }) => {
-    const groups = await ctx.prisma.section.findMany({
+    const Sections = await ctx.prisma.section.findMany({
       where: { userId: ctx.session.user.id },
       select: SectionSelections,
       orderBy: {
         index: "asc",
       },
     });
-    return groups;
+    return Sections;
   }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {
@@ -48,7 +48,7 @@ export const sectionRouter = createTRPCRouter({
     if (!section) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Group not found",
+        message: "Section not found",
       });
     }
 
@@ -93,7 +93,7 @@ export const sectionRouter = createTRPCRouter({
       if (!section) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Group not found",
+          message: "Section not found",
         });
       }
 
@@ -117,9 +117,9 @@ export const sectionRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { newOrder } = input;
 
-      newOrder.map(async (groupId) => {
+      newOrder.map(async (sectionId) => {
         const section = await ctx.prisma.section.findUnique({
-          where: { id: groupId },
+          where: { id: sectionId },
           select: { userId: true },
         });
 
@@ -132,8 +132,8 @@ export const sectionRouter = createTRPCRouter({
         authorizeAuthor(section.userId, ctx.session.user.id);
 
         await ctx.prisma.section.update({
-          where: { id: groupId },
-          data: { index: newOrder.indexOf(groupId) },
+          where: { id: sectionId },
+          data: { index: newOrder.indexOf(sectionId) },
         });
       });
 
