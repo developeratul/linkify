@@ -8,9 +8,9 @@ type SectionWrapperProps = {
 } & BoxProps;
 
 export default function SectionWrapper(props: SectionWrapperProps) {
-  const { children, id, ...restProps } = props;
+  const { children, id, as = "section", ...restProps } = props;
   return (
-    <Box as="section" id={id} {...restProps}>
+    <Box as={as} id={id} {...restProps}>
       <Container maxW="container.xl">{children}</Container>
     </Box>
   );

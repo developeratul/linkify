@@ -4,7 +4,6 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import ProgressBar from "nextjs-progressbar";
 
-import { RootLayout } from "@/Layouts/root";
 import { theme } from "@/styles/theme";
 import type { NextPage } from "next";
 import "../styles/globals.css";
@@ -26,16 +25,13 @@ type AppPropsWithLayout = AppProps & {
   };
 };
 
-const MyApp = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppPropsWithLayout) => {
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <SessionProvider session={session}>
       <ChakraProvider resetCSS theme={theme}>
         <ProgressBar color="#7559FF" />
-        <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
+        {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>
     </SessionProvider>
   );

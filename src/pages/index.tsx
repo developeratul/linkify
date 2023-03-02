@@ -1,5 +1,6 @@
 import { SEO } from "@/components/common/SEO";
 import FeaturesSection from "@/components/home/Features";
+import Footer from "@/components/home/Footer";
 import Hero from "@/components/home/Hero";
 import TopBar from "@/components/home/TopBar";
 import * as Chakra from "@chakra-ui/react";
@@ -7,7 +8,7 @@ import { type NextPage } from "next";
 
 const Home: NextPage = () => {
   return (
-    <Chakra.Box bg="purple.50" h="full" overflowX="hidden">
+    <Chakra.Box bg="purple.50">
       <SEO
         title="Home"
         description="Linkify enables you to showcase your links in one single profile while being able to collect testimonials and run your newsletter"
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
         <Hero />
       </Chakra.Box>
       <FeaturesSection />
+      <Footer />
     </Chakra.Box>
   );
 };

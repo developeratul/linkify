@@ -3,7 +3,7 @@ import SectionWrapper from "./common/SectionWrapper";
 
 export default function Hero() {
   return (
-    <SectionWrapper id="hero" py={{ base: "52", lg: "64" }}>
+    <SectionWrapper id="hero" py={{ base: "52", lg: "60" }}>
       <Chakra.VStack align="center">
         <Chakra.VStack align="start" spacing="50">
           <Chakra.VStack align="start" spacing="3">

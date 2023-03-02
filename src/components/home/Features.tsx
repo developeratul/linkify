@@ -1,4 +1,6 @@
+import type { ColorProps } from "@chakra-ui/react";
 import * as Chakra from "@chakra-ui/react";
+import type { TablerIconsProps } from "@tabler/icons-react";
 import {
   IconApi,
   IconFiles,
@@ -9,7 +11,13 @@ import {
 } from "@tabler/icons-react";
 import SectionWrapper from "./common/SectionWrapper";
 
-const features = [
+type Feature = {
+  title: string;
+  icon: (props: TablerIconsProps) => JSX.Element;
+  color: ColorProps["color"];
+};
+
+const features: Feature[] = [
   { title: "Unlimited links", icon: IconLink, color: "purple.400" },
   { title: "Profile Analytics", icon: IconGraph, color: "green.400" },
   { title: "Testimonials", icon: IconMessages, color: "blue.400" },
@@ -26,17 +34,17 @@ export default function FeaturesSection() {
         maxW="container.md"
         mx="auto"
         spacing="5"
-        columns={3}
+        columns={{ base: 1, sm: 2, md: 3 }}
         bg="white"
         rounded="lg"
-        shadow="base"
+        shadow="sm"
         p={5}
       >
         {features.map((feature, index) => (
           <Chakra.Box key={index} p={5}>
             <Chakra.VStack spacing="5">
-              <Chakra.Heading color={feature.color || "gray.600"}>
-                <feature.icon size={60} stroke={1.5} />
+              <Chakra.Heading bg={feature.color} color="white" p={5} rounded="xl">
+                <feature.icon size={30} stroke={1.5} />
               </Chakra.Heading>
               <Chakra.Text fontFamily="monospace" textAlign="center" color="gray.600" fontSize="lg">
                 {feature.title}
