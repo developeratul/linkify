@@ -10,6 +10,10 @@ export default function Footer() {
         <FooterSectionWrapper title="Linkify">
           <Chakra.Text>&copy; {new Date().getFullYear()}</Chakra.Text>
         </FooterSectionWrapper>
+        <FooterSection
+          title="Socials"
+          links={[{ text: "Twitter", url: "http://twitter.com/developeratul", isExternal: true }]}
+        />
       </Chakra.HStack>
     </SectionWrapper>
   );

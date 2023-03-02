@@ -1,4 +1,5 @@
 import * as Chakra from "@chakra-ui/react";
+import JoinWaitListButton from "./common/JoinWaitList";
 import SectionWrapper from "./common/SectionWrapper";
 
 export default function Hero() {
@@ -25,9 +26,7 @@ export default function Hero() {
               The one link that connects your audience
             </Chakra.Heading>
           </Chakra.VStack>
-          <Chakra.Button size={{ base: "md", lg: "lg" }} colorScheme="purple">
-            Join WaitList
-          </Chakra.Button>
+          <JoinWaitListButton size={{ base: "md", lg: "lg" }} />
         </Chakra.VStack>
       </Chakra.VStack>
     </SectionWrapper>

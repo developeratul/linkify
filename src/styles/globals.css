@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .scrolled_nav {
-  @apply !bg-white py-5 shadow-sm;
+  @apply !bg-white shadow-sm;
 }

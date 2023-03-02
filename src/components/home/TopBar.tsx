@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { LogoSrc } from "../common/Logo";
+import JoinWaitListButton from "./common/JoinWaitList";
 
 export default function TopBar() {
   const navRef = React.useRef<HTMLDivElement | null>(null);
@@ -34,7 +35,7 @@ export default function TopBar() {
             <Image src={LogoSrc} width={150} alt="Linkify logo" />
           </Link>
           <Chakra.HStack>
-            <Chakra.Button colorScheme="purple">Join WaitList</Chakra.Button>
+            <JoinWaitListButton />
           </Chakra.HStack>
         </Chakra.HStack>
       </Chakra.Container>
