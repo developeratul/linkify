@@ -21,4 +21,11 @@ export const theme = extendTheme({
       "900": "#392864",
     },
   },
+  components: {
+    Button: {
+      baseStyle: {
+        fontWeight: 500,
+      },
+    },
+  },
 });

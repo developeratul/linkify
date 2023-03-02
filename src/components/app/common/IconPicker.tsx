@@ -3,7 +3,7 @@ import { formatter } from "@/utils/number-formatter";
 import * as Chakra from "@chakra-ui/react";
 import * as Icons from "@tabler/icons-react";
 import React from "react";
-import { Conditional } from "./Conditional";
+import { Conditional } from "../../common/Conditional";
 
 type IconPickerProps = {
   title?: string;
@@ -53,7 +53,9 @@ export default function IconPicker(props: IconPickerProps) {
                 autoFocus
                 onChange={handleInputChange}
                 value={searchTerm}
-                placeholder={`Search ${formatter.format(iconNamesList.length)} icons by Tabler-icons`}
+                placeholder={`Search ${formatter.format(
+                  iconNamesList.length
+                )} icons by Tabler-icons`}
               />
               <Conditional
                 condition={currentIcons.length > 0}

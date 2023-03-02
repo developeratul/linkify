@@ -1,6 +1,6 @@
+import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
+import SectionWrapper from "@/components/app/common/SectionWrapper";
 import { SectionLoader } from "@/components/common/Loader";
-import { EmptyMessage, ErrorMessage } from "@/components/common/Message";
-import SectionWrapper from "@/components/common/SectionWrapper";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -22,7 +22,8 @@ export function SocialLinks() {
     try {
       const { destination, source, draggableId } = result;
       if (!destination) return;
-      if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+      if (destination.droppableId === source.droppableId && destination.index === source.index)
+        return;
 
       const items = data;
       const item = items?.find((socialLink) => socialLink.id === draggableId);
@@ -60,7 +61,12 @@ export function SocialLinks() {
       <SectionWrapper title="Social links" cta={<AddSocialLinkModal />}>
         <Droppable droppableId="social-link-droppable">
           {(provided) => (
-            <Chakra.VStack {...provided.droppableProps} ref={provided.innerRef} w="full" spacing="2">
+            <Chakra.VStack
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              w="full"
+              spacing="2"
+            >
               {data.map((socialLink, index) => (
                 <SocialLink key={socialLink.id} index={index} socialLink={socialLink} />
               ))}

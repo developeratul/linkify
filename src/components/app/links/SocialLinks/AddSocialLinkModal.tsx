@@ -1,4 +1,4 @@
-import IconPicker from "@/components/common/IconPicker";
+import IconPicker from "@/components/app/common/IconPicker";
 import { Icon, SocialIcon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
