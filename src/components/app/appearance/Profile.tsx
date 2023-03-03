@@ -67,13 +67,13 @@ export function Profile() {
   return (
     <SectionWrapper title="Profile">
       <Chakra.HStack align="start" spacing="5">
-        <div className="section relative overflow-hidden rounded-full">
+        <div className="group relative overflow-hidden rounded-full">
           <Chakra.Avatar
             size="xl"
             src={data?.image || ""}
             name={formState.defaultValues?.profileTitle}
           />
-          <label className="section-hover:opacity-100 absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100">
+          <label className="absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100 group-hover:opacity-100">
             <Conditional
               condition={isImageProcessing}
               component={<Loader />}

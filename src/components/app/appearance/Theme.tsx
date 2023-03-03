@@ -77,7 +77,7 @@ export default function Theme() {
         )}
         <ColorInput
           label="Theme color"
-          helperText="The color that represents your"
+          helperText="The color that represents you"
           value={watch("themeColor") || ""}
           onChange={(newColor) => setValue("themeColor", newColor.hex)}
         />
