@@ -11,6 +11,7 @@ import { TRPCClientError } from "@trpc/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import SectionWrapper from "./common/SectionWrapper";
 
 export const updateProfileSchema = z.object({
   profileTitle: z.string().min(1, "Title is required"),
@@ -64,57 +65,47 @@ export function Profile() {
   };
 
   return (
-    <Chakra.VStack w="full" align="start" spacing="3">
-      <Chakra.Heading size="md" fontWeight="medium">
-        Profile
-      </Chakra.Heading>
-      <Chakra.Card w="full" size="lg" bg="white">
-        <Chakra.CardBody>
-          <Chakra.HStack align="start" spacing="5">
-            <div className="section relative overflow-hidden rounded-full">
-              <Chakra.Avatar
-                size="xl"
-                src={data?.image || ""}
-                name={formState.defaultValues?.profileTitle}
-              />
-              <label className="section-hover:opacity-100 absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100">
-                <Conditional
-                  condition={isImageProcessing}
-                  component={<Loader />}
-                  fallback={<Icon name="Add" size={30} />}
-                />
-                <input hidden accept="image/*" type="file" onChange={handleFileInputChange} />
-              </label>
-            </div>
-            <Chakra.VStack flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
-              <Chakra.FormControl
-                isDisabled={isLoading}
-                isInvalid={!!formState.errors.profileTitle}
-              >
-                <Chakra.FormLabel>Title</Chakra.FormLabel>
-                <Chakra.Input {...register("profileTitle")} />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.profileTitle?.message}
-                </Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-              <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.bio}>
-                <Chakra.FormLabel>Bio</Chakra.FormLabel>
-                <Chakra.Textarea {...register("bio")} />
-                <Chakra.FormErrorMessage>{formState.errors.bio?.message}</Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-              <Chakra.Button
-                isLoading={isProcessing}
-                type="submit"
-                leftIcon={<Icon name="Save" />}
-                w="full"
-                colorScheme="purple"
-              >
-                Save
-              </Chakra.Button>
-            </Chakra.VStack>
-          </Chakra.HStack>
-        </Chakra.CardBody>
-      </Chakra.Card>
-    </Chakra.VStack>
+    <SectionWrapper title="Profile">
+      <Chakra.HStack align="start" spacing="5">
+        <div className="section relative overflow-hidden rounded-full">
+          <Chakra.Avatar
+            size="xl"
+            src={data?.image || ""}
+            name={formState.defaultValues?.profileTitle}
+          />
+          <label className="section-hover:opacity-100 absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100">
+            <Conditional
+              condition={isImageProcessing}
+              component={<Loader />}
+              fallback={<Icon name="Add" size={30} />}
+            />
+            <input hidden accept="image/*" type="file" onChange={handleFileInputChange} />
+          </label>
+        </div>
+        <Chakra.VStack flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
+          <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.profileTitle}>
+            <Chakra.FormLabel>Title</Chakra.FormLabel>
+            <Chakra.Input {...register("profileTitle")} />
+            <Chakra.FormErrorMessage>
+              {formState.errors.profileTitle?.message}
+            </Chakra.FormErrorMessage>
+          </Chakra.FormControl>
+          <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.bio}>
+            <Chakra.FormLabel>Bio</Chakra.FormLabel>
+            <Chakra.Textarea {...register("bio")} />
+            <Chakra.FormErrorMessage>{formState.errors.bio?.message}</Chakra.FormErrorMessage>
+          </Chakra.FormControl>
+          <Chakra.Button
+            isLoading={isProcessing}
+            type="submit"
+            leftIcon={<Icon name="Save" />}
+            w="full"
+            colorScheme="purple"
+          >
+            Save
+          </Chakra.Button>
+        </Chakra.VStack>
+      </Chakra.HStack>
+    </SectionWrapper>
   );
 }

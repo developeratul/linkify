@@ -64,10 +64,31 @@ model User {
     links         Link[]
     socialLinks   SocialLink[]
 
-    profileTitle        String?
+    profileTitle String?
+
     seoTitle            String?
     seoDescription      String?
     socialIconPlacement SocialIconPlacement @default(TOP)
+
+    layout                      Layout         @default(WIDE)
+    bodyBackgroundType          BackgroundType @default(COLOR)
+    bodyBackgroundColor         String?
+    bodyBackgroundImage         String?
+    bodyBackgroundImagePublicId String?
+    cardBackgroundColor         String?
+    themeColor                  String?
+    grayColor                   String?
+    foreground                  String?
+}
+
+enum BackgroundType {
+    IMAGE
+    COLOR
+}
+
+enum Layout {
+    WIDE
+    CARD
 }
 
 enum SocialIconPlacement {
