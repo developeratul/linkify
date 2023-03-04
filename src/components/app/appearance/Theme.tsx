@@ -1,8 +1,12 @@
 import ColorInput from "@/components/common/ColorInput";
+import { SectionLoader } from "@/components/common/Loader";
 import { Icon } from "@/Icons";
+import { usePreviewContext } from "@/providers/preview";
+import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
-import { useToken } from "@chakra-ui/react";
+import { useToast, useToken } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TRPCClientError } from "@trpc/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SectionWrapper from "./common/SectionWrapper";
@@ -24,6 +28,7 @@ export default function Theme() {
     "colors",
     ["purple.50", "purple.100", "purple.500", "gray.600", "gray.500"]
   );
+  const toast = useToast();
 
   const { register, watch, setValue, handleSubmit } = useForm<ThemeSchema>({
     resolver: zodResolver(themeSchema),
@@ -37,10 +42,41 @@ export default function Theme() {
       grayColor,
     },
   });
+  const { isLoading } = api.appearance.getTheme.useQuery(undefined, {
+    onSuccess(data) {
+      if (data) {
+        (
+          Object.keys(data) as [
+            "layout",
+            "themeColor",
+            "foreground",
+            "bodyBackgroundType",
+            "bodyBackgroundColor",
+            "cardBackgroundColor",
+            "grayColor"
+          ]
+        ).map((key) => {
+          setValue(key, data[key] || "");
+        });
+      }
+    },
+  });
+  const { mutateAsync, isLoading: isProcessing } = api.appearance.updateTheme.useMutation();
+  const utils = api.useContext();
+  const previewContext = usePreviewContext();
 
-  const onSubmit = (value: ThemeSchema) => {
-    console.log({ value });
+  const onSubmit = async (value: ThemeSchema) => {
+    try {
+      await mutateAsync(value);
+      previewContext?.reload();
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
   };
+
+  if (isLoading) return <SectionLoader />;
 
   return (
     <SectionWrapper title="Theme & Layout">
@@ -93,7 +129,13 @@ export default function Theme() {
           value={watch("grayColor") || ""}
           onChange={(newColor) => setValue("grayColor", newColor.hex)}
         />
-        <Chakra.Button type="submit" leftIcon={<Icon name="Save" />} colorScheme="purple" w="full">
+        <Chakra.Button
+          isLoading={isProcessing}
+          type="submit"
+          leftIcon={<Icon name="Save" />}
+          colorScheme="purple"
+          w="full"
+        >
           Save changes
         </Chakra.Button>
       </Chakra.VStack>

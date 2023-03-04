@@ -2,13 +2,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
-import ProgressBar from "nextjs-progressbar";
 
 import { theme } from "@/styles/theme";
 import type { NextPage } from "next";
 import "../styles/globals.css";
 import { api } from "../utils/api";
 
+import ProgressBar from "@/components/common/ProgressBar";
 import "@fontsource/caveat";
 import "@fontsource/eb-garamond";
 import "@fontsource/poppins";
@@ -30,7 +30,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
   return (
     <SessionProvider session={session}>
       <ChakraProvider resetCSS theme={theme}>
-        <ProgressBar color="#7559FF" />
+        <ProgressBar />
         {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>
     </SessionProvider>

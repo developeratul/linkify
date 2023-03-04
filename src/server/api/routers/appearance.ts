@@ -1,8 +1,20 @@
 import { updateProfileSchema } from "@/components/app/appearance/Profile";
+import { themeSchema } from "@/components/app/appearance/Theme";
 import cloudinary from "@/utils/cloudinary";
+import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+export const ThemeSelections = {
+  layout: true,
+  themeColor: true,
+  foreground: true,
+  grayColor: true,
+  bodyBackgroundType: true,
+  bodyBackgroundColor: true,
+  cardBackgroundColor: true,
+} as Prisma.UserSelect;
 
 const appearanceRouter = createTRPCRouter({
   getProfile: protectedProcedure.query(async ({ ctx }) => {
@@ -19,18 +31,16 @@ const appearanceRouter = createTRPCRouter({
     return user;
   }),
 
-  updateProfile: protectedProcedure
-    .input(updateProfileSchema)
-    .mutation(async ({ input, ctx }) => {
-      const { bio, profileTitle } = input;
+  updateProfile: protectedProcedure.input(updateProfileSchema).mutation(async ({ input, ctx }) => {
+    const { bio, profileTitle } = input;
 
-      const user = await ctx.prisma.user.update({
-        where: { id: ctx.session.user.id },
-        data: { bio, profileTitle },
-      });
+    const user = await ctx.prisma.user.update({
+      where: { id: ctx.session.user.id },
+      data: { bio, profileTitle },
+    });
 
-      return user;
-    }),
+    return user;
+  }),
 
   updateProfileImage: protectedProcedure
     .input(
@@ -62,6 +72,27 @@ const appearanceRouter = createTRPCRouter({
 
       return;
     }),
+
+  updateTheme: protectedProcedure.input(themeSchema).mutation(async ({ ctx, input }) => {
+    const update = input;
+
+    const user = await ctx.prisma.user.update({
+      where: { id: ctx.session.user.id },
+      data: { ...update },
+      select: ThemeSelections,
+    });
+
+    return user;
+  }),
+
+  getTheme: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: ThemeSelections,
+    });
+
+    return user;
+  }),
 });
 
 export default appearanceRouter;
