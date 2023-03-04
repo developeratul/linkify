@@ -12,7 +12,14 @@ export default function Footer() {
         </FooterSectionWrapper>
         <FooterSection
           title="Socials"
-          links={[{ text: "Twitter", url: "http://twitter.com/developeratul", isExternal: true }]}
+          links={[
+            { text: "Twitter", url: "http://twitter.com/developeratul", isExternal: true },
+            {
+              text: "Buy me a coffee",
+              url: "https://www.buymeacoffee.com/Linkify",
+              isExternal: true,
+            },
+          ]}
         />
       </Chakra.HStack>
     </SectionWrapper>

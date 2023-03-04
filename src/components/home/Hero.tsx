@@ -1,10 +1,11 @@
 import * as Chakra from "@chakra-ui/react";
 import JoinWaitListButton from "./common/JoinWaitList";
 import SectionWrapper from "./common/SectionWrapper";
+import SupportUsButton from "./common/SupportUs";
 
 export default function Hero() {
   return (
-    <SectionWrapper id="hero" py={{ base: "52", lg: "60" }}>
+    <SectionWrapper id="hero" py={{ base: "52", lg: "64" }}>
       <Chakra.VStack align="center">
         <Chakra.VStack align="start" spacing="50">
           <Chakra.VStack align="start" spacing="3">
@@ -26,7 +27,10 @@ export default function Hero() {
               The one link that connects your audience
             </Chakra.Heading>
           </Chakra.VStack>
-          <JoinWaitListButton size={{ base: "md", lg: "lg" }} />
+          <Chakra.HStack spacing={5}>
+            <JoinWaitListButton size={{ base: "md", lg: "lg" }} />
+            <SupportUsButton size={{ base: "md", lg: "lg" }} />
+          </Chakra.HStack>
         </Chakra.VStack>
       </Chakra.VStack>
     </SectionWrapper>

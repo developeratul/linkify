@@ -16,6 +16,7 @@ import {
   Settings,
   Share2,
   Trash,
+  UserPlus,
 } from "lucide-react";
 
 export const icons = {
@@ -36,6 +37,7 @@ export const icons = {
   Logout: LogOut,
   Menu: Menu,
   Click: MousePointerClick,
+  Join: UserPlus,
 };
 
 export function Icon(props: { size?: number; name: keyof typeof icons }) {

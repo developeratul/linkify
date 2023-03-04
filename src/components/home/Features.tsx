@@ -28,31 +28,41 @@ const features: Feature[] = [
 
 export default function FeaturesSection() {
   return (
-    <SectionWrapper id="features-section" py={50}>
-      <Chakra.SimpleGrid
-        w="full"
-        maxW="container.md"
-        mx="auto"
-        spacing="5"
-        columns={{ base: 1, sm: 2, md: 3 }}
-        bg="white"
-        rounded="lg"
-        shadow="sm"
-        p={5}
-      >
-        {features.map((feature, index) => (
-          <Chakra.Box key={index} p={5}>
-            <Chakra.VStack spacing="5">
-              <Chakra.Heading bg={feature.color} color="white" p={5} rounded="xl">
-                <feature.icon size={30} stroke={1.5} />
-              </Chakra.Heading>
-              <Chakra.Text fontFamily="monospace" textAlign="center" color="gray.600" fontSize="lg">
-                {feature.title}
-              </Chakra.Text>
-            </Chakra.VStack>
-          </Chakra.Box>
-        ))}
-      </Chakra.SimpleGrid>
+    <SectionWrapper id="features-section">
+      <Chakra.VStack spacing={10}>
+        <Chakra.Heading size="lg" fontFamily="monospace" textAlign="center">
+          We provide everything you need
+        </Chakra.Heading>
+        <Chakra.SimpleGrid
+          w="full"
+          maxW="container.md"
+          mx="auto"
+          spacing="5"
+          columns={{ base: 1, sm: 2, md: 3 }}
+          bg="white"
+          rounded="lg"
+          shadow="sm"
+          p={5}
+        >
+          {features.map((feature, index) => (
+            <Chakra.Box key={index} p={5}>
+              <Chakra.VStack spacing="5">
+                <Chakra.Heading bg={feature.color} color="white" p={5} rounded="xl">
+                  <feature.icon size={30} stroke={1.5} />
+                </Chakra.Heading>
+                <Chakra.Text
+                  fontFamily="monospace"
+                  textAlign="center"
+                  color="gray.600"
+                  fontSize="lg"
+                >
+                  {feature.title}
+                </Chakra.Text>
+              </Chakra.VStack>
+            </Chakra.Box>
+          ))}
+        </Chakra.SimpleGrid>
+      </Chakra.VStack>
     </SectionWrapper>
   );
 }

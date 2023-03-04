@@ -21,7 +21,7 @@ export default function TopBar() {
     <Chakra.Box
       as="nav"
       p={5}
-      position="sticky"
+      position="fixed"
       className="duration-100"
       w="full"
       top={0}

@@ -1,20 +1,19 @@
-import { clientEnv } from "@/env/schema.mjs";
-import { Icon } from "@/Icons";
+import { SocialIcon } from "@/Icons";
 import type { ButtonProps } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 
-export default function JoinWaitListButton(props: ButtonProps) {
+export default function SupportUsButton(props: ButtonProps) {
   const { colorScheme = "purple", ...restProps } = props;
   return (
     <Button
       {...restProps}
       colorScheme={colorScheme}
       as="a"
-      href={clientEnv.NEXT_PUBLIC_WAITLIST_FORM_URL}
+      href="https://www.buymeacoffee.com/Linkify"
       target="_blank"
-      leftIcon={<Icon name="Join" />}
+      leftIcon={<SocialIcon name="IconCup" />}
     >
-      Join WaitList
+      Support us
     </Button>
   );
 }

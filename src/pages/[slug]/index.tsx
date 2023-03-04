@@ -16,6 +16,10 @@ const ProfilePage: NextPage<ProfileProps> = (
   const { profile } = props;
   return (
     <ProfileProvider profile={profile}>
+      <SEO
+        title={profile.seoTitle || profile.username || ""}
+        description={profile.seoDescription || `@${profile.username}'s profile on Linkify`}
+      />
       <Chakra.Box
         background={profile.bodyBackgroundColor || "purple.50"}
         minH="100vh"
@@ -23,19 +27,21 @@ const ProfilePage: NextPage<ProfileProps> = (
         px={5}
       >
         <Container>
-          <ProfileImage />
-          <Chakra.VStack spacing="5px" textAlign="center">
-            <Chakra.Heading
-              color={profile.themeColor || "purple.500"}
-              fontSize={24}
-              fontWeight="medium"
-            >
-              {profile.profileTitle || `@${profile.username}`}
-            </Chakra.Heading>
-            <Chakra.Text fontSize={16}>{profile.bio}</Chakra.Text>
-          </Chakra.VStack>
-          <SocialLinks />
-          <Sections />
+          <Wrapper>
+            <ProfileImage />
+            <Chakra.VStack spacing="5px" textAlign="center">
+              <Chakra.Heading
+                color={profile.themeColor || "purple.500"}
+                fontSize={24}
+                fontWeight="medium"
+              >
+                {profile.profileTitle || `@${profile.username}`}
+              </Chakra.Heading>
+              <Chakra.Text fontSize={16}>{profile.bio}</Chakra.Text>
+            </Chakra.VStack>
+            <SocialLinks />
+            <Sections />
+          </Wrapper>
         </Container>
       </Chakra.Box>
     </ProfileProvider>
@@ -44,6 +50,8 @@ const ProfilePage: NextPage<ProfileProps> = (
 
 export default ProfilePage;
 
+import { SEO } from "@/components/common/SEO";
+import Wrapper from "@/components/profile/Wrapper";
 import { prisma } from "@/server/db";
 import type { ProfileSection, SocialLink } from "@/types";
 import type { BackgroundType, CardShadow, Layout, SocialIconPlacement } from "@prisma/client";
