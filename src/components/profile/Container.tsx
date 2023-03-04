@@ -15,13 +15,14 @@ export default function Container(props: ContainerProps) {
       <Chakra.VStack
         spacing="20px"
         mx="auto"
-        maxW="container.md"
+        maxW={profile.containerWidth}
         bg={profile.cardBackgroundColor}
         as="fieldset"
         pb={10}
         px={10}
         rounded="lg"
         color={profile.foreground}
+        shadow={profile.cardShadow}
       >
         {children}
       </Chakra.VStack>
@@ -29,7 +30,12 @@ export default function Container(props: ContainerProps) {
   }
 
   return (
-    <Chakra.VStack color={profile?.foreground} spacing="20px" mx="auto" maxW="container.md">
+    <Chakra.VStack
+      color={profile?.foreground}
+      spacing="20px"
+      mx="auto"
+      maxW={profile?.cardBackgroundColor}
+    >
       {children}
     </Chakra.VStack>
   );

@@ -46,7 +46,7 @@ export default ProfilePage;
 
 import { prisma } from "@/server/db";
 import type { ProfileSection, SocialLink } from "@/types";
-import type { BackgroundType, Layout, SocialIconPlacement } from "@prisma/client";
+import type { BackgroundType, CardShadow, Layout, SocialIconPlacement } from "@prisma/client";
 
 export type Profile = {
   username: string | null;
@@ -55,6 +55,9 @@ export type Profile = {
   image?: string | null;
   profileTitle?: string | null;
   layout: Layout;
+  containerWidth: number;
+  cardShadow: CardShadow;
+  linksColumnCount: number;
   bodyBackgroundType: BackgroundType;
   bodyBackgroundColor?: string | null;
   bodyBackgroundImage?: string | null;
@@ -84,6 +87,9 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       seoDescription: true,
       socialIconPlacement: true,
       layout: true,
+      containerWidth: true,
+      cardShadow: true,
+      linksColumnCount: true,
       bodyBackgroundType: true,
       bodyBackgroundColor: true,
       bodyBackgroundImage: true,
@@ -132,6 +138,6 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
   }
 
   return {
-    props: { profile: user },
+    props: { profile: user satisfies Profile },
   };
 };

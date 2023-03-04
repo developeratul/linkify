@@ -4,13 +4,14 @@ import * as Chakra from "@chakra-ui/react";
 
 export default function Links(props: { links: ProfileLinks }) {
   const { links } = props;
+  const profile = useProfileContext();
 
   return (
-    <Chakra.VStack spacing="10px" w="full">
+    <Chakra.SimpleGrid columns={{ base: 1, md: profile?.linksColumnCount }} spacing="10px" w="full">
       {links.map((link) => (
         <Link key={link.id} link={link} />
       ))}
-    </Chakra.VStack>
+    </Chakra.SimpleGrid>
   );
 }
 
