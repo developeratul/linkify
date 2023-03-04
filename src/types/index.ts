@@ -4,6 +4,16 @@ export type AppProps = {
   children: React.ReactNode;
 };
 
+export type Section = {
+  id: string;
+  name: string | null;
+  links: Link[];
+};
+
+export type ProfileSection = Omit<Section, "links"> & {
+  links: Omit<Link, "hidden" | "clickCount">;
+};
+
 export type Link = {
   id: string;
   thumbnail?: string | null;
@@ -13,11 +23,7 @@ export type Link = {
   hidden: boolean;
 };
 
-export type Section = {
-  id: string;
-  name: string | null;
-  links: Link[];
-};
+export type ProfileLink = ProfileSection["links"];
 
 export type SocialLink = {
   id: string;

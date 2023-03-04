@@ -55,8 +55,19 @@ export function PreviewDrawer() {
   const { ref, username, isLoading } = previewContext;
 
   return (
-    <Chakra.Box display={{ sm: "block", md: "none" }} position="fixed" bottom={5} right={5} zIndex="sticky">
-      <Chakra.Button size="sm" leftIcon={<Icon name="Preview" />} onClick={onOpen} colorScheme="purple">
+    <Chakra.Box
+      display={{ sm: "block", md: "none" }}
+      position="fixed"
+      bottom={5}
+      right={5}
+      zIndex="sticky"
+    >
+      <Chakra.Button
+        size="sm"
+        leftIcon={<Icon name="Preview" />}
+        onClick={onOpen}
+        colorScheme="purple"
+      >
         Preview
       </Chakra.Button>
       <Chakra.Drawer isOpen={isOpen} onClose={onClose} placement="left" size="full">
@@ -68,7 +79,11 @@ export function PreviewDrawer() {
             {isLoading ? (
               <Loader />
             ) : (
-              <iframe src={`/${username}`} ref={ref} className="mx-auto h-full w-full max-w-md rounded-md" />
+              <iframe
+                src={`/${username}`}
+                ref={ref}
+                className="mx-auto h-full w-full max-w-md rounded-md"
+              />
             )}
           </Chakra.DrawerBody>
         </Chakra.DrawerContent>
@@ -95,6 +110,8 @@ export function PreviewPanel() {
       rounded="md"
       overflow="hidden"
       bg="purple.200"
+      borderWidth={1}
+      borderColor="purple.300"
     >
       {isLoading ? <Loader /> : <iframe className="h-full w-full" src={`/${username}`} ref={ref} />}
     </Chakra.VStack>

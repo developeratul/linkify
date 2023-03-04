@@ -68,6 +68,7 @@ export default function Theme() {
   const onSubmit = async (value: ThemeSchema) => {
     try {
       await mutateAsync(value);
+      await utils.appearance.getTheme.invalidate();
       previewContext?.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
