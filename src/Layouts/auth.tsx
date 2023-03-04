@@ -11,7 +11,7 @@ export type AuthLayoutProps = {
 export function AuthLayout(props: AuthLayoutProps) {
   const { children, title } = props;
   return (
-    <Chakra.VStack w="full" h="full" overflowX="hidden" justify="center" bg="purple.50" p={2}>
+    <Chakra.VStack w="full" h="100vh" overflowX="hidden" justify="center" bg="purple.50" p={2}>
       <Chakra.VStack spacing={10} w="full" maxW="md">
         <Link href="/">
           <Image width={250} src={LogoSrc} alt="Linkify logo" />

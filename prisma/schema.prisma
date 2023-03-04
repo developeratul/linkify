@@ -79,6 +79,17 @@ model User {
     themeColor                  String?
     grayColor                   String?
     foreground                  String?
+    containerWidth              Int            @default(768)
+    cardShadow                  CardShadow     @default(none)
+    linksColumnCount            Int            @default(1)
+}
+
+enum CardShadow {
+    sm
+    md
+    lg
+    xl
+    none
 }
 
 enum BackgroundType {

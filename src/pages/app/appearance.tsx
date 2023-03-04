@@ -1,3 +1,4 @@
+import Layout from "@/components/app/appearance/Layout";
 import { Profile } from "@/components/app/appearance/Profile";
 import Theme from "@/components/app/appearance/Theme";
 import { AppLayout } from "@/Layouts/app";
@@ -8,6 +9,7 @@ const AppearancePage: NextPageWithLayout = () => {
   return (
     <Chakra.VStack w="full" maxW="2xl" spacing={10}>
       <Profile />
+      <Layout />
       <Theme />
     </Chakra.VStack>
   );

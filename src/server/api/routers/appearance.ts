@@ -1,3 +1,4 @@
+import { layoutSchema } from "@/components/app/appearance/Layout";
 import { updateProfileSchema } from "@/components/app/appearance/Profile";
 import { themeSchema } from "@/components/app/appearance/Theme";
 import cloudinary from "@/utils/cloudinary";
@@ -7,14 +8,20 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const ThemeSelections = {
-  layout: true,
   themeColor: true,
   foreground: true,
   grayColor: true,
   bodyBackgroundType: true,
   bodyBackgroundColor: true,
   cardBackgroundColor: true,
-} as Prisma.UserSelect;
+  cardShadow: true,
+} satisfies Prisma.UserSelect;
+
+export const LayoutSelections = {
+  layout: true,
+  containerWidth: true,
+  linksColumnCount: true,
+} satisfies Prisma.UserSelect;
 
 const appearanceRouter = createTRPCRouter({
   getProfile: protectedProcedure.query(async ({ ctx }) => {
@@ -72,6 +79,27 @@ const appearanceRouter = createTRPCRouter({
 
       return;
     }),
+
+  updateLayout: protectedProcedure.input(layoutSchema).mutation(async ({ ctx, input }) => {
+    const update = input;
+
+    const user = await ctx.prisma.user.update({
+      where: { id: ctx.session.user.id },
+      data: { ...update },
+      select: ThemeSelections,
+    });
+
+    return user;
+  }),
+
+  getLayout: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: LayoutSelections,
+    });
+
+    return user;
+  }),
 
   updateTheme: protectedProcedure.input(themeSchema).mutation(async ({ ctx, input }) => {
     const update = input;

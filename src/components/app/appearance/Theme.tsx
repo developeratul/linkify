@@ -12,16 +12,18 @@ import { z } from "zod";
 import SectionWrapper from "./common/SectionWrapper";
 
 export const themeSchema = z.object({
-  layout: z.enum(["WIDE", "CARD"]),
   themeColor: z.string().optional(),
   foreground: z.string().optional(),
   grayColor: z.string().optional(),
   bodyBackgroundType: z.enum(["COLOR", "IMAGE"]),
   bodyBackgroundColor: z.string().optional(),
   cardBackgroundColor: z.string().optional(),
+  cardShadow: z.enum(["sm", "md", "lg", "xl", "none"]),
 });
 
 type ThemeSchema = z.infer<typeof themeSchema>;
+
+const shadows = ["sm", "md", "lg", "xl", "none"];
 
 export default function Theme() {
   const [bodyBackgroundColor, cardBackgroundColor, themeColor, foreground, grayColor] = useToken(
@@ -33,7 +35,6 @@ export default function Theme() {
   const { register, watch, setValue, handleSubmit } = useForm<ThemeSchema>({
     resolver: zodResolver(themeSchema),
     defaultValues: {
-      layout: "WIDE",
       themeColor,
       foreground,
       bodyBackgroundType: "COLOR",
@@ -42,12 +43,12 @@ export default function Theme() {
       grayColor,
     },
   });
+
   const { isLoading } = api.appearance.getTheme.useQuery(undefined, {
     onSuccess(data) {
       if (data) {
         (
           Object.keys(data) as [
-            "layout",
             "themeColor",
             "foreground",
             "bodyBackgroundType",
@@ -56,12 +57,18 @@ export default function Theme() {
             "grayColor"
           ]
         ).map((key) => {
-          setValue(key, data[key] || "");
+          if (data[key]) {
+            setValue(key, data[key] as string);
+          }
         });
       }
     },
   });
+
+  const { data } = api.appearance.getLayout.useQuery();
+
   const { mutateAsync, isLoading: isProcessing } = api.appearance.updateTheme.useMutation();
+
   const utils = api.useContext();
   const previewContext = usePreviewContext();
 
@@ -80,15 +87,8 @@ export default function Theme() {
   if (isLoading) return <SectionLoader />;
 
   return (
-    <SectionWrapper title="Theme & Layout">
+    <SectionWrapper title="Theme">
       <Chakra.VStack as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
-        <Chakra.FormControl>
-          <Chakra.FormLabel>Page layout</Chakra.FormLabel>
-          <Chakra.Select {...register("layout")}>
-            <option value="WIDE">Wide</option>
-            <option value="CARD">Card</option>
-          </Chakra.Select>
-        </Chakra.FormControl>
         <Chakra.FormControl>
           <Chakra.FormLabel>Background type</Chakra.FormLabel>
           <Chakra.Select {...register("bodyBackgroundType")}>
@@ -105,12 +105,50 @@ export default function Theme() {
         ) : (
           <h1>Image</h1>
         )}
-        {watch("layout") === "CARD" && (
-          <ColorInput
-            label="Card background color"
-            value={watch("cardBackgroundColor") || ""}
-            onChange={(newColor) => setValue("cardBackgroundColor", newColor.hex)}
-          />
+        {data?.layout === "CARD" && (
+          <>
+            <ColorInput
+              label="Card background color"
+              value={watch("cardBackgroundColor") || ""}
+              onChange={(newColor) => setValue("cardBackgroundColor", newColor.hex)}
+            />
+            <Chakra.FormControl>
+              <Chakra.FormLabel>Card shadow</Chakra.FormLabel>
+              <Chakra.SimpleGrid columns={3} w="full" spacing={5}>
+                {shadows.map((shadow) => {
+                  const isSelected = watch("cardShadow") === shadow;
+                  return (
+                    <Chakra.Box
+                      {...(isSelected ? { borderWidth: 2, borderColor: "purple.500" } : {})}
+                      key={shadow}
+                      cursor="pointer"
+                      shadow={shadow}
+                      py={3}
+                      px={5}
+                      bg={watch("cardBackgroundColor")}
+                      rounded="lg"
+                      fontWeight="medium"
+                      textAlign="center"
+                      onClick={() => setValue("cardShadow", shadow as any)}
+                    >
+                      {isSelected ? (
+                        <Chakra.Radio
+                          spacing={5}
+                          isChecked={isSelected}
+                          readOnly
+                          colorScheme="purple"
+                        >
+                          {shadow}
+                        </Chakra.Radio>
+                      ) : (
+                        shadow
+                      )}
+                    </Chakra.Box>
+                  );
+                })}
+              </Chakra.SimpleGrid>
+            </Chakra.FormControl>
+          </>
         )}
         <ColorInput
           label="Theme color"
