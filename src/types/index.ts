@@ -11,7 +11,7 @@ export type Section = {
 };
 
 export type ProfileSection = Omit<Section, "links"> & {
-  links: Omit<Link, "hidden" | "clickCount">;
+  links: Omit<Link, "hidden" | "clickCount">[];
 };
 
 export type Link = {
@@ -23,7 +23,9 @@ export type Link = {
   hidden: boolean;
 };
 
-export type ProfileLink = ProfileSection["links"];
+export type ProfileLink = Omit<Link, "hidden" | "clickCount">;
+
+export type ProfileLinks = ProfileSection["links"];
 
 export type SocialLink = {
   id: string;

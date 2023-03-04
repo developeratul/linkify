@@ -1,8 +1,8 @@
 import { useProfileContext } from "@/providers/profile";
-import type { ProfileLink } from "@/types";
+import type { ProfileLink, ProfileLinks } from "@/types";
 import * as Chakra from "@chakra-ui/react";
 
-export default function Links(props: { links: ProfileLink[] }) {
+export default function Links(props: { links: ProfileLinks }) {
   const { links } = props;
 
   return (
