@@ -28,7 +28,7 @@ const questions: Question[] = [
   },
   {
     question: "How can I show my appreciation?",
-    answer: "Consider joining the waiting list and fund the project with a small donation :)",
+    answer: "Consider joining the wait list and fund the project with a small donation :)",
   },
 ];
 

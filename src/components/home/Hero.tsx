@@ -27,7 +27,7 @@ export default function Hero() {
               The one link that connects your audience
             </Chakra.Heading>
           </Chakra.VStack>
-          <Chakra.HStack spacing={5}>
+          <Chakra.HStack wrap="wrap" rowGap={{ base: 5, sm: 0 }} spacing={5}>
             <JoinWaitListButton size={{ base: "md", lg: "lg" }} />
             <SupportUsButton size={{ base: "md", lg: "lg" }} />
           </Chakra.HStack>
