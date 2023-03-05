@@ -1,3 +1,4 @@
+import { clientEnv } from "@/env/schema.mjs";
 import * as Chakra from "@chakra-ui/react";
 import SectionWrapper from "./common/SectionWrapper";
 
@@ -54,6 +55,14 @@ export default function FAQ() {
             </Chakra.AccordionItem>
           ))}
         </Chakra.Accordion>
+        <Chakra.Button
+          as="a"
+          target="_blank"
+          href={clientEnv.NEXT_PUBLIC_FAQ_FORM_URL}
+          colorScheme="purple"
+        >
+          Question not mentioned?
+        </Chakra.Button>
       </Chakra.VStack>
     </SectionWrapper>
   );
