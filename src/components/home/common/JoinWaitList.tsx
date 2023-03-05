@@ -1,4 +1,3 @@
-import { clientEnv } from "@/env/schema.mjs";
 import { Icon } from "@/Icons";
 import type { ButtonProps } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
@@ -10,7 +9,7 @@ export default function JoinWaitListButton(props: ButtonProps) {
       {...restProps}
       colorScheme={colorScheme}
       as="a"
-      href={clientEnv.NEXT_PUBLIC_WAITLIST_FORM_URL}
+      href="https://form.waitlistpanda.com/go/upmaaq1VwH2GrW75pJLY"
       target="_blank"
       leftIcon={<Icon name="Join" />}
     >
