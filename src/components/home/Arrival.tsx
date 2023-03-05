@@ -4,7 +4,7 @@ import SectionWrapper from "./common/SectionWrapper";
 
 export default function Arrival() {
   return (
-    <SectionWrapper bg="purple.100" id="arrival">
+    <SectionWrapper id="arrival">
       <Chakra.VStack spacing={5} maxW="container.md" mx="auto">
         <Chakra.Heading textAlign="center" size="lg" fontFamily="monospace">
           When we will be available?

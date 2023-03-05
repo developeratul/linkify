@@ -5,6 +5,7 @@ import FeaturesSection from "@/components/home/Features";
 import Footer from "@/components/home/Footer";
 import Hero from "@/components/home/Hero";
 import TopBar from "@/components/home/TopBar";
+import UseCase from "@/components/home/UseCase";
 import * as Chakra from "@chakra-ui/react";
 import { type NextPage } from "next";
 
@@ -20,6 +21,7 @@ const Home: NextPage = () => {
         <Hero />
       </Chakra.Box>
       <FeaturesSection />
+      <UseCase />
       <Arrival />
       <Author />
       <Footer />
