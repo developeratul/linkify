@@ -17,12 +17,12 @@ export default function Author() {
           w="full"
           justify={{ base: "center", lg: "space-between" }}
           maxW="container.xl"
-          spacing={10}
-          rowGap={10}
+          spacing={{ base: 0, lg: 10 }}
+          rowGap={{ base: 10, lg: 0 }}
           align={{ base: "center", lg: "start" }}
         >
           <Image src={Ratul} alt="Minhazur Rahaman Ratul" width={300} className="rounded-lg" />
-          <Chakra.VStack w="full" align="start" spacing={5}>
+          <Chakra.VStack align="start" spacing={5}>
             <Chakra.Heading size="md" fontFamily="monospace" color="purple.500">
               Minhazur Rahaman Ratul
             </Chakra.Heading>
@@ -47,7 +47,7 @@ export default function Author() {
                 assure you that the wait will be worthwhile.
               </Chakra.Text>
             </Chakra.VStack>
-            <Chakra.HStack flexWrap="wrap" overflow="hidden" rowGap={3} spacing={3}>
+            <Chakra.HStack flexWrap="wrap" rowGap={3} spacing={3}>
               <JoinWaitListButton />
               <Chakra.IconButton
                 href="http://twitter.com/developeratul"

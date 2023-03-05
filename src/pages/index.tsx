@@ -17,7 +17,12 @@ const Home: NextPage = () => {
         description="Linkify, The app that let's you connect with your audience with just one link."
       />
       <TopBar />
-      <Chakra.Box backgroundImage="/hero-bg.svg" backgroundPosition="center" backgroundSize="cover">
+      <Chakra.Box
+        bgPosition="center"
+        backgroundImage="/hero-bg.svg"
+        backgroundPosition="center"
+        backgroundSize="cover"
+      >
         <Hero />
       </Chakra.Box>
       <FeaturesSection />

@@ -103,6 +103,8 @@ export default function FeaturesSection() {
             spacing={10}
             shadow="sm"
             bg="white"
+            justify="center"
+            align="center"
             maxW="container.md"
           >
             {features.map((feature, index) => (
@@ -110,8 +112,8 @@ export default function FeaturesSection() {
                 flexDirection={{ base: "column", md: "row" }}
                 align={{ base: "center", md: "start" }}
                 key={index}
-                spacing={5}
-                rowGap={5}
+                spacing={{ base: 0, md: 5 }}
+                rowGap={{ base: 5, md: 0 }}
                 w="full"
               >
                 <Chakra.Heading bg={feature.color} color="white" rounded="lg" p={5}>
