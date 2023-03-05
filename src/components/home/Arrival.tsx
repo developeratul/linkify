@@ -7,7 +7,7 @@ export default function Arrival() {
     <SectionWrapper id="arrival">
       <Chakra.VStack spacing={5} maxW="container.md" mx="auto">
         <Chakra.Heading textAlign="center" size="lg" fontFamily="monospace">
-          When we will be available?
+          When will it be available?
         </Chakra.Heading>
         <Chakra.Text textAlign="center">
           We aim to launch our app by <b>April</b> having testimonials, forms, and the Developer API

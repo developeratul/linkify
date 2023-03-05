@@ -1,3 +1,4 @@
+import { clientEnv } from "@/env/schema.mjs";
 import * as Chakra from "@chakra-ui/react";
 import { IconExternalLink } from "@tabler/icons-react";
 import NextLink from "next/link";
@@ -6,14 +7,44 @@ import SectionWrapper from "./common/SectionWrapper";
 export default function Footer() {
   return (
     <SectionWrapper bg="purple.900" py={50} color="purple.50" id="footer" as="footer">
-      <Chakra.HStack align="start" justify="space-between">
+      <Chakra.HStack
+        flexDirection={{ base: "column", md: "row" }}
+        rowGap={{ base: 20, md: 0 }}
+        align="start"
+        justify="space-between"
+      >
         <FooterSectionWrapper title="Linkify">
           <Chakra.Text>&copy; {new Date().getFullYear()}</Chakra.Text>
         </FooterSectionWrapper>
         <FooterSection
+          title="Links"
+          links={[
+            {
+              text: "Join the waitlist",
+              url: clientEnv.NEXT_PUBLIC_WAITLIST_FORM_URL as string,
+              isExternal: true,
+            },
+            {
+              text: "Support and fund this project",
+              url: "https://www.buymeacoffee.com/Linkify",
+              isExternal: true,
+            },
+          ]}
+        />
+        <FooterSection
           title="Socials"
           links={[
             { text: "Twitter", url: "http://twitter.com/developeratul", isExternal: true },
+            {
+              text: "Linkedin",
+              url: "https://www.linkedin.com/in/minhazur-rahman-ratul-407352211",
+              isExternal: true,
+            },
+            {
+              text: "GitHub",
+              url: "http://github.com/developeratul",
+              isExternal: true,
+            },
             {
               text: "Buy me a coffee",
               url: "https://www.buymeacoffee.com/Linkify",
@@ -30,7 +61,7 @@ function FooterSectionWrapper(props: { children: React.ReactNode; title: string 
   const { title, children } = props;
   return (
     <Chakra.VStack spacing={5} align="start">
-      <Chakra.Heading fontSize="md" fontFamily="monospace">
+      <Chakra.Heading fontSize="lg" fontFamily="monospace">
         {title}
       </Chakra.Heading>
       {children}

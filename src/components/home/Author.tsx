@@ -28,13 +28,12 @@ export default function Author() {
             </Chakra.Heading>
             <Chakra.VStack spacing={3}>
               <Chakra.Text>
-                Hi! I am Ratul a 16 year old full stack developer from Bangladesh 🇧🇩. I have been
-                coding professionally for more than 2 years. But I was doing it in privately. No one
-                knew what I was doing. I came across Twitter and met a lot of developers out there.
-                They all were building and sharing their journey which attracted my interest. So, I
-                took inspiration from there and started working on Linkify. This is my first ever{" "}
-                <Chakra.Code>#buildinpublic</Chakra.Code> project from which I aim to generate a job
-                replaceable income.
+                Hi! I am Ratul a full stack developer from Bangladesh 🇧🇩. I have been coding
+                professionally for more than 2 years. But I was doing it privately. No one knew what
+                I was doing. I came across Twitter and met a lot of developers out there. They all
+                were building and sharing their journey which attracted my interest. So, I took
+                inspiration from there and started working on Linkify. This is going to be my first
+                ever <Chakra.Code>#buildinpublic</Chakra.Code> project.
               </Chakra.Text>
               <Chakra.Text>
                 Linkify aims to provide you everything you need in one place in order to connect

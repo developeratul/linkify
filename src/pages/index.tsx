@@ -1,6 +1,7 @@
 import { SEO } from "@/components/common/SEO";
 import Arrival from "@/components/home/Arrival";
 import Author from "@/components/home/Author";
+import FAQ from "@/components/home/FAQ";
 import FeaturesSection from "@/components/home/Features";
 import Footer from "@/components/home/Footer";
 import Hero from "@/components/home/Hero";
@@ -12,10 +13,7 @@ import { type NextPage } from "next";
 const Home: NextPage = () => {
   return (
     <Chakra.Box fontFamily="monospace" fontWeight="light" bg="purple.50">
-      <SEO
-        title="Home"
-        description="Linkify, The app that let's you connect with your audience with just one link."
-      />
+      <SEO title="Home" description="Connect with your audience with just one link using Linkify" />
       <TopBar />
       <Chakra.Box
         bgPosition="center"
@@ -29,6 +27,7 @@ const Home: NextPage = () => {
       <UseCase />
       <Arrival />
       <Author />
+      <FAQ />
       <Footer />
     </Chakra.Box>
   );
