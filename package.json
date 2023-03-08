@@ -28,6 +28,7 @@
     "@trpc/react-query": "^10.7.0",
     "@trpc/server": "^10.7.0",
     "axios": "^1.2.2",
+    "chroma-js": "^2.4.2",
     "cloudinary": "^1.33.0",
     "clsx": "^1.2.1",
     "framer-motion": "^8.2.4",
@@ -45,6 +46,7 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.0",
     "@types/node": "^18.11.18",
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.26",

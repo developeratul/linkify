@@ -30,7 +30,7 @@ export default function Wrapper(props: WrapperProps) {
   }
 
   return (
-    <Chakra.VStack color={profile?.foreground} w="full">
+    <Chakra.VStack spacing="20px" color={profile?.foreground} w="full">
       {children}
     </Chakra.VStack>
   );

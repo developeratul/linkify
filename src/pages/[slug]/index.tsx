@@ -14,6 +14,7 @@ const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { profile } = props;
+  console.log({ profile });
   return (
     <ProfileProvider profile={profile}>
       <SEO
@@ -21,7 +22,14 @@ const ProfilePage: NextPage<ProfileProps> = (
         description={profile.seoDescription || `@${profile.username}'s profile on Linkify`}
       />
       <Chakra.Box
-        background={profile.bodyBackgroundColor || "purple.50"}
+        background={
+          profile.bodyBackgroundType === "IMAGE"
+            ? `url('${profile.bodyBackgroundImage}')`
+            : profile.bodyBackgroundColor || "purple.50"
+        }
+        backgroundSize="cover"
+        backgroundPosition="center"
+        backgroundAttachment="fixed"
         minH="100vh"
         py={50}
         px={5}

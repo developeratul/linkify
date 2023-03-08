@@ -3,10 +3,15 @@ import { SectionLoader } from "@/components/common/Loader";
 import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
+import { getContrastColor } from "@/utils/contrast";
+import uploadFile from "@/utils/uploadFile";
 import * as Chakra from "@chakra-ui/react";
 import { useToast, useToken } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import type { ChangeEvent } from "react";
+import React from "react";
+import type { UseFormSetValue } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SectionWrapper from "./common/SectionWrapper";
@@ -17,6 +22,8 @@ export const themeSchema = z.object({
   grayColor: z.string().optional(),
   bodyBackgroundType: z.enum(["COLOR", "IMAGE"]),
   bodyBackgroundColor: z.string().optional(),
+  bodyBackgroundImage: z.string().optional(),
+  bodyBackgroundImagePublicId: z.string().optional(),
   cardBackgroundColor: z.string().optional(),
   cardShadow: z.enum(["sm", "md", "lg", "xl", "none"]),
 });
@@ -53,6 +60,8 @@ export default function Theme() {
             "foreground",
             "bodyBackgroundType",
             "bodyBackgroundColor",
+            "bodyBackgroundImage",
+            "bodyBackgroundImagePublicId",
             "cardBackgroundColor",
             "grayColor"
           ]
@@ -103,7 +112,11 @@ export default function Theme() {
             onChange={(newColor) => setValue("bodyBackgroundColor", newColor.hex)}
           />
         ) : (
-          <h1>Image</h1>
+          <AddBackgroundImage
+            bodyBackgroundImage={watch("bodyBackgroundImage")}
+            bodyBackgroundImagePublicId={watch("bodyBackgroundImagePublicId")}
+            setValue={setValue}
+          />
         )}
         {data?.layout === "CARD" && (
           <>
@@ -130,6 +143,7 @@ export default function Theme() {
                       fontWeight="medium"
                       textAlign="center"
                       onClick={() => setValue("cardShadow", shadow as any)}
+                      color={getContrastColor(watch("cardBackgroundColor") as string)}
                     >
                       {isSelected ? (
                         <Chakra.Radio
@@ -179,5 +193,72 @@ export default function Theme() {
         </Chakra.Button>
       </Chakra.VStack>
     </SectionWrapper>
+  );
+}
+
+function AddBackgroundImage(props: {
+  bodyBackgroundImage: string | undefined;
+  bodyBackgroundImagePublicId: string | undefined;
+  setValue: UseFormSetValue<ThemeSchema>;
+}) {
+  const { bodyBackgroundImage, bodyBackgroundImagePublicId, setValue } = props;
+
+  const [isImageUploading, setImageUploading] = React.useState(false);
+
+  const { mutateAsync, isLoading } = api.appearance.deleteImage.useMutation();
+  const utils = api.useContext();
+  const previewContext = usePreviewContext();
+
+  const handleImageInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setImageUploading(true);
+    try {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        const { secure_url, public_id } = await uploadFile(file);
+        setValue("bodyBackgroundImage", secure_url);
+        setValue("bodyBackgroundImagePublicId", public_id);
+      }
+    } catch (err) {
+      //
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    if (!bodyBackgroundImage || !bodyBackgroundImagePublicId) return;
+    try {
+      await mutateAsync();
+      setValue("bodyBackgroundImage", undefined);
+      setValue("bodyBackgroundImagePublicId", undefined);
+      await utils.appearance.getTheme.invalidate();
+      previewContext?.reload();
+    } catch (err) {}
+  };
+
+  return (
+    <Chakra.FormControl>
+      <Chakra.FormLabel>Image</Chakra.FormLabel>
+      {bodyBackgroundImage ? (
+        <Chakra.VStack>
+          <Chakra.Image src={bodyBackgroundImage} alt="Background image" w="full" rounded="md" />
+          <Chakra.Button
+            isLoading={isLoading}
+            onClick={handleRemoveImage}
+            w="full"
+            colorScheme="red"
+          >
+            Remove
+          </Chakra.Button>
+        </Chakra.VStack>
+      ) : (
+        <Chakra.Input
+          disabled={isImageUploading}
+          onChange={handleImageInputChange}
+          accept="image/*"
+          type="file"
+        />
+      )}
+    </Chakra.FormControl>
   );
 }

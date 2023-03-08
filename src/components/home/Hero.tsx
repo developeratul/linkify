@@ -29,7 +29,7 @@ export default function Hero() {
           </Chakra.VStack>
           <Chakra.HStack wrap="wrap" rowGap={{ base: 5, sm: 0 }} spacing={5}>
             <JoinWaitListButton size={{ base: "md", lg: "lg" }} />
-            <SupportUsButton size={{ base: "md", lg: "lg" }} />
+            <SupportUsButton variant="outline" size={{ base: "md", lg: "lg" }} />
           </Chakra.HStack>
         </Chakra.VStack>
       </Chakra.VStack>

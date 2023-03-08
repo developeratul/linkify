@@ -13,6 +13,8 @@ export const ThemeSelections = {
   grayColor: true,
   bodyBackgroundType: true,
   bodyBackgroundColor: true,
+  bodyBackgroundImage: true,
+  bodyBackgroundImagePublicId: true,
   cardBackgroundColor: true,
   cardShadow: true,
 } satisfies Prisma.UserSelect;
@@ -120,6 +122,28 @@ const appearanceRouter = createTRPCRouter({
     });
 
     return user;
+  }),
+
+  deleteImage: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: { bodyBackgroundImage: true, bodyBackgroundImagePublicId: true },
+    });
+
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    const { bodyBackgroundImage, bodyBackgroundImagePublicId } = user;
+
+    if (bodyBackgroundImage && bodyBackgroundImagePublicId) {
+      await cloudinary.uploader.destroy(bodyBackgroundImagePublicId);
+    }
+
+    await ctx.prisma.user.update({
+      where: { id: ctx.session.user.id },
+      data: { bodyBackgroundImage: null, bodyBackgroundImagePublicId: null },
+    });
+
+    return;
   }),
 });
 

@@ -1,6 +1,7 @@
 import { SocialIcon } from "@/Icons";
 import { useProfileContext } from "@/providers/profile";
 import { SocialLink } from "@/types";
+import { getContrastColor } from "@/utils/contrast";
 import * as Chakra from "@chakra-ui/react";
 
 export default function SocialLinks() {
@@ -12,8 +13,8 @@ export default function SocialLinks() {
       direction="row"
       justify="center"
       align="center"
-      columnGap="10px"
-      rowGap="10px"
+      columnGap="5px"
+      rowGap="5px"
     >
       {profile?.socialLinks.map((socialLink) => (
         <SocialLink key={socialLink.id} link={socialLink} />
@@ -29,7 +30,7 @@ function SocialLink(props: { link: SocialLink }) {
     <Chakra.Stack
       background={profile?.themeColor}
       rounded={6}
-      color="white"
+      color={getContrastColor(profile?.themeColor as string)}
       cursor="pointer"
       boxSize="40px"
       justify="center"
