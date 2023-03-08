@@ -82,6 +82,17 @@ model User {
     containerWidth              Int            @default(768)
     cardShadow                  CardShadow     @default(none)
     linksColumnCount            Int            @default(1)
+    buttonStyle                 ButtonStyle    @default(ROUNDED)
+    buttonBackground            String?
+}
+
+enum ButtonStyle {
+    SHARP
+    ROUNDED
+    CIRCLE
+    SHARP_OUTLINED
+    ROUNDED_OUTLINED
+    CIRCLE_OUTLINED
 }
 
 enum CardShadow {

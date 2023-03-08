@@ -132,7 +132,7 @@ export default function Theme() {
                   const isSelected = watch("cardShadow") === shadow;
                   return (
                     <Chakra.Box
-                      {...(isSelected ? { borderWidth: 2, borderColor: "purple.500" } : {})}
+                      {...(isSelected ? { borderWidth: 2, borderColor: "blue.300" } : {})}
                       key={shadow}
                       cursor="pointer"
                       shadow={shadow}

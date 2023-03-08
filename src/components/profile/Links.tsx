@@ -2,6 +2,7 @@ import { useProfileContext } from "@/providers/profile";
 import type { ProfileLink, ProfileLinks } from "@/types";
 import { getContrastColor } from "@/utils/contrast";
 import * as Chakra from "@chakra-ui/react";
+import { buttonImageRoundness, buttonVariantProps } from "../app/appearance/Button";
 
 export default function Links(props: { links: ProfileLinks }) {
   const { links } = props;
@@ -19,15 +20,23 @@ export default function Links(props: { links: ProfileLinks }) {
 function Link(props: { link: ProfileLink }) {
   const { link } = props;
   const profile = useProfileContext();
+  if (profile === undefined) return <></>;
+  const isOutlinedButton = profile.buttonStyle.split("_").includes("OUTLINED");
+  const buttonTextColor = isOutlinedButton
+    ? profile.layout === "CARD"
+      ? getContrastColor(profile.cardBackgroundColor)
+      : getContrastColor(profile.bodyBackgroundColor)
+    : getContrastColor(profile.buttonBackground || (profile.themeColor as string));
   return (
     <Chakra.Box
       as="a"
       target="_blank"
       href={link.url}
       rounded="md"
-      color="white"
       w="full"
-      bg={profile?.themeColor}
+      bg={profile.buttonBackground || profile.themeColor}
+      {...buttonVariantProps[profile?.buttonStyle as string]}
+      borderColor={profile.buttonBackground || profile.themeColor}
       transition="100ms"
       transformOrigin="top"
       _hover={{
@@ -36,9 +45,15 @@ function Link(props: { link: ProfileLink }) {
       px={2}
     >
       <Chakra.HStack>
-        {link.thumbnail && <Chakra.Image boxSize={45} rounded="lg" src={link.thumbnail} />}
+        {link.thumbnail && (
+          <Chakra.Image
+            rounded={buttonImageRoundness[profile.buttonStyle]}
+            boxSize={45}
+            src={link.thumbnail}
+          />
+        )}
         <Chakra.Text
-          color={getContrastColor(profile?.themeColor as string)}
+          color={buttonTextColor}
           noOfLines={1}
           py={4}
           textAlign="center"

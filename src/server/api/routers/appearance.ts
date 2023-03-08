@@ -1,3 +1,4 @@
+import { buttonSchema } from "@/components/app/appearance/Button";
 import { layoutSchema } from "@/components/app/appearance/Layout";
 import { updateProfileSchema } from "@/components/app/appearance/Profile";
 import { themeSchema } from "@/components/app/appearance/Theme";
@@ -143,6 +144,27 @@ const appearanceRouter = createTRPCRouter({
       data: { bodyBackgroundImage: null, bodyBackgroundImagePublicId: null },
     });
 
+    return;
+  }),
+
+  getButtonStyle: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: {
+        buttonStyle: true,
+        buttonBackground: true,
+      },
+    });
+
+    return user;
+  }),
+
+  updateButtonStyle: protectedProcedure.input(buttonSchema).mutation(async ({ ctx, input }) => {
+    const update = input;
+    const updated = await ctx.prisma.user.update({
+      where: { id: ctx.session.user.id },
+      data: { ...update },
+    });
     return;
   }),
 });

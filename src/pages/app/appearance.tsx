@@ -1,3 +1,4 @@
+import Button from "@/components/app/appearance/Button";
 import Layout from "@/components/app/appearance/Layout";
 import { Profile } from "@/components/app/appearance/Profile";
 import Theme from "@/components/app/appearance/Theme";
@@ -11,6 +12,7 @@ const AppearancePage: NextPageWithLayout = () => {
       <Profile />
       <Layout />
       <Theme />
+      <Button />
     </Chakra.VStack>
   );
 };

@@ -5,6 +5,9 @@ import Links from "./Links";
 
 export default function Sections() {
   const profile = useProfileContext();
+
+  if (!profile?.sections.length) return <></>;
+
   return (
     <Chakra.VStack spacing="20px" align="start" w="full">
       {profile?.sections.map((section) => (

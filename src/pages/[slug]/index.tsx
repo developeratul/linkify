@@ -1,7 +1,9 @@
+import { SEO } from "@/components/common/SEO";
 import Container from "@/components/profile/Container";
 import ProfileImage from "@/components/profile/Image";
 import Sections from "@/components/profile/Sections";
 import SocialLinks from "@/components/profile/SocialLinks";
+import Wrapper from "@/components/profile/Wrapper";
 import ProfileProvider from "@/providers/profile";
 import * as Chakra from "@chakra-ui/react";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
@@ -14,7 +16,6 @@ const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { profile } = props;
-  console.log({ profile });
   return (
     <ProfileProvider profile={profile}>
       <SEO
@@ -47,8 +48,9 @@ const ProfilePage: NextPage<ProfileProps> = (
               </Chakra.Heading>
               <Chakra.Text fontSize={16}>{profile.bio}</Chakra.Text>
             </Chakra.VStack>
-            <SocialLinks />
+            {profile.socialIconPlacement === "TOP" && <SocialLinks />}
             <Sections />
+            {profile.socialIconPlacement === "BOTTOM" && <SocialLinks />}
           </Wrapper>
         </Container>
       </Chakra.Box>
@@ -58,12 +60,16 @@ const ProfilePage: NextPage<ProfileProps> = (
 
 export default ProfilePage;
 
-import { SEO } from "@/components/common/SEO";
-import Wrapper from "@/components/profile/Wrapper";
 import { LinkSelections } from "@/server/api/routers/link";
 import { prisma } from "@/server/db";
 import type { ProfileSection, SocialLink } from "@/types";
-import type { BackgroundType, CardShadow, Layout, SocialIconPlacement } from "@prisma/client";
+import type {
+  BackgroundType,
+  ButtonStyle,
+  CardShadow,
+  Layout,
+  SocialIconPlacement,
+} from "@prisma/client";
 
 export type Profile = {
   username: string | null;
@@ -82,6 +88,8 @@ export type Profile = {
   themeColor?: string | null;
   grayColor?: string | null;
   foreground?: string | null;
+  buttonStyle: ButtonStyle;
+  buttonBackground?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   socialIconPlacement?: SocialIconPlacement;
@@ -114,6 +122,8 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       themeColor: true,
       grayColor: true,
       foreground: true,
+      buttonStyle: true,
+      buttonBackground: true,
       sections: {
         select: {
           id: true,
