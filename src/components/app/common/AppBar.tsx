@@ -119,7 +119,8 @@ export function SharePopover() {
               <Chakra.PopoverBody>
                 <Chakra.VStack spacing="3">
                   <Chakra.Text>
-                    Once you have finished setting up your tree, you can now share this link on media platforms!
+                    Once you have finished setting up your tree, you can now share this link on
+                    media platforms!
                   </Chakra.Text>
                   <Chakra.InputGroup size="md">
                     <Chakra.Input fontSize="sm" pr="4.5rem" value={link} readOnly />

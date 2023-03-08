@@ -52,6 +52,7 @@ export default ProfilePage;
 
 import { SEO } from "@/components/common/SEO";
 import Wrapper from "@/components/profile/Wrapper";
+import { LinkSelections } from "@/server/api/routers/link";
 import { prisma } from "@/server/db";
 import type { ProfileSection, SocialLink } from "@/types";
 import type { BackgroundType, CardShadow, Layout, SocialIconPlacement } from "@prisma/client";
@@ -112,10 +113,9 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
           links: {
             where: { hidden: false },
             select: {
-              id: true,
-              text: true,
-              url: true,
-              thumbnail: true,
+              ...LinkSelections,
+              hidden: false,
+              clickCount: false,
             },
             orderBy: {
               index: "asc",
