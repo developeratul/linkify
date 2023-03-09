@@ -30,6 +30,7 @@ export function Link(props: LinkProps) {
               <AddThumbnail link={link}>
                 {link.thumbnail ? (
                   <Chakra.Image
+                    alt="Thumbnail"
                     rounded="md"
                     fallbackSrc="https://via.placeholder.com/50"
                     fit="cover"
@@ -39,6 +40,7 @@ export function Link(props: LinkProps) {
                   />
                 ) : (
                   <Chakra.Image
+                    alt="No thumbnail"
                     rounded="md"
                     src={`https://via.placeholder.com/50/EEEBFF/6647FF`}
                     cursor="pointer"

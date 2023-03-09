@@ -40,6 +40,7 @@ function SocialLink(props: { link: SocialLink }) {
       justify="center"
       align="center"
       as="a"
+      aria-label={link.url}
       target="_blank"
       href={link.url}
       referrerPolicy="no-referrer"
