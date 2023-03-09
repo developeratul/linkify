@@ -1,3 +1,4 @@
+import { Conditional } from "@/components/common/Conditional";
 import Loader from "@/components/common/Loader";
 import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
@@ -105,15 +106,26 @@ export function PreviewPanel() {
       right={0}
       w="full"
       h="calc(100vh - 96px)"
-      maxW={{ base: "full", md: 350, lg: 450, xl: 500, "2xl": 550 }}
+      maxW={{ base: "full", md: 450, xl: 500, "2xl": 550 }}
       display={{ base: "none", md: "block" }}
       rounded="md"
       overflow="hidden"
-      bg="purple.200"
-      borderWidth={1}
-      borderColor="purple.300"
+      borderLeftWidth={1}
+      borderColor="purple.100"
     >
-      {isLoading ? <Loader /> : <iframe className="h-full w-full" src={`/${username}`} ref={ref} />}
+      <Conditional
+        condition={!isLoading}
+        component={
+          <Chakra.Center w="full" h="full" p={10}>
+            <iframe
+              className="mx-auto h-full w-full max-w-sm rounded-3xl border-8 border-gray-900"
+              src={`/${username}`}
+              ref={ref}
+            />
+          </Chakra.Center>
+        }
+        fallback={<Loader />}
+      />
     </Chakra.VStack>
   );
 }

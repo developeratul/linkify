@@ -33,7 +33,7 @@ const ProfilePage: NextPage<ProfileProps> = (
         backgroundAttachment="fixed"
         minH="100vh"
         py={50}
-        px={5}
+        px={{ base: 3, md: 5 }}
       >
         <Container>
           <Wrapper>

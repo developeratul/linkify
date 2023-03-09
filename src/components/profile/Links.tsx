@@ -54,14 +54,7 @@ function Link(props: { link: ProfileLink }) {
             src={link.thumbnail}
           />
         )}
-        <Chakra.Text
-          color={buttonTextColor}
-          noOfLines={1}
-          py={4}
-          textAlign="center"
-          w="full"
-          fontWeight="medium"
-        >
+        <Chakra.Text color={buttonTextColor} py={4} textAlign="center" w="full" fontWeight="medium">
           {link.text}
         </Chakra.Text>
       </Chakra.HStack>

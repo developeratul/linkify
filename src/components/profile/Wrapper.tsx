@@ -23,7 +23,7 @@ export default function Wrapper(props: WrapperProps) {
         bg={profile.cardBackgroundColor}
         as="fieldset"
         pb={10}
-        px={10}
+        px={{ base: 5, md: 10 }}
         rounded="lg"
         shadow={profile.cardShadow}
         {...defaultProps}
