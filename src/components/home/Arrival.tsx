@@ -6,7 +6,7 @@ export default function Arrival() {
   return (
     <SectionWrapper id="arrival">
       <Chakra.VStack spacing={5} maxW="container.md" mx="auto">
-        <Chakra.Heading textAlign="center" size="lg" fontFamily="monospace">
+        <Chakra.Heading textAlign="center" size="lg">
           When will it be available?
         </Chakra.Heading>
         <Chakra.Text textAlign="center">

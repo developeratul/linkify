@@ -36,9 +36,7 @@ export default function UseCase() {
         align={{ base: "center", md: "start" }}
       >
         <Chakra.VStack w="full" align="start" spacing={10}>
-          <Chakra.Heading fontFamily="monospace" size="lg">
-            Who is it for?
-          </Chakra.Heading>
+          <Chakra.Heading size="lg">Who is it for?</Chakra.Heading>
           <Chakra.VStack w="full">
             <Chakra.SimpleGrid w="full" spacing={5} columns={{ base: 1, lg: 2 }}>
               {useCases.map((useCase, index) => (
@@ -46,9 +44,9 @@ export default function UseCase() {
                   <Chakra.Heading size="lg" color="purple.500">
                     <useCase.icon size={30} />
                   </Chakra.Heading>
-                  <Chakra.Heading w="full" textAlign="center" fontSize={18} fontFamily="monospace">
+                  <Chakra.Text fontWeight="medium" w="full" textAlign="center" fontSize={18}>
                     {useCase.name}
-                  </Chakra.Heading>
+                  </Chakra.Text>
                 </Chakra.HStack>
               ))}
             </Chakra.SimpleGrid>

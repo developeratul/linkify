@@ -63,7 +63,7 @@ export default function FeaturesSection() {
   return (
     <SectionWrapper id="features-section">
       <Chakra.VStack spacing={10} justify="center">
-        <Chakra.Heading size="lg" fontFamily="monospace" textAlign="center">
+        <Chakra.Heading size="lg" textAlign="center">
           We provide everything you need
         </Chakra.Heading>
         <Chakra.VStack spacing={5} w="full">
@@ -83,12 +83,7 @@ export default function FeaturesSection() {
                   <Chakra.Heading bg={feature.color} color="white" p={5} rounded="xl">
                     <feature.icon size={30} stroke={1.5} />
                   </Chakra.Heading>
-                  <Chakra.Text
-                    fontFamily="monospace"
-                    textAlign="center"
-                    color="gray.600"
-                    fontSize="lg"
-                  >
+                  <Chakra.Text textAlign="center" color="gray.600" fontSize="lg">
                     {feature.title}
                   </Chakra.Text>
                 </Chakra.VStack>
@@ -98,7 +93,7 @@ export default function FeaturesSection() {
 
           <Chakra.VStack
             w="full"
-            p={5}
+            p={10}
             rounded="lg"
             spacing={10}
             shadow="sm"
@@ -125,7 +120,7 @@ export default function FeaturesSection() {
                   w="full"
                   spacing={3}
                 >
-                  <Chakra.Heading w="full" fontWeight="medium" fontFamily="monospace" size="md">
+                  <Chakra.Heading w="full" size="md">
                     {feature.title}
                   </Chakra.Heading>
                   <Chakra.Text color="GrayText">{feature.description}</Chakra.Text>

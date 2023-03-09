@@ -36,7 +36,7 @@ export default function FAQ() {
   return (
     <SectionWrapper id="faq">
       <Chakra.VStack w="full" spacing={10}>
-        <Chakra.Heading textAlign="center" fontFamily="monospace" size="lg">
+        <Chakra.Heading textAlign="center" size="lg">
           Frequently Asked Questions
         </Chakra.Heading>
         <Chakra.Accordion allowToggle w="full">

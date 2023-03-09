@@ -60,9 +60,7 @@ function FooterSectionWrapper(props: { children: React.ReactNode; title: string 
   const { title, children } = props;
   return (
     <Chakra.VStack spacing={5} align="start">
-      <Chakra.Heading fontSize="lg" fontFamily="monospace">
-        {title}
-      </Chakra.Heading>
+      <Chakra.Heading fontSize="lg">{title}</Chakra.Heading>
       {children}
     </Chakra.VStack>
   );

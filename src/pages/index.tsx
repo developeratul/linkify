@@ -13,7 +13,7 @@ const Arrival = dynamic(() => import("@/components/home/Arrival"));
 
 const Home: NextPage = () => {
   return (
-    <Chakra.Box fontFamily="monospace" fontWeight="light" bg="purple.50">
+    <Chakra.Box fontWeight="light" bg="purple.50">
       <SEO title="Home" description="Connect with your audience with just one link using Linkify" />
       <TopBar />
       <Chakra.Box

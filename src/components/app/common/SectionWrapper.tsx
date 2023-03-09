@@ -12,7 +12,7 @@ export default function SectionWrapper(props: Props) {
   return (
     <Chakra.VStack gap={2} w="full" align="start">
       <Chakra.HStack justify="space-between" w="full" align="center">
-        <Chakra.Heading size="md" color="purple.600" fontWeight="medium">
+        <Chakra.Heading size="md" color="purple.600">
           {title}
         </Chakra.Heading>
         {cta}

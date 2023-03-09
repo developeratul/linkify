@@ -21,7 +21,6 @@ export default function Hero() {
               w="full"
               maxW="715"
               fontSize={{ base: "30", sm: "40", md: "50", lg: "60" }}
-              fontFamily="monospace"
               lineHeight={{ base: "base", lg: "80px" }}
             >
               The one link that connects your audience

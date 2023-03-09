@@ -9,7 +9,7 @@ export default function Author() {
   return (
     <SectionWrapper bg="purple.100" id="author">
       <Chakra.VStack spacing={10}>
-        <Chakra.Heading fontFamily="monospace" size="lg">
+        <Chakra.Heading size="lg">
           Who is building <b>Linkify</b>
         </Chakra.Heading>
         <Chakra.HStack
@@ -23,7 +23,7 @@ export default function Author() {
         >
           <Image src={Ratul} alt="Minhazur Rahaman Ratul" width={300} className="rounded-lg" />
           <Chakra.VStack align="start" spacing={5}>
-            <Chakra.Heading size="md" fontFamily="monospace" color="purple.500">
+            <Chakra.Heading size="md" color="purple.500">
               Minhazur Rahaman Ratul
             </Chakra.Heading>
             <Chakra.VStack spacing={3}>
