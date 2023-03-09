@@ -1,5 +1,6 @@
 import { Conditional } from "@/components/common/Conditional";
 import { usePreviewContext } from "@/providers/preview";
+import type { Link } from "@/types";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
 import * as Chakra from "@chakra-ui/react";
@@ -9,7 +10,6 @@ import { AxiosError } from "axios";
 import type { ChangeEvent } from "react";
 import React from "react";
 import * as z from "zod";
-import type { Link } from ".";
 import { RemoveThumbnail } from "./RemoveThumbnail";
 
 export const addThumbnailSchema = z.object({
@@ -147,13 +147,23 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
           <Conditional
             condition={isEditingThumbnail}
             component={
-              <Chakra.Button w="full" size="sm" colorScheme="purple" onClick={handleSave} isLoading={isLoading}>
+              <Chakra.Button
+                w="full"
+                size="sm"
+                colorScheme="purple"
+                onClick={handleSave}
+                isLoading={isLoading}
+              >
                 Save
               </Chakra.Button>
             }
             fallback={
               <Chakra.HStack>
-                <Chakra.Button onClick={() => setEditingThumbnail(true)} size="sm" colorScheme="purple">
+                <Chakra.Button
+                  onClick={() => setEditingThumbnail(true)}
+                  size="sm"
+                  colorScheme="purple"
+                >
                   Edit
                 </Chakra.Button>
                 <RemoveThumbnail linkId={linkId} />

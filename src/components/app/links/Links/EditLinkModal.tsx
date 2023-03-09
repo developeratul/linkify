@@ -1,5 +1,6 @@
 import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
+import type { Link } from "@/types";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
@@ -7,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import type { Link } from ".";
 import { DeleteLink } from "./DeleteLink";
 
 export const editLinkSchema = z.object({
@@ -61,7 +61,12 @@ export function EditLinkModal(props: EditLinkProps) {
         <Chakra.ModalHeader>Edit link</Chakra.ModalHeader>
         <Chakra.ModalCloseButton />
         <Chakra.ModalBody>
-          <Chakra.VStack as="form" id="edit-link-form" onSubmit={handleSubmit(onSubmit)} spacing={5}>
+          <Chakra.VStack
+            as="form"
+            id="edit-link-form"
+            onSubmit={handleSubmit(onSubmit)}
+            spacing={5}
+          >
             <Chakra.FormControl isRequired isInvalid={!!formState.errors.text}>
               <Chakra.FormLabel>Text</Chakra.FormLabel>
               <Chakra.Input {...register("text")} />

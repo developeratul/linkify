@@ -17,10 +17,7 @@
  *
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import type { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
-import type { IncomingMessage } from "http";
 import { type Session } from "next-auth";
-import type ws from "ws";
 
 import { prisma } from "../db";
 
@@ -49,11 +46,7 @@ const createInnerTRPCContext = async (opts: CreateContextOptions) => {
  * process every request that goes through your tRPC endpoint
  * @link https://trpc.io/docs/context
  */
-export const createTRPCContext = async (
-  opts:
-    | CreateNextContextOptions
-    | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
-) => {
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerAuthSession(opts);
 
@@ -72,14 +65,12 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { getServerAuthSession } from "../auth";
 
-export const t = initTRPC
-  .context<Awaited<ReturnType<typeof createTRPCContext>>>()
-  .create({
-    transformer: superjson,
-    errorFormatter({ shape }) {
-      return shape;
-    },
-  });
+export const t = initTRPC.context<Awaited<ReturnType<typeof createTRPCContext>>>().create({
+  transformer: superjson,
+  errorFormatter({ shape }) {
+    return shape;
+  },
+});
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)

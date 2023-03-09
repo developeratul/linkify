@@ -21,12 +21,14 @@ function Link(props: { link: ProfileLink }) {
   const { link } = props;
   const profile = useProfileContext();
   if (profile === undefined) return <></>;
+
   const isOutlinedButton = profile.buttonStyle.split("_").includes("OUTLINED");
   const buttonTextColor = isOutlinedButton
     ? profile.layout === "CARD"
       ? getContrastColor(profile.cardBackgroundColor)
       : getContrastColor(profile.bodyBackgroundColor)
     : getContrastColor(profile.buttonBackground || (profile.themeColor as string));
+
   return (
     <Chakra.Box
       as="a"

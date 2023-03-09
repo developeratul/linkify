@@ -37,7 +37,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
   ]);
   const value: InitialState = {
     ...profile,
-    profileTitle: profile.profileTitle || profile.username,
+    profileTitle: profile.profileTitle || `${profile.username}`,
     bodyBackgroundColor: profile.bodyBackgroundColor || purple50,
     cardBackgroundColor: profile.cardBackgroundColor || purple100,
     themeColor: profile.themeColor || purple500,

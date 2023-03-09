@@ -1,14 +1,15 @@
 import { SEO } from "@/components/common/SEO";
-import Arrival from "@/components/home/Arrival";
-import Author from "@/components/home/Author";
-import FAQ from "@/components/home/FAQ";
-import FeaturesSection from "@/components/home/Features";
-import Footer from "@/components/home/Footer";
-import Hero from "@/components/home/Hero";
-import TopBar from "@/components/home/TopBar";
-import UseCase from "@/components/home/UseCase";
 import * as Chakra from "@chakra-ui/react";
 import { type NextPage } from "next";
+import dynamic from "next/dynamic";
+const Author = dynamic(() => import("@/components/home/Author"));
+const FAQ = dynamic(() => import("@/components/home/FAQ"));
+const FeaturesSection = dynamic(() => import("@/components/home/Features"));
+const Footer = dynamic(() => import("@/components/home/Footer"));
+const Hero = dynamic(() => import("@/components/home/Hero"));
+const TopBar = dynamic(() => import("@/components/home/TopBar"));
+const UseCase = dynamic(() => import("@/components/home/UseCase"));
+const Arrival = dynamic(() => import("@/components/home/Arrival"));
 
 const Home: NextPage = () => {
   return (

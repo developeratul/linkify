@@ -11,7 +11,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { AddSocialLinkModal } from "./AddSocialLinkModal";
 import { SocialLink } from "./SocialLink";
 
-export function SocialLinks() {
+export default function SocialLinks() {
   const { isLoading, isError, error, data } = api.socialLink.get.useQuery();
   const { mutateAsync } = api.socialLink.reorder.useMutation();
   const utils = api.useContext();

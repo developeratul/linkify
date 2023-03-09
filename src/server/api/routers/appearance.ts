@@ -161,7 +161,7 @@ const appearanceRouter = createTRPCRouter({
 
   updateButtonStyle: protectedProcedure.input(buttonSchema).mutation(async ({ ctx, input }) => {
     const update = input;
-    const updated = await ctx.prisma.user.update({
+    await ctx.prisma.user.update({
       where: { id: ctx.session.user.id },
       data: { ...update },
     });

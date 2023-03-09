@@ -1,4 +1,3 @@
-import { clientEnv } from "@/env/schema.mjs";
 import * as Chakra from "@chakra-ui/react";
 import { IconExternalLink } from "@tabler/icons-react";
 import NextLink from "next/link";
@@ -21,7 +20,7 @@ export default function Footer() {
           links={[
             {
               text: "Join the waitlist",
-              url: clientEnv.NEXT_PUBLIC_WAITLIST_FORM_URL as string,
+              url: "https://form.waitlistpanda.com/go/upmaaq1VwH2GrW75pJLY",
               isExternal: true,
             },
             {
