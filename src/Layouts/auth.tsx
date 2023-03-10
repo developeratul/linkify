@@ -16,7 +16,7 @@ export function AuthLayout(props: AuthLayoutProps) {
         <Link href="/">
           <Image width={250} src={LogoSrc} alt="Linkify logo" />
         </Link>
-        <Chakra.Heading>{title}</Chakra.Heading>
+        <Chakra.Heading size="lg">{title}</Chakra.Heading>
         <Chakra.Card size="lg" w="full" bg="white">
           <Chakra.CardBody>{children}</Chakra.CardBody>
         </Chakra.Card>
