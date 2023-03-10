@@ -13,7 +13,7 @@ export default function JoinWaitListButton(props: ButtonProps) {
       target="_blank"
       leftIcon={<Icon name="Join" />}
     >
-      Join WaitList
+      Join Waitlist
     </Button>
   );
 }

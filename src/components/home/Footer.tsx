@@ -28,6 +28,11 @@ export default function Footer() {
               url: "https://www.buymeacoffee.com/Linkify",
               isExternal: true,
             },
+            {
+              text: "Ask a question",
+              url: "https://forms.gle/McpuxaQJ9hLQ6H1X6",
+              isExternal: true,
+            },
           ]}
         />
         <FooterSection

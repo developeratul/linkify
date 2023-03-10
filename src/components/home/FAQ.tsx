@@ -23,7 +23,7 @@ const questions: Question[] = [
       "Linkify is not just a link-in-bio tool but also an all-in-one tool that has a bigger purpose than just showcasing your links. You can collect testimonials, form submissions, and interact with your audience by sending them automated newsletters. Also, the customizability of Linkify will be better than any other tool available on the market.",
   },
   {
-    question: "Is is it going to be free?",
+    question: "Is it going to be free?",
     answer: "It will be mostly free but some of the parts will require a subscription.",
   },
   {

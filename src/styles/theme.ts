@@ -31,5 +31,10 @@ export const theme = extendTheme({
         fontWeight: "normal",
       },
     },
+    Link: {
+      baseStyle: {
+        fontWeight: "normal",
+      },
+    },
   },
 });

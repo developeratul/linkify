@@ -22,8 +22,8 @@ const useCases: UseCase[] = [
   { name: "Content Creators", icon: IconUserCheck },
   { name: "Influencers", icon: IconAccessPoint },
   { name: "Marketers", icon: IconAffiliate },
-  { name: "Couch/Mentors", icon: IconSchool },
-  { name: "Any internet guy", icon: IconUser },
+  { name: "Coach/Mentors", icon: IconSchool },
+  { name: "Affiliates", icon: IconUser },
 ];
 
 export default function UseCase() {
