@@ -1,4 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
+import { Analytics } from "@vercel/analytics/react";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
@@ -29,6 +30,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
         <ProgressBar />
         {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>
+      <Analytics />
     </SessionProvider>
   );
 };
