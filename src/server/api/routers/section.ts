@@ -20,12 +20,12 @@ export const SectionSelections = {
 
 export const sectionRouter = createTRPCRouter({
   getWithLinks: protectedProcedure.query(async ({ ctx }) => {
-    const sections = await SectionService.getWithLinks(ctx.session.user.id);
+    const sections = await SectionService.findManyWithLinks(ctx.session.user.id);
     return sections;
   }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {
-    const previousSection = await SectionService.getPreviousSection(ctx.session.user.id);
+    const previousSection = await SectionService.findLast(ctx.session.user.id);
 
     let section;
 
@@ -86,7 +86,7 @@ export const sectionRouter = createTRPCRouter({
     });
 
     // update the order of current sections
-    const updatedSectionsList = await SectionService.getWithLinks(userId);
+    const updatedSectionsList = await SectionService.findManyWithLinks(userId);
     updatedSectionsList.map(async (item, index) => {
       await ctx.prisma.section.update({
         where: { id: item.id },
