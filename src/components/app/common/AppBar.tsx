@@ -75,7 +75,6 @@ export default function AppBar() {
 
 export function AppMenu() {
   const { data } = useSession();
-  console.log({ data });
   return (
     <Chakra.Menu>
       <Chakra.MenuButton>

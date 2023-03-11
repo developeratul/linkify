@@ -21,7 +21,6 @@ export const SectionSelections = {
 export const sectionRouter = createTRPCRouter({
   getWithLinks: protectedProcedure.query(async ({ ctx }) => {
     const sections = await SectionService.getWithLinks(ctx.session.user.id);
-    console.log({ sections });
     return sections;
   }),
 
