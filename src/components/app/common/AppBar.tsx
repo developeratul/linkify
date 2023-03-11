@@ -75,10 +75,14 @@ export default function AppBar() {
 
 export function AppMenu() {
   const { data } = useSession();
+  console.log({ data });
   return (
     <Chakra.Menu>
       <Chakra.MenuButton>
-        <Chakra.Avatar src={data?.user?.image as string} name={data?.user?.name as string} />
+        <Chakra.Avatar
+          src={data?.user?.image as string}
+          name={(data?.user?.name || data?.user?.username) as string}
+        />
       </Chakra.MenuButton>
       <Chakra.MenuList>
         <Chakra.MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>

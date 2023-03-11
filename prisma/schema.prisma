@@ -120,7 +120,7 @@ enum SocialIconPlacement {
 
 model Section {
     id     String  @id @default(cuid())
-    index  Int     @default(dbgenerated())
+    index  Int
     name   String?
     links  Link[]
     user   User    @relation(fields: [userId], references: [id])
@@ -131,7 +131,7 @@ model Section {
 
 model Link {
     id                String  @id @default(cuid())
-    index             Int     @default(dbgenerated())
+    index             Int
     text              String
     url               String
     thumbnail         String?
@@ -149,7 +149,7 @@ model Link {
 
 model SocialLink {
     id     String @id @default(cuid())
-    index  Int    @default(dbgenerated())
+    index  Int
     url    String
     icon   String
     User   User   @relation(fields: [userId], references: [id])
