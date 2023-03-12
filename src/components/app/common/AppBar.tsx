@@ -39,6 +39,9 @@ export default function AppBar() {
       <LinkButton to="/app/settings" icon={<Icon name="Settings" />}>
         Settings
       </LinkButton>
+      <LinkButton to="/app/testimonials" icon={<Icon name="Testimonial" />}>
+        Testimonials
+      </LinkButton>
     </>
   );
   return (

@@ -1,4 +1,4 @@
-import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
+import { EmptySectionMessage, ErrorMessage } from "@/components/app/common/Message";
 import SectionWrapper from "@/components/app/common/SectionWrapper";
 import { SectionLoader } from "@/components/common/Loader";
 import { usePreviewContext } from "@/providers/preview";
@@ -49,7 +49,7 @@ export default function SocialLinks() {
   if (isError) return <ErrorMessage description={error.message} />;
   if (!data?.length)
     return (
-      <EmptyMessage
+      <EmptySectionMessage
         title="No Social Links"
         description="You have no social links created. Click the button below to create one."
         createButton={<AddSocialLinkModal />}

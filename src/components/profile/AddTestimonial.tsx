@@ -6,8 +6,8 @@ import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { useForm } from "react-hook-form";
-import StarRating from "react-star-ratings";
 import { z } from "zod";
+import Rating from "../app/common/Rating";
 
 export const testimonialSchema = z.object({
   name: z.string(),
@@ -92,7 +92,7 @@ export default function AddTestimonialModal() {
               </Chakra.FormControl>
               <Chakra.FormControl isRequired isInvalid={!!formState.errors.rating?.message}>
                 <Chakra.FormLabel>Your rating</Chakra.FormLabel>
-                <StarRating
+                <Rating
                   changeRating={(newRating) => setValue("rating", newRating)}
                   numberOfStars={5}
                   rating={watch("rating")}

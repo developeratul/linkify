@@ -32,3 +32,13 @@ export type SocialLink = {
   url: string;
   icon: string;
 };
+
+export type Testimonial = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  rating: number;
+  shouldShow: boolean;
+  avatar: string | null;
+};

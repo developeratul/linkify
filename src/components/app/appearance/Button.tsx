@@ -1,4 +1,4 @@
-import ColorInput from "@/components/common/ColorInput";
+import ColorInput from "@/components/app/common/ColorInput";
 import { SectionLoader } from "@/components/common/Loader";
 import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";

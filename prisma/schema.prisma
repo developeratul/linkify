@@ -88,15 +88,16 @@ model User {
 }
 
 model Testimonial {
-    id         String  @id @default(cuid())
+    id         String   @id @default(cuid())
     rating     Int
     message    String
     name       String
     email      String
     avatar     String?
-    shouldShow Boolean @default(false)
-    User       User    @relation(fields: [userId], references: [id])
+    shouldShow Boolean  @default(false)
+    User       User     @relation(fields: [userId], references: [id])
     userId     String
+    createdAt  DateTime @default(now())
 
     @@index([userId])
 }
