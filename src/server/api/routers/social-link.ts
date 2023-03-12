@@ -1,4 +1,5 @@
 import { authorizeAuthor } from "@/helpers/auth";
+import SocialLinkService from "@/services/social-link";
 import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -12,12 +13,7 @@ export const SocialLinkSelections = {
 
 export const socialLinkRouter = createTRPCRouter({
   get: protectedProcedure.query(async ({ ctx }) => {
-    const socialLinks = await ctx.prisma.socialLink.findMany({
-      where: { userId: ctx.session.user.id },
-      select: SocialLinkSelections,
-      orderBy: { index: "asc" },
-    });
-
+    const socialLinks = await SocialLinkService.findMany(ctx.session.user.id);
     return socialLinks;
   }),
 
@@ -25,16 +21,28 @@ export const socialLinkRouter = createTRPCRouter({
     .input(z.object({ url: z.string().url(), icon: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { icon, url } = input;
+      const userId = ctx.session.user.id;
 
-      const socialLink = await ctx.prisma.socialLink.create({
-        data: { icon, url, userId: ctx.session.user.id },
-      });
+      const previousSocialLink = await SocialLinkService.findLast(userId);
+
+      let socialLink;
+
+      if (previousSocialLink) {
+        socialLink = await ctx.prisma.socialLink.create({
+          data: { icon, url, userId, index: previousSocialLink.index + 1 },
+        });
+      } else {
+        socialLink = await ctx.prisma.socialLink.create({
+          data: { icon, url, userId, index: 0 },
+        });
+      }
 
       return socialLink;
     }),
 
   delete: protectedProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
     const socialLinkId = input;
+    const userId = ctx.session.user.id;
 
     const socialLink = await ctx.prisma.socialLink.findUnique({
       where: { id: socialLinkId },
@@ -54,6 +62,15 @@ export const socialLinkRouter = createTRPCRouter({
       where: { id: socialLinkId },
     });
 
+    // update the order of current social links
+    const updatedSocialLinksList = await SocialLinkService.findMany(userId);
+    updatedSocialLinksList.map(async (item, index) => {
+      await ctx.prisma.socialLink.update({
+        where: { id: item.id },
+        data: { index },
+      });
+    });
+
     return deletedSocialLink;
   }),
 
@@ -66,7 +83,7 @@ export const socialLinkRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { newOrder } = input;
 
-      newOrder.map(async (socialLinkId) => {
+      for (const socialLinkId of newOrder) {
         const socialLink = await ctx.prisma.socialLink.findUnique({
           where: { id: socialLinkId },
           select: { userId: true },
@@ -84,7 +101,7 @@ export const socialLinkRouter = createTRPCRouter({
           where: { id: socialLinkId },
           data: { index: newOrder.indexOf(socialLinkId) },
         });
-      });
+      }
 
       return;
     }),

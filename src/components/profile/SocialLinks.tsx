@@ -36,7 +36,7 @@ function SocialLink(props: { link: SocialLink }) {
       rounded={buttonImageRoundness[profile.buttonStyle]}
       color={getContrastColor(profile.themeColor)}
       cursor="pointer"
-      boxSize="40px"
+      boxSize="45px"
       justify="center"
       align="center"
       as="a"

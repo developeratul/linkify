@@ -15,7 +15,7 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
           w="full"
           bg="white"
           p={{ base: 2, sm: 4 }}
-          rounded="md"
+          rounded="xl"
           shadow="base"
           justify="space-between"
           align="center"
