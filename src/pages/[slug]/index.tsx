@@ -1,4 +1,5 @@
 import { SEO } from "@/components/common/SEO";
+import AddTestimonialModal from "@/components/profile/AddTestimonial";
 import Container from "@/components/profile/Container";
 import ProfileImage from "@/components/profile/Image";
 import Sections from "@/components/profile/Sections";
@@ -35,6 +36,7 @@ const ProfilePage: NextPage<ProfileProps> = (
         py={50}
         px={{ base: 3, md: 5 }}
       >
+        <AddTestimonialModal />
         <Container>
           <Wrapper>
             <ProfileImage />
@@ -72,6 +74,7 @@ import type {
 } from "@prisma/client";
 
 export type Profile = {
+  id: string;
   username: string | null;
   name?: string | null;
   bio: string | null;
@@ -103,6 +106,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       OR: [{ id: ctx.query.slug as string }, { username: ctx.query.slug as string }],
     },
     select: {
+      id: true,
       username: true,
       name: true,
       bio: true,

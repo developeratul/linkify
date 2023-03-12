@@ -1,7 +1,7 @@
 import { SocialIcon } from "@/Icons";
 import { useProfileContext } from "@/providers/profile";
 import { SocialLink } from "@/types";
-import { getContrastColor } from "@/utils/contrast";
+import { getContrastColor } from "@/utils/color";
 import * as Chakra from "@chakra-ui/react";
 import { buttonImageRoundness } from "../app/appearance/Button";
 
@@ -30,11 +30,12 @@ function SocialLink(props: { link: SocialLink }) {
   const { link } = props;
   const profile = useProfileContext();
   if (profile === undefined) return <></>;
+  const background = profile.buttonBackground || profile.themeColor;
   return (
     <Chakra.Stack
-      background={profile?.themeColor}
+      background={background}
       rounded={buttonImageRoundness[profile.buttonStyle]}
-      color={getContrastColor(profile.themeColor)}
+      color={getContrastColor(background)}
       cursor="pointer"
       boxSize="45px"
       justify="center"

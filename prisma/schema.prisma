@@ -50,11 +50,11 @@ model VerificationToken {
 }
 
 model User {
-    id            String       @id @default(cuid())
+    id            String        @id @default(cuid())
     name          String?
-    username      String?      @unique
+    username      String?       @unique
     bio           String?
-    email         String?      @unique
+    email         String?       @unique
     emailVerified DateTime?
     image         String?
     imagePublicId String?
@@ -63,6 +63,7 @@ model User {
     sections      Section[]
     links         Link[]
     socialLinks   SocialLink[]
+    testimonials  Testimonial[]
 
     profileTitle String?
 
@@ -84,6 +85,20 @@ model User {
     linksColumnCount            Int            @default(1)
     buttonStyle                 ButtonStyle    @default(ROUNDED)
     buttonBackground            String?
+}
+
+model Testimonial {
+    id         String  @id @default(cuid())
+    rating     Int
+    message    String
+    name       String
+    email      String
+    avatar     String?
+    shouldShow Boolean @default(false)
+    User       User    @relation(fields: [userId], references: [id])
+    userId     String
+
+    @@index([userId])
 }
 
 enum ButtonStyle {

@@ -3,7 +3,7 @@ import { SectionLoader } from "@/components/common/Loader";
 import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import { getContrastColor } from "@/utils/contrast";
+import { getContrastColor } from "@/utils/color";
 import uploadFile from "@/utils/uploadFile";
 import * as Chakra from "@chakra-ui/react";
 import { useToast, useToken } from "@chakra-ui/react";

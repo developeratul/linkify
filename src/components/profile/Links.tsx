@@ -1,6 +1,6 @@
 import { useProfileContext } from "@/providers/profile";
 import type { ProfileLink, ProfileLinks } from "@/types";
-import { getContrastColor } from "@/utils/contrast";
+import { getContrastColor } from "@/utils/color";
 import * as Chakra from "@chakra-ui/react";
 import { buttonImageRoundness, buttonVariantProps } from "../app/appearance/Button";
 
