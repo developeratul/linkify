@@ -5,6 +5,7 @@ import { getContrastColor, lightenColor } from "@/utils/color";
 import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Rating from "../app/common/Rating";
@@ -28,6 +29,7 @@ export default function AddTestimonialModal() {
   });
   const { mutateAsync, isLoading } = api.testimonial.add.useMutation();
   const toast = Chakra.useToast();
+  const { data } = useSession();
 
   const closeModal = () => {
     onClose();
@@ -49,6 +51,8 @@ export default function AddTestimonialModal() {
       }
     }
   };
+
+  if (data?.user?.id === profile.id) return <></>;
 
   return (
     <Chakra.Box zIndex="sticky" position="fixed" bottom={0} right={0} m={5}>

@@ -3,6 +3,7 @@ import Rating from "@/components/app/common/Rating";
 import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
 import { usePreviewContext } from "@/providers/preview";
+import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { Testimonial } from "@/types";
@@ -99,8 +100,11 @@ function Testimonial(props: { testimonial: Testimonial }) {
         <Chakra.Avatar src={testimonial.avatar || ""} name={testimonial.name} />
       </Chakra.CardHeader>
       <Chakra.CardBody>
-        <Chakra.VStack align="start">
-          <Chakra.Heading size="md">{testimonial.name}</Chakra.Heading>
+        <Chakra.VStack align="start" spacing={3}>
+          <Chakra.VStack align="start" spacing={1}>
+            <Chakra.Heading size="md">{testimonial.name}</Chakra.Heading>
+            <Chakra.Text fontSize="sm">{testimonial.email}</Chakra.Text>
+          </Chakra.VStack>
           <Chakra.Text>{testimonial.message}</Chakra.Text>
           <Rating rating={testimonial.rating} starDimension="20px" starSpacing="3px" />
         </Chakra.VStack>
@@ -169,15 +173,7 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
 
   const testimonials = await prisma.testimonial.findMany({
     where: { userId: user.id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      message: true,
-      rating: true,
-      shouldShow: true,
-      avatar: true,
-    },
+    select: TestimonialSelections,
     orderBy: { createdAt: "desc" },
   });
 

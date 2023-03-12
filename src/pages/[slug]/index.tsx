@@ -1,12 +1,25 @@
+import { Conditional } from "@/components/common/Conditional";
 import { SEO } from "@/components/common/SEO";
 import AddTestimonialModal from "@/components/profile/AddTestimonial";
 import Container from "@/components/profile/Container";
 import ProfileImage from "@/components/profile/Image";
 import Sections from "@/components/profile/Sections";
 import SocialLinks from "@/components/profile/SocialLinks";
+import Testimonials from "@/components/profile/Testimonials";
 import Wrapper from "@/components/profile/Wrapper";
 import ProfileProvider from "@/providers/profile";
+import { LinkSelections } from "@/server/api/routers/link";
+import { TestimonialSelections } from "@/server/api/routers/testimonial";
+import { prisma } from "@/server/db";
+import type { ProfileSection, SocialLink, Testimonial } from "@/types";
 import * as Chakra from "@chakra-ui/react";
+import type {
+  BackgroundType,
+  ButtonStyle,
+  CardShadow,
+  Layout,
+  SocialIconPlacement,
+} from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
 
 type ProfileProps = {
@@ -51,7 +64,46 @@ const ProfilePage: NextPage<ProfileProps> = (
               <Chakra.Text fontSize={16}>{profile.bio}</Chakra.Text>
             </Chakra.VStack>
             {profile.socialIconPlacement === "TOP" && <SocialLinks />}
-            <Sections />
+            <Conditional
+              condition={profile.testimonials.length > 0}
+              component={
+                <Chakra.Tabs isLazy isFitted w="full">
+                  <Chakra.TabList>
+                    <Chakra.Tab
+                      color={profile.foreground || "gray.600"}
+                      _active={{}}
+                      _hover={{}}
+                      _selected={{
+                        color: profile.themeColor || "purple.500",
+                        borderBottomColor: profile.themeColor || "purple.500",
+                      }}
+                    >
+                      Links
+                    </Chakra.Tab>
+                    <Chakra.Tab
+                      color={profile.foreground || "gray.600"}
+                      _active={{}}
+                      _hover={{}}
+                      _selected={{
+                        color: profile.themeColor || "purple.500",
+                        borderBottomColor: profile.themeColor || "purple.500",
+                      }}
+                    >
+                      Testimonials
+                    </Chakra.Tab>
+                  </Chakra.TabList>
+                  <Chakra.TabPanels>
+                    <Chakra.TabPanel px={0} py={10}>
+                      <Sections />
+                    </Chakra.TabPanel>
+                    <Chakra.TabPanel px={0} py={10}>
+                      <Testimonials />
+                    </Chakra.TabPanel>
+                  </Chakra.TabPanels>
+                </Chakra.Tabs>
+              }
+              fallback={<Sections />}
+            />
             {profile.socialIconPlacement === "BOTTOM" && <SocialLinks />}
           </Wrapper>
         </Container>
@@ -61,17 +113,6 @@ const ProfilePage: NextPage<ProfileProps> = (
 };
 
 export default ProfilePage;
-
-import { LinkSelections } from "@/server/api/routers/link";
-import { prisma } from "@/server/db";
-import type { ProfileSection, SocialLink } from "@/types";
-import type {
-  BackgroundType,
-  ButtonStyle,
-  CardShadow,
-  Layout,
-  SocialIconPlacement,
-} from "@prisma/client";
 
 export type Profile = {
   id: string;
@@ -98,6 +139,7 @@ export type Profile = {
   socialIconPlacement?: SocialIconPlacement;
   sections: ProfileSection[];
   socialLinks: SocialLink[];
+  testimonials: Testimonial[];
 };
 
 export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) => {
@@ -156,6 +198,15 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
         },
         orderBy: {
           index: "asc",
+        },
+      },
+      testimonials: {
+        where: {
+          shouldShow: true,
+        },
+        select: TestimonialSelections,
+        orderBy: {
+          createdAt: "desc",
         },
       },
     },
