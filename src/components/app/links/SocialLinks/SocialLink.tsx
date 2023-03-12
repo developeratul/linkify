@@ -29,10 +29,10 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
               variant="ghost"
               aria-label="Drag and drop social link"
             />
-            <Chakra.HStack align="center" spacing={3}>
-              <Chakra.Heading size={{ base: "sm" }} noOfLines={1} fontWeight="medium">
+            <Chakra.HStack align="center" spacing={5}>
+              <Chakra.Text size={{ base: "sm" }} noOfLines={1} fontWeight="medium">
                 {socialLink.url}
-              </Chakra.Heading>
+              </Chakra.Text>
               <Chakra.Box color="purple.500">
                 <SocialIcon name={socialLink.icon} />
               </Chakra.Box>
