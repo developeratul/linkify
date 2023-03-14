@@ -90,7 +90,7 @@ model User {
 model Testimonial {
     id         String   @id @default(cuid())
     rating     Int
-    message    String
+    message    String   @db.LongText
     name       String
     email      String
     avatar     String?

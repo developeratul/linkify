@@ -105,7 +105,7 @@ function Testimonial(props: { testimonial: Testimonial }) {
             <Chakra.Heading size="md">{testimonial.name}</Chakra.Heading>
             <Chakra.Text fontSize="sm">{testimonial.email}</Chakra.Text>
           </Chakra.VStack>
-          <Chakra.Text>{testimonial.message}</Chakra.Text>
+          <Chakra.Text whiteSpace="pre-wrap">{testimonial.message}</Chakra.Text>
           <Rating rating={testimonial.rating} starDimension="20px" starSpacing="3px" />
         </Chakra.VStack>
       </Chakra.CardBody>

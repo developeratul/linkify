@@ -93,10 +93,10 @@ const ProfilePage: NextPage<ProfileProps> = (
                     </Chakra.Tab>
                   </Chakra.TabList>
                   <Chakra.TabPanels>
-                    <Chakra.TabPanel px={0} py={10}>
+                    <Chakra.TabPanel px={0} py={5}>
                       <Sections />
                     </Chakra.TabPanel>
-                    <Chakra.TabPanel px={0} py={10}>
+                    <Chakra.TabPanel px={0} py={5}>
                       <Testimonials />
                     </Chakra.TabPanel>
                   </Chakra.TabPanels>
