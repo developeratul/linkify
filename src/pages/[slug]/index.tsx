@@ -71,6 +71,7 @@ const ProfilePage: NextPage<ProfileProps> = (
                   <Chakra.TabList>
                     <Chakra.Tab
                       color={profile.foreground || "gray.600"}
+                      borderBottomColor={profile.grayColor || "gray.300"}
                       _active={{}}
                       _hover={{}}
                       _selected={{
@@ -82,6 +83,7 @@ const ProfilePage: NextPage<ProfileProps> = (
                     </Chakra.Tab>
                     <Chakra.Tab
                       color={profile.foreground || "gray.600"}
+                      borderBottomColor={profile.grayColor || "gray.300"}
                       _active={{}}
                       _hover={{}}
                       _selected={{

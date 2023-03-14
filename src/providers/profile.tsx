@@ -28,11 +28,11 @@ type ProfileProviderProps = {
 
 export default function ProfileProvider(props: ProfileProviderProps) {
   const { children, profile } = props;
-  const [purple50, purple100, purple500, gray500, gray600] = useToken("colors", [
+  const [purple50, purple100, purple500, gray300, gray600] = useToken("colors", [
     "purple.50",
     "purple.100",
     "purple.500",
-    "gray.500",
+    "gray.300",
     "gray.600",
   ]);
   const value: InitialState = {
@@ -41,7 +41,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
     bodyBackgroundColor: profile.bodyBackgroundColor || purple50,
     cardBackgroundColor: profile.cardBackgroundColor || purple100,
     themeColor: profile.themeColor || purple500,
-    grayColor: profile.grayColor || gray500,
+    grayColor: profile.grayColor || gray300,
     foreground: profile.foreground || gray600,
   };
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

@@ -35,7 +35,7 @@ const shadows = ["sm", "md", "lg", "xl", "none"];
 export default function Theme() {
   const [bodyBackgroundColor, cardBackgroundColor, themeColor, foreground, grayColor] = useToken(
     "colors",
-    ["purple.50", "purple.100", "purple.500", "gray.600", "gray.500"]
+    ["purple.50", "purple.100", "purple.500", "gray.600", "gray.300"]
   );
   const toast = useToast();
 
