@@ -34,7 +34,7 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
               <Chakra.Text
                 flex={1}
                 fontSize={{ base: "sm", md: "md" }}
-                noOfLines={1}
+                noOfLines={2}
                 fontWeight="medium"
               >
                 {socialLink.url}
