@@ -10,7 +10,7 @@ const SocialLinks = dynamic(() => import("@/components/app/links/SocialLinks"));
 
 const AppPage: NextPageWithLayout = () => {
   return (
-    <Chakra.VStack w="full" maxW="2xl" spacing={10}>
+    <Chakra.VStack pb={{ base: 55, md: 0 }} w="full" maxW="2xl" spacing={10}>
       <Sections />
       <SocialLinks />
     </Chakra.VStack>
