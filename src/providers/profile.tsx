@@ -1,4 +1,4 @@
-import { fonts, robotoMono } from "@/fonts/profile";
+import { defaultFont, DEFAULT_FONT_NAME, fonts } from "@/fonts/profile";
 import type { Profile } from "@/pages/[slug]";
 import { useToken } from "@chakra-ui/react";
 import type { NextFont } from "next/dist/compiled/@next/font";
@@ -39,7 +39,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
     "gray.300",
     "gray.600",
   ]);
-  const font = fonts[profile.font || "robotoMono"] || robotoMono;
+  const font = fonts[profile.font || DEFAULT_FONT_NAME] || defaultFont;
   const value: InitialState = {
     ...profile,
     profileTitle: profile.profileTitle || `${profile.username}`,

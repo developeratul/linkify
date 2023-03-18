@@ -1,6 +1,7 @@
 import ColorInput from "@/components/app/common/ColorInput";
 import { SectionLoader } from "@/components/common/Loader";
 import {
+  DEFAULT_FONT_NAME,
   dmSans,
   ebGaramond,
   inter,
@@ -211,7 +212,7 @@ export default function Theme() {
           <Chakra.FormLabel>Font</Chakra.FormLabel>
           <Chakra.SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={5}>
             {fonts.map((font) => {
-              const isSelected = (watch("font") ?? "robotoMono") === font.fontIndex;
+              const isSelected = (watch("font") ?? DEFAULT_FONT_NAME) === font.fontIndex;
               return (
                 <Chakra.Box
                   cursor="pointer"

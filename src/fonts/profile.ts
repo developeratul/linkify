@@ -67,3 +67,6 @@ export const fonts: Record<string, NextFont> = {
   openSans,
   robotoSlab,
 };
+
+export const DEFAULT_FONT_NAME = "poppins";
+export const defaultFont = poppins;
