@@ -66,7 +66,11 @@ export function Profile() {
 
   return (
     <SectionWrapper title="Profile">
-      <Chakra.HStack align="start" spacing="5">
+      <Chakra.Stack
+        flexDirection={{ base: "column", sm: "row" }}
+        align={{ base: "center", sm: "start" }}
+        gap={5}
+      >
         <div className="group relative overflow-hidden rounded-full">
           <Chakra.Avatar
             size="xl"
@@ -82,7 +86,7 @@ export function Profile() {
             <input hidden accept="image/*" type="file" onChange={handleFileInputChange} />
           </label>
         </div>
-        <Chakra.VStack flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
+        <Chakra.VStack w="full" flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
           <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.profileTitle}>
             <Chakra.FormLabel>Title</Chakra.FormLabel>
             <Chakra.Input {...register("profileTitle")} />
@@ -105,7 +109,7 @@ export function Profile() {
             Save
           </Chakra.Button>
         </Chakra.VStack>
-      </Chakra.HStack>
+      </Chakra.Stack>
     </SectionWrapper>
   );
 }

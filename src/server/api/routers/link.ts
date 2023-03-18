@@ -2,6 +2,7 @@ import { addLinkSchema } from "@/components/app/links/Links/AddLinkModal";
 import { addThumbnailSchema } from "@/components/app/links/Links/AddThumbnail";
 import { editLinkSchema } from "@/components/app/links/Links/EditLinkModal";
 import { authorizeAuthor } from "@/helpers/auth";
+import LinkService from "@/services/link";
 import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -27,10 +28,33 @@ export const linkRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { sectionId, text, url } = input;
 
-      const link = await ctx.prisma.link.create({
-        data: { text, url, sectionId, userId: ctx.session.user.id },
-        select: LinkSelections,
-      });
+      const previousLink = await LinkService.findPrevious(sectionId);
+
+      let link;
+
+      if (previousLink) {
+        link = await ctx.prisma.link.create({
+          data: {
+            text,
+            url,
+            sectionId,
+            userId: ctx.session.user.id,
+            index: previousLink.index + 1,
+          },
+          select: LinkSelections,
+        });
+      } else {
+        link = await ctx.prisma.link.create({
+          data: {
+            text,
+            url,
+            sectionId,
+            userId: ctx.session.user.id,
+            index: 0,
+          },
+          select: LinkSelections,
+        });
+      }
 
       return link;
     }),
@@ -40,7 +64,7 @@ export const linkRouter = createTRPCRouter({
 
     const link = await ctx.prisma.link.findUnique({
       where: { id: linkId },
-      select: { userId: true },
+      select: { userId: true, sectionId: true },
     });
 
     if (!link) {
@@ -57,34 +81,45 @@ export const linkRouter = createTRPCRouter({
       select: LinkSelections,
     });
 
+    // update the order of current links
+    const updatedLinksList = await LinkService.findMany(link.sectionId);
+    updatedLinksList.map(async (item, index) => {
+      await ctx.prisma.link.update({
+        where: { id: item.id },
+        data: { index },
+      });
+    });
+
     return deletedLink;
   }),
 
-  edit: protectedProcedure.input(editLinkSchema.extend({ linkId: z.string() })).mutation(async ({ ctx, input }) => {
-    const { linkId, ...update } = input;
+  edit: protectedProcedure
+    .input(editLinkSchema.extend({ linkId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { linkId, ...update } = input;
 
-    const link = await ctx.prisma.link.findUnique({
-      where: { id: linkId },
-      select: { userId: true },
-    });
-
-    if (!link) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Link not found",
+      const link = await ctx.prisma.link.findUnique({
+        where: { id: linkId },
+        select: { userId: true },
       });
-    }
 
-    authorizeAuthor(link.userId, ctx.session.user.id);
+      if (!link) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Link not found",
+        });
+      }
 
-    const updatedLink = await ctx.prisma.link.update({
-      where: { id: linkId },
-      data: { ...update },
-      select: LinkSelections,
-    });
+      authorizeAuthor(link.userId, ctx.session.user.id);
 
-    return updatedLink;
-  }),
+      const updatedLink = await ctx.prisma.link.update({
+        where: { id: linkId },
+        data: { ...update },
+        select: LinkSelections,
+      });
+
+      return updatedLink;
+    }),
 
   reorder: protectedProcedure
     .input(
@@ -95,17 +130,13 @@ export const linkRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { newOrder } = input;
 
-      newOrder.map(async (linkId) => {
+      for (const linkId of newOrder) {
         const link = await ctx.prisma.link.findUnique({
           where: { id: linkId },
           select: { userId: true },
         });
 
-        if (!link) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-          });
-        }
+        if (!link) throw new TRPCError({ code: "NOT_FOUND" });
 
         authorizeAuthor(link.userId, ctx.session.user.id);
 
@@ -113,7 +144,7 @@ export const linkRouter = createTRPCRouter({
           where: { id: linkId },
           data: { index: newOrder.indexOf(linkId) },
         });
-      });
+      }
 
       return;
     }),
@@ -178,21 +209,23 @@ export const linkRouter = createTRPCRouter({
     return updatedLink;
   }),
 
-  captureClick: publicProcedure.input(z.object({ linkId: z.string() })).mutation(async ({ ctx, input }) => {
-    const { linkId } = input;
+  captureClick: publicProcedure
+    .input(z.object({ linkId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { linkId } = input;
 
-    const link = await ctx.prisma.link.findUnique({
-      where: { id: linkId },
-      select: { clickCount: true },
-    });
+      const link = await ctx.prisma.link.findUnique({
+        where: { id: linkId },
+        select: { clickCount: true },
+      });
 
-    if (!link) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!link) throw new TRPCError({ code: "NOT_FOUND" });
 
-    await ctx.prisma.link.update({
-      where: { id: linkId },
-      data: { clickCount: (link.clickCount || 0) + 1 },
-    });
+      await ctx.prisma.link.update({
+        where: { id: linkId },
+        data: { clickCount: (link.clickCount || 0) + 1 },
+      });
 
-    return;
-  }),
+      return;
+    }),
 });

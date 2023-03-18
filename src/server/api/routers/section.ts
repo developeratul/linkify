@@ -1,4 +1,5 @@
 import { authorizeAuthor } from "@/helpers/auth";
+import SectionService from "@/services/section";
 import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -19,26 +20,33 @@ export const SectionSelections = {
 
 export const sectionRouter = createTRPCRouter({
   getWithLinks: protectedProcedure.query(async ({ ctx }) => {
-    const Sections = await ctx.prisma.section.findMany({
-      where: { userId: ctx.session.user.id },
-      select: SectionSelections,
-      orderBy: {
-        index: "asc",
-      },
-    });
-    return Sections;
+    const sections = await SectionService.findManyWithLinks(ctx.session.user.id);
+    return sections;
   }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {
-    const section = await ctx.prisma.section.create({
-      data: { userId: ctx.session.user.id },
-      select: SectionSelections,
-    });
+    const previousSection = await SectionService.findLast(ctx.session.user.id);
+
+    let section;
+
+    if (previousSection) {
+      section = await ctx.prisma.section.create({
+        data: { userId: ctx.session.user.id, index: previousSection.index + 1 },
+        select: SectionSelections,
+      });
+    } else {
+      section = await ctx.prisma.section.create({
+        data: { userId: ctx.session.user.id, index: 0 },
+        select: SectionSelections,
+      });
+    }
+
     return section;
   }),
 
   delete: protectedProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
     const sectionId = input;
+    const userId = ctx.session.user.id;
 
     const section = await ctx.prisma.section.findUnique({
       where: { id: sectionId },
@@ -52,7 +60,7 @@ export const sectionRouter = createTRPCRouter({
       });
     }
 
-    authorizeAuthor(section?.userId, ctx.session.user.id);
+    authorizeAuthor(section.userId, userId);
 
     // delete all the link thumbnails
     const links = await ctx.prisma.link.findMany({
@@ -71,10 +79,19 @@ export const sectionRouter = createTRPCRouter({
       where: { sectionId },
     });
 
-    // finally delete the section
+    // delete the section
     const deletedSection = await ctx.prisma.section.delete({
       where: { id: sectionId },
       select: SectionSelections,
+    });
+
+    // update the order of current sections
+    const updatedSectionsList = await SectionService.findManyWithLinks(userId);
+    updatedSectionsList.map(async (item, index) => {
+      await ctx.prisma.section.update({
+        where: { id: item.id },
+        data: { index },
+      });
     });
 
     return deletedSection;
@@ -117,7 +134,7 @@ export const sectionRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { newOrder } = input;
 
-      newOrder.map(async (sectionId) => {
+      for (const sectionId of newOrder) {
         const section = await ctx.prisma.section.findUnique({
           where: { id: sectionId },
           select: { userId: true },
@@ -135,7 +152,7 @@ export const sectionRouter = createTRPCRouter({
           where: { id: sectionId },
           data: { index: newOrder.indexOf(sectionId) },
         });
-      });
+      }
 
       return;
     }),

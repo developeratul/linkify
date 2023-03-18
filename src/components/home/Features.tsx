@@ -48,7 +48,7 @@ const features: Feature[] = [
     title: "Newsletter",
     icon: IconMail,
     color: "cyan.400",
-    description: "Send personalized and automated emails to your subscribers.",
+    description: "Send personalized and automated emails to your subscribers and stay connected.",
   },
   {
     title: "Developer API",
@@ -120,10 +120,12 @@ export default function FeaturesSection() {
                   w="full"
                   spacing={3}
                 >
-                  <Chakra.Heading w="full" size="md">
+                  <Chakra.Heading w="full" fontSize="xl">
                     {feature.title}
                   </Chakra.Heading>
-                  <Chakra.Text color="GrayText">{feature.description}</Chakra.Text>
+                  <Chakra.Text fontWeight="thin" fontSize={18}>
+                    {feature.description}
+                  </Chakra.Text>
                 </Chakra.VStack>
               </Chakra.HStack>
             ))}

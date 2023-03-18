@@ -1,9 +1,21 @@
-import ColorInput from "@/components/common/ColorInput";
+import ColorInput from "@/components/app/common/ColorInput";
 import { SectionLoader } from "@/components/common/Loader";
+import {
+  DEFAULT_FONT_NAME,
+  dmSans,
+  ebGaramond,
+  inter,
+  openSans,
+  poppins,
+  quicksand,
+  robotoMono,
+  robotoSlab,
+  spaceMono,
+} from "@/fonts/profile";
 import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import { getContrastColor } from "@/utils/contrast";
+import { getContrastColor } from "@/utils/color";
 import uploadFile from "@/utils/uploadFile";
 import * as Chakra from "@chakra-ui/react";
 import { useToast, useToken } from "@chakra-ui/react";
@@ -26,16 +38,29 @@ export const themeSchema = z.object({
   bodyBackgroundImagePublicId: z.string().optional(),
   cardBackgroundColor: z.string().optional(),
   cardShadow: z.enum(["sm", "md", "lg", "xl", "none"]),
+  font: z.string().optional(),
 });
 
 type ThemeSchema = z.infer<typeof themeSchema>;
 
 const shadows = ["sm", "md", "lg", "xl", "none"];
 
+const fonts = [
+  { name: "Roboto Mono", src: robotoMono, fontIndex: "robotoMono" },
+  { name: "Space Mono", src: spaceMono, fontIndex: "spaceMono" },
+  { name: "Poppins", src: poppins, fontIndex: "poppins" },
+  { name: "Inter", src: inter, fontIndex: "inter" },
+  { name: "EB Garamond", src: ebGaramond, fontIndex: "ebGaramond" },
+  { name: "DM Sans", src: dmSans, fontIndex: "dmSans" },
+  { name: "Quicksand", src: quicksand, fontIndex: "quicksand" },
+  { name: "Open sans", src: openSans, fontIndex: "openSans" },
+  { name: "Roboto Slab", src: robotoSlab, fontIndex: "robotoSlab" },
+];
+
 export default function Theme() {
   const [bodyBackgroundColor, cardBackgroundColor, themeColor, foreground, grayColor] = useToken(
     "colors",
-    ["purple.50", "purple.100", "purple.500", "gray.600", "gray.500"]
+    ["purple.50", "purple.100", "purple.500", "gray.600", "gray.300"]
   );
   const toast = useToast();
 
@@ -63,7 +88,8 @@ export default function Theme() {
             "bodyBackgroundImage",
             "bodyBackgroundImagePublicId",
             "cardBackgroundColor",
-            "grayColor"
+            "grayColor",
+            "font"
           ]
         ).map((key) => {
           if (data[key]) {
@@ -127,7 +153,7 @@ export default function Theme() {
             />
             <Chakra.FormControl>
               <Chakra.FormLabel>Card shadow</Chakra.FormLabel>
-              <Chakra.SimpleGrid columns={3} w="full" spacing={5}>
+              <Chakra.SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} w="full" spacing={5}>
                 {shadows.map((shadow) => {
                   const isSelected = watch("cardShadow") === shadow;
                   return (
@@ -182,6 +208,29 @@ export default function Theme() {
           value={watch("grayColor") || ""}
           onChange={(newColor) => setValue("grayColor", newColor.hex)}
         />
+        <Chakra.FormControl>
+          <Chakra.FormLabel>Font</Chakra.FormLabel>
+          <Chakra.SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={5}>
+            {fonts.map((font) => {
+              const isSelected = (watch("font") ?? DEFAULT_FONT_NAME) === font.fontIndex;
+              return (
+                <Chakra.Box
+                  cursor="pointer"
+                  onClick={() => setValue("font", font.fontIndex)}
+                  {...(isSelected ? { boxShadow: "outline" } : {})}
+                  key={font.fontIndex}
+                  borderWidth={2}
+                  textAlign="center"
+                  px={5}
+                  rounded="md"
+                  py={3}
+                >
+                  <Chakra.Text fontFamily={font.src.style.fontFamily}>{font.name}</Chakra.Text>
+                </Chakra.Box>
+              );
+            })}
+          </Chakra.SimpleGrid>
+        </Chakra.FormControl>
         <Chakra.Button
           isLoading={isProcessing}
           type="submit"

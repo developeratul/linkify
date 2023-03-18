@@ -1,12 +1,35 @@
+import { Conditional } from "@/components/common/Conditional";
 import { SEO } from "@/components/common/SEO";
+import AddTestimonialModal from "@/components/profile/AddTestimonial";
 import Container from "@/components/profile/Container";
-import ProfileImage from "@/components/profile/Image";
+import ProfileImage from "@/components/profile/ProfileImage";
+import ProfileIntro from "@/components/profile/ProfileIntro";
 import Sections from "@/components/profile/Sections";
 import SocialLinks from "@/components/profile/SocialLinks";
+import Testimonials from "@/components/profile/Testimonials";
 import Wrapper from "@/components/profile/Wrapper";
 import ProfileProvider from "@/providers/profile";
+import { LinkSelections } from "@/server/api/routers/link";
+import { TestimonialSelections } from "@/server/api/routers/testimonial";
+import { prisma } from "@/server/db";
+import type { ProfileSection, SocialLink, Testimonial } from "@/types";
+import type { UseTabsProps } from "@chakra-ui/react";
 import * as Chakra from "@chakra-ui/react";
+import type {
+  BackgroundType,
+  ButtonStyle,
+  CardShadow,
+  Layout,
+  SocialIconPlacement,
+} from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
+import { useQueryState } from "next-usequerystate";
+import { useRouter } from "next/router";
+
+const tabs = {
+  links: 0,
+  testimonials: 1,
+};
 
 type ProfileProps = {
   profile: Profile;
@@ -16,6 +39,19 @@ const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { profile } = props;
+  const router = useRouter();
+  const { tab }: { tab?: "links" | "testimonials" } = router.query;
+  const [, setCurrentTab] = useQueryState("tab");
+  const defaultTabIndex = tab ? tabs[tab] || 0 : 0;
+
+  const handleTabsChange: UseTabsProps["onChange"] = (index) => {
+    for (const prop in tabs) {
+      if (tabs.hasOwnProperty(prop) && tabs[prop as keyof typeof tabs] === index) {
+        setCurrentTab(prop);
+      }
+    }
+  };
+
   return (
     <ProfileProvider profile={profile}>
       <SEO
@@ -35,21 +71,60 @@ const ProfilePage: NextPage<ProfileProps> = (
         py={50}
         px={{ base: 3, md: 5 }}
       >
+        <AddTestimonialModal />
         <Container>
           <Wrapper>
             <ProfileImage />
-            <Chakra.VStack spacing="5px" textAlign="center">
-              <Chakra.Heading
-                color={profile.themeColor || "purple.500"}
-                fontSize={24}
-                fontWeight="medium"
-              >
-                {profile.profileTitle || `@${profile.username}`}
-              </Chakra.Heading>
-              <Chakra.Text fontSize={16}>{profile.bio}</Chakra.Text>
-            </Chakra.VStack>
+            <ProfileIntro />
             {profile.socialIconPlacement === "TOP" && <SocialLinks />}
-            <Sections />
+            <Conditional
+              condition={profile.testimonials.length > 0}
+              component={
+                <Chakra.Tabs
+                  onChange={handleTabsChange}
+                  defaultIndex={defaultTabIndex}
+                  isLazy
+                  isFitted
+                  w="full"
+                >
+                  <Chakra.TabList>
+                    <Chakra.Tab
+                      color={profile.foreground || "gray.600"}
+                      borderBottomColor={profile.grayColor || "gray.300"}
+                      _active={{}}
+                      _hover={{}}
+                      _selected={{
+                        color: profile.themeColor || "purple.500",
+                        borderBottomColor: profile.themeColor || "purple.500",
+                      }}
+                    >
+                      Links
+                    </Chakra.Tab>
+                    <Chakra.Tab
+                      color={profile.foreground || "gray.600"}
+                      borderBottomColor={profile.grayColor || "gray.300"}
+                      _active={{}}
+                      _hover={{}}
+                      _selected={{
+                        color: profile.themeColor || "purple.500",
+                        borderBottomColor: profile.themeColor || "purple.500",
+                      }}
+                    >
+                      Testimonials
+                    </Chakra.Tab>
+                  </Chakra.TabList>
+                  <Chakra.TabPanels>
+                    <Chakra.TabPanel px={0} py={5}>
+                      <Sections />
+                    </Chakra.TabPanel>
+                    <Chakra.TabPanel px={0} py={5}>
+                      <Testimonials />
+                    </Chakra.TabPanel>
+                  </Chakra.TabPanels>
+                </Chakra.Tabs>
+              }
+              fallback={<Sections />}
+            />
             {profile.socialIconPlacement === "BOTTOM" && <SocialLinks />}
           </Wrapper>
         </Container>
@@ -60,18 +135,8 @@ const ProfilePage: NextPage<ProfileProps> = (
 
 export default ProfilePage;
 
-import { LinkSelections } from "@/server/api/routers/link";
-import { prisma } from "@/server/db";
-import type { ProfileSection, SocialLink } from "@/types";
-import type {
-  BackgroundType,
-  ButtonStyle,
-  CardShadow,
-  Layout,
-  SocialIconPlacement,
-} from "@prisma/client";
-
 export type Profile = {
+  id: string;
   username: string | null;
   name?: string | null;
   bio: string | null;
@@ -90,11 +155,13 @@ export type Profile = {
   foreground?: string | null;
   buttonStyle: ButtonStyle;
   buttonBackground?: string | null;
+  font?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   socialIconPlacement?: SocialIconPlacement;
   sections: ProfileSection[];
   socialLinks: SocialLink[];
+  testimonials: Testimonial[];
 };
 
 export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) => {
@@ -103,6 +170,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       OR: [{ id: ctx.query.slug as string }, { username: ctx.query.slug as string }],
     },
     select: {
+      id: true,
       username: true,
       name: true,
       bio: true,
@@ -124,6 +192,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       foreground: true,
       buttonStyle: true,
       buttonBackground: true,
+      font: true,
       sections: {
         select: {
           id: true,
@@ -152,6 +221,15 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
         },
         orderBy: {
           index: "asc",
+        },
+      },
+      testimonials: {
+        where: {
+          shouldShow: true,
+        },
+        select: TestimonialSelections,
+        orderBy: {
+          createdAt: "desc",
         },
       },
     },

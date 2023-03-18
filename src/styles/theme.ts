@@ -1,10 +1,10 @@
-import { robotoMono, spaceMono } from "@/fonts";
+import { poppins, spaceMono } from "@/fonts";
 import { extendTheme } from "@chakra-ui/react";
 
 export const theme = extendTheme({
   fonts: {
     heading: spaceMono.style.fontFamily,
-    body: robotoMono.style.fontFamily,
+    body: poppins.style.fontFamily,
   },
   colors: {
     purple: {
@@ -23,7 +23,7 @@ export const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
-        fontWeight: 500,
+        fontWeight: "medium",
       },
     },
     Text: {

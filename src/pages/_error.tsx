@@ -7,7 +7,8 @@ interface ErrorProps {
   message: string;
 }
 
-const Error: NextPage<ErrorProps> = ({ message }) => {
+const Error: NextPage<ErrorProps> = (error) => {
+  console.log({ error });
   return (
     <Chakra.Center bg="purple.50" w="full" h="100vh">
       <SEO title="Error" />
@@ -16,15 +17,17 @@ const Error: NextPage<ErrorProps> = ({ message }) => {
           <Chakra.CardHeader>
             <Chakra.VStack spacing={3} w="full" align="start">
               <Chakra.Heading size="lg" color="red.500">
-                Error Occurred
+                {error.statusCode}
               </Chakra.Heading>
-              <Chakra.Text>{message}</Chakra.Text>
-              <Chakra.Text fontSize="sm">
-                Please report us that issue through{" "}
-                <Chakra.Button variant="link" as="a" href="mailto:devr@linkifyapp.com">
-                  email{" "}
-                </Chakra.Button>
-              </Chakra.Text>
+              <Chakra.Text>{error.message}</Chakra.Text>
+              {error.statusCode && error.statusCode >= 500 && (
+                <Chakra.Text fontSize="sm">
+                  Please report us that issue through{" "}
+                  <Chakra.Button variant="link" as="a" href="mailto:devr@linkifyapp.com">
+                    email{" "}
+                  </Chakra.Button>
+                </Chakra.Text>
+              )}
             </Chakra.VStack>
           </Chakra.CardHeader>
         </Chakra.CardBody>

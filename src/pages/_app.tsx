@@ -30,7 +30,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
         <ProgressBar />
         {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>
-      <Analytics />
+      <Analytics debug={false} />
     </SessionProvider>
   );
 };

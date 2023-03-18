@@ -9,7 +9,7 @@ export default function Arrival() {
         <Chakra.Heading textAlign="center" size="lg">
           When will it be available?
         </Chakra.Heading>
-        <Chakra.Text textAlign="center">
+        <Chakra.Text fontSize="lg" textAlign="center">
           We aim to launch our app by <b>April</b> having testimonials, forms, and the Developer API
           feature ready and the Newsletter feature will be launched by the end of <b>May</b>. Please
           consider supporting us by joining the wait list 🙏

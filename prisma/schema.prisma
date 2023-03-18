@@ -50,11 +50,11 @@ model VerificationToken {
 }
 
 model User {
-    id            String       @id @default(cuid())
+    id            String        @id @default(cuid())
     name          String?
-    username      String?      @unique
+    username      String?       @unique
     bio           String?
-    email         String?      @unique
+    email         String?       @unique
     emailVerified DateTime?
     image         String?
     imagePublicId String?
@@ -63,6 +63,7 @@ model User {
     sections      Section[]
     links         Link[]
     socialLinks   SocialLink[]
+    testimonials  Testimonial[]
 
     profileTitle String?
 
@@ -84,6 +85,22 @@ model User {
     linksColumnCount            Int            @default(1)
     buttonStyle                 ButtonStyle    @default(ROUNDED)
     buttonBackground            String?
+    font                        String?
+}
+
+model Testimonial {
+    id         String   @id @default(cuid())
+    rating     Int
+    message    String   @db.LongText
+    name       String
+    email      String
+    avatar     String?
+    shouldShow Boolean  @default(false)
+    User       User     @relation(fields: [userId], references: [id])
+    userId     String
+    createdAt  DateTime @default(now())
+
+    @@index([userId])
 }
 
 enum ButtonStyle {
@@ -120,7 +137,7 @@ enum SocialIconPlacement {
 
 model Section {
     id     String  @id @default(cuid())
-    index  Int     @default(dbgenerated())
+    index  Int
     name   String?
     links  Link[]
     user   User    @relation(fields: [userId], references: [id])
@@ -131,7 +148,7 @@ model Section {
 
 model Link {
     id                String  @id @default(cuid())
-    index             Int     @default(dbgenerated())
+    index             Int
     text              String
     url               String
     thumbnail         String?
@@ -149,7 +166,7 @@ model Link {
 
 model SocialLink {
     id     String @id @default(cuid())
-    index  Int    @default(dbgenerated())
+    index  Int
     url    String
     icon   String
     User   User   @relation(fields: [userId], references: [id])

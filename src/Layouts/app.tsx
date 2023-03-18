@@ -10,9 +10,9 @@ export function AppLayout(props: AppProps) {
     <Chakra.Box bg="purple.50" className="h-[100vh] w-full overflow-x-hidden">
       <SEO title="App" description="The Linkify editor where your page is customized" />
       <AppBar />
-      <Chakra.HStack w="full" align="start">
+      <Chakra.HStack spacing={0} w="full" align="start">
         <PreviewProvider>
-          <Chakra.Stack p={3} w="full" align="center">
+          <Chakra.Stack id="stack" p={3} w="full" align="center">
             {children}
           </Chakra.Stack>
           <PreviewPanel />

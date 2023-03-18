@@ -115,7 +115,7 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
     },
   });
 
-  if (!user?.username) {
+  if (!user?.username || !user?.bio) {
     return {
       redirect: { destination: "/auth/onboarding", permanent: false },
     };

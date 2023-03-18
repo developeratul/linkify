@@ -1,4 +1,4 @@
-import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
+import { EmptySectionMessage, ErrorMessage } from "@/components/app/common/Message";
 import SectionWrapper from "@/components/app/common/SectionWrapper";
 import { SectionLoader } from "@/components/common/Loader";
 import { usePreviewContext } from "@/providers/preview";
@@ -48,7 +48,7 @@ export default function Sections() {
   if (isError) return <ErrorMessage description={error.message} />;
   if (!data?.length)
     return (
-      <EmptyMessage
+      <EmptySectionMessage
         title="No Sections created"
         description="Sections will contain your links. Start by creating a section."
         createButton={<CreateSectionModal />}

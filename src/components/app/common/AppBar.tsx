@@ -39,6 +39,9 @@ export default function AppBar() {
       <LinkButton to="/app/settings" icon={<Icon name="Settings" />}>
         Settings
       </LinkButton>
+      <LinkButton to="/app/testimonials" icon={<Icon name="Testimonial" />}>
+        Testimonials
+      </LinkButton>
     </>
   );
   return (
@@ -78,7 +81,10 @@ export function AppMenu() {
   return (
     <Chakra.Menu>
       <Chakra.MenuButton>
-        <Chakra.Avatar src={data?.user?.image as string} name={data?.user?.name as string} />
+        <Chakra.Avatar
+          src={data?.user?.image as string}
+          name={(data?.user?.name || data?.user?.username) as string}
+        />
       </Chakra.MenuButton>
       <Chakra.MenuList>
         <Chakra.MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>

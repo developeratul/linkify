@@ -9,18 +9,18 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
   return (
     <Draggable draggableId={socialLink.id} index={index}>
       {(provided) => (
-        <Chakra.Flex
+        <Chakra.HStack
           ref={provided.innerRef}
           {...provided.draggableProps}
           w="full"
           bg="white"
-          p={{ base: 2, sm: 4 }}
-          rounded="md"
+          p={{ base: 3, md: 5 }}
+          rounded={{ base: "md", md: "xl" }}
           shadow="base"
           justify="space-between"
           align="center"
         >
-          <Chakra.Flex gap={3} align="center">
+          <Chakra.Flex gap={1} w="full" overflow="hidden" align="center">
             <Chakra.IconButton
               {...provided.dragHandleProps}
               size={{ base: "xs", sm: "sm" }}
@@ -28,11 +28,17 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
               colorScheme="purple"
               variant="ghost"
               aria-label="Drag and drop social link"
+              flexShrink={0}
             />
-            <Chakra.HStack align="center" spacing={3}>
-              <Chakra.Heading size={{ base: "sm" }} noOfLines={1} fontWeight="medium">
+            <Chakra.HStack align="center" overflow="hidden" spacing={5}>
+              <Chakra.Text
+                flex={1}
+                fontSize={{ base: "sm", md: "md" }}
+                noOfLines={2}
+                fontWeight="medium"
+              >
                 {socialLink.url}
-              </Chakra.Heading>
+              </Chakra.Text>
               <Chakra.Box color="purple.500">
                 <SocialIcon name={socialLink.icon} />
               </Chakra.Box>
@@ -41,7 +47,7 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
           <Chakra.Flex>
             <DeleteSocialLink socialLinkId={socialLink.id} />
           </Chakra.Flex>
-        </Chakra.Flex>
+        </Chakra.HStack>
       )}
     </Draggable>
   );

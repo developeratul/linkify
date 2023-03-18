@@ -1,5 +1,7 @@
+import { defaultFont, DEFAULT_FONT_NAME, fonts } from "@/fonts/profile";
 import type { Profile } from "@/pages/[slug]";
 import { useToken } from "@chakra-ui/react";
+import type { NextFont } from "next/dist/compiled/@next/font";
 import React from "react";
 
 type InitialState = Omit<
@@ -10,6 +12,7 @@ type InitialState = Omit<
   | "grayColor"
   | "foreground"
   | "profileTitle"
+  | "font"
 > & {
   bodyBackgroundColor: string;
   cardBackgroundColor: string;
@@ -17,6 +20,7 @@ type InitialState = Omit<
   grayColor: string;
   foreground: string;
   profileTitle: string;
+  font: NextFont;
 };
 
 const ProfileContext = React.createContext<InitialState | undefined>(undefined);
@@ -28,21 +32,23 @@ type ProfileProviderProps = {
 
 export default function ProfileProvider(props: ProfileProviderProps) {
   const { children, profile } = props;
-  const [purple50, purple100, purple500, gray500, gray600] = useToken("colors", [
+  const [purple50, purple100, purple500, gray300, gray600] = useToken("colors", [
     "purple.50",
     "purple.100",
     "purple.500",
-    "gray.500",
+    "gray.300",
     "gray.600",
   ]);
+  const font = fonts[profile.font || DEFAULT_FONT_NAME] || defaultFont;
   const value: InitialState = {
     ...profile,
     profileTitle: profile.profileTitle || `${profile.username}`,
     bodyBackgroundColor: profile.bodyBackgroundColor || purple50,
     cardBackgroundColor: profile.cardBackgroundColor || purple100,
     themeColor: profile.themeColor || purple500,
-    grayColor: profile.grayColor || gray500,
+    grayColor: profile.grayColor || gray300,
     foreground: profile.foreground || gray600,
+    font,
   };
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 }

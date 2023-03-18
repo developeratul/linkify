@@ -23,7 +23,8 @@ export default function Links(props: LinksProps) {
     try {
       const { destination, source, draggableId } = result;
       if (!destination) return;
-      if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+      if (destination.droppableId === source.droppableId && destination.index === source.index)
+        return;
 
       const items = links;
       const item = items?.find((link) => link.id === draggableId);
