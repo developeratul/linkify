@@ -1,11 +1,11 @@
-import { Space_Grotesk, Space_Mono } from "next/font/google";
+import { Roboto_Mono, Space_Mono } from "next/font/google";
 
 export const spaceMono = Space_Mono({
   weight: "400",
   subsets: ["latin"],
 });
 
-export const spaceGrotesk = Space_Grotesk({
+export const robotoMono = Roboto_Mono({
   weight: "variable",
   subsets: ["latin"],
 });

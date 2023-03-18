@@ -1,10 +1,10 @@
-import { spaceGrotesk, spaceMono } from "@/fonts";
+import { robotoMono, spaceMono } from "@/fonts";
 import { extendTheme } from "@chakra-ui/react";
 
 export const theme = extendTheme({
   fonts: {
     heading: spaceMono.style.fontFamily,
-    body: spaceGrotesk.style.fontFamily,
+    body: robotoMono.style.fontFamily,
   },
   colors: {
     purple: {
