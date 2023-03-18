@@ -23,10 +23,10 @@ export default function Author() {
         >
           <Image src={Ratul} alt="Minhazur Rahaman Ratul" width={300} className="rounded-lg" />
           <Chakra.VStack align="start" spacing={5}>
-            <Chakra.Heading size="md" color="purple.500">
+            <Chakra.Heading fontSize="2xl" color="purple.500">
               Minhazur Rahaman Ratul
             </Chakra.Heading>
-            <Chakra.VStack spacing={3}>
+            <Chakra.VStack spacing={3} fontSize="lg">
               <Chakra.Text>
                 Hi! I am Ratul a full stack developer from Bangladesh 🇧🇩. I have been coding
                 professionally for more than 2 years. But I was doing it privately. No one knew what
