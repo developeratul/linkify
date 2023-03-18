@@ -23,7 +23,11 @@ export default function Testimonials() {
             />
             <Chakra.VStack align={{ base: "center", md: "start" }}>
               <Chakra.VStack align={{ base: "center", md: "start" }}>
-                <Chakra.Heading fontSize={{ base: "md", md: "lg" }} textAlign="center">
+                <Chakra.Heading
+                  fontFamily={profile.font.style.fontFamily}
+                  fontSize={{ base: "md", md: "lg" }}
+                  textAlign="center"
+                >
                   {testimonial.name}
                 </Chakra.Heading>
                 <Chakra.Text

@@ -108,7 +108,7 @@ export default function Button() {
       <Chakra.VStack as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
         <Chakra.FormControl>
           <Chakra.FormLabel>Button style</Chakra.FormLabel>
-          <Chakra.SimpleGrid spacing={5} columns={3}>
+          <Chakra.SimpleGrid spacing={5} columns={{ base: 1, sm: 2, lg: 3 }}>
             {buttonVariants.map((buttonVariantName) => {
               const isSelected = watch("buttonStyle") === buttonVariantName;
               return (

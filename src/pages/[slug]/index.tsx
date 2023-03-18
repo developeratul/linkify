@@ -2,7 +2,8 @@ import { Conditional } from "@/components/common/Conditional";
 import { SEO } from "@/components/common/SEO";
 import AddTestimonialModal from "@/components/profile/AddTestimonial";
 import Container from "@/components/profile/Container";
-import ProfileImage from "@/components/profile/Image";
+import ProfileImage from "@/components/profile/ProfileImage";
+import ProfileIntro from "@/components/profile/ProfileIntro";
 import Sections from "@/components/profile/Sections";
 import SocialLinks from "@/components/profile/SocialLinks";
 import Testimonials from "@/components/profile/Testimonials";
@@ -74,16 +75,7 @@ const ProfilePage: NextPage<ProfileProps> = (
         <Container>
           <Wrapper>
             <ProfileImage />
-            <Chakra.VStack spacing="5px" textAlign="center">
-              <Chakra.Heading
-                color={profile.themeColor || "purple.500"}
-                fontSize={24}
-                fontWeight="medium"
-              >
-                {profile.profileTitle || `@${profile.username}`}
-              </Chakra.Heading>
-              <Chakra.Text fontSize={16}>{profile.bio}</Chakra.Text>
-            </Chakra.VStack>
+            <ProfileIntro />
             {profile.socialIconPlacement === "TOP" && <SocialLinks />}
             <Conditional
               condition={profile.testimonials.length > 0}
@@ -163,6 +155,7 @@ export type Profile = {
   foreground?: string | null;
   buttonStyle: ButtonStyle;
   buttonBackground?: string | null;
+  font?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   socialIconPlacement?: SocialIconPlacement;
@@ -199,6 +192,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       foreground: true,
       buttonStyle: true,
       buttonBackground: true,
+      font: true,
       sections: {
         select: {
           id: true,

@@ -21,6 +21,11 @@ export const theme = extendTheme({
     },
   },
   components: {
+    Button: {
+      baseStyle: {
+        fontWeight: "medium",
+      },
+    },
     Text: {
       baseStyle: {
         fontWeight: "normal",

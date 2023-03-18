@@ -1,5 +1,7 @@
+import { fonts, robotoMono } from "@/fonts/profile";
 import type { Profile } from "@/pages/[slug]";
 import { useToken } from "@chakra-ui/react";
+import type { NextFont } from "next/dist/compiled/@next/font";
 import React from "react";
 
 type InitialState = Omit<
@@ -10,6 +12,7 @@ type InitialState = Omit<
   | "grayColor"
   | "foreground"
   | "profileTitle"
+  | "font"
 > & {
   bodyBackgroundColor: string;
   cardBackgroundColor: string;
@@ -17,6 +20,7 @@ type InitialState = Omit<
   grayColor: string;
   foreground: string;
   profileTitle: string;
+  font: NextFont;
 };
 
 const ProfileContext = React.createContext<InitialState | undefined>(undefined);
@@ -35,6 +39,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
     "gray.300",
     "gray.600",
   ]);
+  const font = fonts[profile.font || "robotoMono"] || robotoMono;
   const value: InitialState = {
     ...profile,
     profileTitle: profile.profileTitle || `${profile.username}`,
@@ -43,6 +48,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
     themeColor: profile.themeColor || purple500,
     grayColor: profile.grayColor || gray300,
     foreground: profile.foreground || gray600,
+    font,
   };
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 }

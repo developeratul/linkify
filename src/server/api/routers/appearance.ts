@@ -18,6 +18,7 @@ export const ThemeSelections = {
   bodyBackgroundImagePublicId: true,
   cardBackgroundColor: true,
   cardShadow: true,
+  font: true,
 } satisfies Prisma.UserSelect;
 
 export const LayoutSelections = {

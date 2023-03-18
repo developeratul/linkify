@@ -10,8 +10,15 @@ export default function Container(props: ContainerProps) {
   const { children } = props;
   const profile = useProfileContext();
 
+  if (profile === undefined) return <></>;
+
   return (
-    <Chakra.VStack mx="auto" color={profile?.foreground} maxW={profile?.containerWidth}>
+    <Chakra.VStack
+      fontFamily={profile.font.style.fontFamily}
+      mx="auto"
+      color={profile.foreground}
+      maxW={profile.containerWidth}
+    >
       {children}
     </Chakra.VStack>
   );

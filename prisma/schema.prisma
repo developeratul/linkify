@@ -85,6 +85,7 @@ model User {
     linksColumnCount            Int            @default(1)
     buttonStyle                 ButtonStyle    @default(ROUNDED)
     buttonBackground            String?
+    font                        String?
 }
 
 model Testimonial {
