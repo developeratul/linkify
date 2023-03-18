@@ -12,6 +12,7 @@ import { LinkSelections } from "@/server/api/routers/link";
 import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { prisma } from "@/server/db";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
+import type { UseTabsProps } from "@chakra-ui/react";
 import * as Chakra from "@chakra-ui/react";
 import type {
   BackgroundType,
@@ -21,6 +22,13 @@ import type {
   SocialIconPlacement,
 } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
+import { useQueryState } from "next-usequerystate";
+import { useRouter } from "next/router";
+
+const tabs = {
+  links: 0,
+  testimonials: 1,
+};
 
 type ProfileProps = {
   profile: Profile;
@@ -30,6 +38,19 @@ const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { profile } = props;
+  const router = useRouter();
+  const { tab }: { tab?: "links" | "testimonials" } = router.query;
+  const [, setCurrentTab] = useQueryState("tab");
+  const defaultTabIndex = tab ? tabs[tab] || 0 : 0;
+
+  const handleTabsChange: UseTabsProps["onChange"] = (index) => {
+    for (const prop in tabs) {
+      if (tabs.hasOwnProperty(prop) && tabs[prop as keyof typeof tabs] === index) {
+        setCurrentTab(prop);
+      }
+    }
+  };
+
   return (
     <ProfileProvider profile={profile}>
       <SEO
@@ -67,7 +88,13 @@ const ProfilePage: NextPage<ProfileProps> = (
             <Conditional
               condition={profile.testimonials.length > 0}
               component={
-                <Chakra.Tabs isLazy isFitted w="full">
+                <Chakra.Tabs
+                  onChange={handleTabsChange}
+                  defaultIndex={defaultTabIndex}
+                  isLazy
+                  isFitted
+                  w="full"
+                >
                   <Chakra.TabList>
                     <Chakra.Tab
                       color={profile.foreground || "gray.600"}
