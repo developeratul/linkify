@@ -23,11 +23,13 @@ function DeleteTestimonial(props: { testimonialId: string }) {
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
   const router = useRouter();
+  const previewContext = usePreviewContext();
 
   const handleClick = async () => {
     try {
       await mutateAsync(testimonialId);
       router.push(router.asPath);
+      previewContext?.reload();
       onClose();
     } catch (err) {
       if (err instanceof TRPCClientError) {

@@ -5,6 +5,7 @@ import { getContrastColor, lightenColor } from "@/utils/color";
 import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Rating from "../app/common/Rating";
@@ -33,6 +34,12 @@ export default function AddTestimonialModal() {
     onClose();
     reset();
   };
+
+  React.useEffect(() => {
+    if (window.location.hash === "#add-testimonial") {
+      onOpen();
+    }
+  }, [onOpen]);
 
   if (profile === undefined) return <></>;
 
