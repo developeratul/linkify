@@ -19,8 +19,6 @@ const testimonialRouter = createTRPCRouter({
   add: publicProcedure
     .input(testimonialSchema.extend({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (input.userId === ctx.session?.user?.id) throw new TRPCError({ code: "FORBIDDEN" });
-
       await ctx.prisma.testimonial.create({
         data: input,
       });
