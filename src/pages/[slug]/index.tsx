@@ -78,7 +78,7 @@ const ProfilePage: NextPage<ProfileProps> = (
           <Wrapper>
             <ProfileImage />
             <ProfileIntro />
-            {profile.settings?.socialIconPlacement === "TOP" && <SocialLinks />}
+            {(profile.settings?.socialIconPlacement || "TOP") === "TOP" && <SocialLinks />}
             <Conditional
               condition={profile.testimonials.length > 0}
               component={
@@ -127,7 +127,7 @@ const ProfilePage: NextPage<ProfileProps> = (
               }
               fallback={<Sections />}
             />
-            {profile.settings?.socialIconPlacement === "BOTTOM" && <SocialLinks />}
+            {(profile.settings?.socialIconPlacement || "TOP") === "BOTTOM" && <SocialLinks />}
           </Wrapper>
         </Container>
       </Chakra.Box>
