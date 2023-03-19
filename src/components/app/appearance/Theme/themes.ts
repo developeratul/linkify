@@ -1,9 +1,21 @@
 import { poppins } from "@/fonts/profile";
-import type { ProfileTheme } from "@/pages/[slug]";
 import { useToken } from "@chakra-ui/react";
 import type { BackgroundType, CardShadow } from "@prisma/client";
 
-export const themes: Record<string, ProfileTheme & { name: string }> = {
+export type Theme = {
+  name: string;
+  themeColor: string;
+  foreground: string;
+  grayColor: string;
+  bodyBackgroundType: BackgroundType;
+  bodyBackgroundColor?: string;
+  bodyBackgroundImage?: string;
+  cardShadow: CardShadow;
+  font: string;
+  cardBackgroundColor: string;
+};
+
+export const themes: Record<string, Theme> = {
   dracula: {
     name: "Dracula",
     themeColor: "#9580FF",
@@ -11,11 +23,16 @@ export const themes: Record<string, ProfileTheme & { name: string }> = {
     grayColor: "#7970A9",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#22212C",
-    bodyBackgroundImage: null,
+    bodyBackgroundImage: undefined,
     cardShadow: "none",
-    font: "spaceMono",
+    font: "quicksand",
     cardBackgroundColor: "#fefefe",
   },
+};
+
+export const getRawTheme = (theme: Theme) => {
+  const { name, ...rawTheme } = theme;
+  return rawTheme;
 };
 
 export const useDefaultProfileTheme = () => {
@@ -33,7 +50,7 @@ export const useDefaultProfileTheme = () => {
     themeColor: purple500,
     grayColor: gray300,
     foreground: gray600,
-    bodyBackgroundImage: null,
+    bodyBackgroundImage: undefined,
     bodyBackgroundType: "COLOR" as BackgroundType,
     cardShadow: "none" as CardShadow,
     font: poppins,

@@ -38,8 +38,6 @@ export const themeSchema = z.object({
   cardBackgroundColor: z.string().optional(),
   cardShadow: z.enum(["sm", "md", "lg", "xl", "none"]),
   font: z.string().optional(),
-  theme: z.string().optional(),
-  isCustomTheme: z.boolean().optional().default(false),
 });
 
 type ThemeSchema = z.infer<typeof themeSchema>;
@@ -90,9 +88,7 @@ export default function CustomThemeEditor() {
             "bodyBackgroundImagePublicId",
             "cardBackgroundColor",
             "grayColor",
-            "font",
-            "theme",
-            "isCustomTheme"
+            "font"
           ]
         ).map((key) => {
           if (data[key]) {
@@ -112,7 +108,7 @@ export default function CustomThemeEditor() {
 
   const onSubmit = async (value: ThemeSchema) => {
     try {
-      await mutateAsync(value);
+      await mutateAsync({ ...value, isCustomTheme: true });
       await utils.appearance.getTheme.invalidate();
       previewContext?.reload();
     } catch (err) {
@@ -125,7 +121,7 @@ export default function CustomThemeEditor() {
   if (isLoading) return <Loader />;
 
   return (
-    <Chakra.VStack as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
+    <Chakra.VStack align="start" as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
       <Chakra.FormControl>
         <Chakra.FormLabel>Background type</Chakra.FormLabel>
         <Chakra.Select {...register("bodyBackgroundType")}>
@@ -242,6 +238,7 @@ export default function CustomThemeEditor() {
       >
         Save changes
       </Chakra.Button>
+      <ToggleCustomThemeButton />
     </Chakra.VStack>
   );
 }
@@ -310,5 +307,23 @@ function AddBackgroundImage(props: {
         />
       )}
     </Chakra.FormControl>
+  );
+}
+
+function ToggleCustomThemeButton() {
+  const { mutateAsync, isLoading } = api.appearance.toggleCustomTheme.useMutation();
+  const utils = api.useContext();
+  const previewContext = usePreviewContext();
+
+  const handleClick = async () => {
+    await mutateAsync();
+    await utils.appearance.getTheme.invalidate();
+    previewContext?.reload();
+  };
+
+  return (
+    <Chakra.Button variant="link" isLoading={isLoading} onClick={handleClick}>
+      Use a pre-made theme instead
+    </Chakra.Button>
   );
 }

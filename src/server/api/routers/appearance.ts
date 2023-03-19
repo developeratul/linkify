@@ -128,24 +128,31 @@ const appearanceRouter = createTRPCRouter({
     return user.layout;
   }),
 
-  updateTheme: protectedProcedure.input(themeSchema).mutation(async ({ ctx, input }) => {
-    const update = input;
+  updateTheme: protectedProcedure
+    .input(
+      themeSchema.extend({
+        theme: z.string().optional(),
+        isCustomTheme: z.boolean().optional().default(false),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const update = input;
 
-    const user = await ctx.prisma.user.update({
-      where: { id: ctx.session.user.id },
-      data: {
-        theme: {
-          upsert: {
-            create: { ...update },
-            update: { ...update },
+      const user = await ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: {
+          theme: {
+            upsert: {
+              create: { ...update },
+              update: { ...update },
+            },
           },
         },
-      },
-      select: { theme: true },
-    });
+        select: { theme: true },
+      });
 
-    return user.theme;
-  }),
+      return user.theme;
+    }),
 
   getTheme: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
@@ -156,6 +163,31 @@ const appearanceRouter = createTRPCRouter({
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
     return user.theme;
+  }),
+
+  toggleCustomTheme: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: userId },
+      select: { theme: true },
+    });
+
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    await ctx.prisma.user.update({
+      where: { id: userId },
+      data: {
+        theme: {
+          upsert: {
+            create: { isCustomTheme: false },
+            update: { isCustomTheme: !user.theme?.isCustomTheme },
+          },
+        },
+      },
+    });
+
+    return;
   }),
 
   deleteImage: protectedProcedure.mutation(async ({ ctx }) => {
