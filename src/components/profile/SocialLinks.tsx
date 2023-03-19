@@ -30,11 +30,11 @@ function SocialLink(props: { link: SocialLink }) {
   const { link } = props;
   const profile = useProfileContext();
   if (profile === undefined) return <></>;
-  const background = profile.buttonBackground || profile.themeColor;
+  const background = profile.button.buttonBackground || profile.theme.themeColor;
   return (
     <Chakra.Stack
       background={background}
-      rounded={buttonImageRoundness[profile.buttonStyle]}
+      rounded={buttonImageRoundness[profile.button.buttonStyle]}
       color={getContrastColor(background)}
       cursor="pointer"
       boxSize="45px"

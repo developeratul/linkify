@@ -45,7 +45,9 @@ const SettingsPage: NextPageWithLayout<{ settings: Settings }> = (
       previewContext?.reload();
       toast({ status: "success", description: data.message });
     } catch (err) {
-      //
+      if (err instanceof Error) {
+        toast({ status: "error", description: err.message });
+      }
     } finally {
       setProcessing(false);
     }
@@ -109,9 +111,7 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
     select: {
       username: true,
       bio: true,
-      seoTitle: true,
-      seoDescription: true,
-      socialIconPlacement: true,
+      settings: true,
     },
   });
 
@@ -121,10 +121,10 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
     };
   }
 
-  const { seoTitle, seoDescription, socialIconPlacement } = user;
+  const { settings } = user;
 
   return {
-    props: { settings: { seoTitle, seoDescription, socialIconPlacement } },
+    props: { settings },
   };
 });
 

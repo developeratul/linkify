@@ -1,31 +1,41 @@
 import { buttonSchema } from "@/components/app/appearance/Button";
 import { layoutSchema } from "@/components/app/appearance/Layout";
 import { updateProfileSchema } from "@/components/app/appearance/Profile";
-import { themeSchema } from "@/components/app/appearance/Theme";
+import { themeSchema } from "@/components/app/appearance/Theme/CustomThemeEditor";
 import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const ThemeSelections = {
-  themeColor: true,
-  foreground: true,
-  grayColor: true,
-  bodyBackgroundType: true,
+export const ProfileThemeSelections = {
   bodyBackgroundColor: true,
   bodyBackgroundImage: true,
-  bodyBackgroundImagePublicId: true,
+  bodyBackgroundType: true,
   cardBackgroundColor: true,
   cardShadow: true,
   font: true,
-} satisfies Prisma.UserSelect;
+  foreground: true,
+  grayColor: true,
+  themeColor: true,
+} satisfies Prisma.ThemeSelect;
 
-export const LayoutSelections = {
-  layout: true,
+export const ProfileSettingsSelections = {
+  seoTitle: true,
+  seoDescription: true,
+  socialIconPlacement: true,
+} satisfies Prisma.SettingsSelect;
+
+export const ProfileLayoutSelections = {
   containerWidth: true,
+  layout: true,
   linksColumnCount: true,
-} satisfies Prisma.UserSelect;
+} satisfies Prisma.LayoutSelect;
+
+export const ProfileButtonSelections = {
+  buttonBackground: true,
+  buttonStyle: true,
+} satisfies Prisma.ButtonSelect;
 
 const appearanceRouter = createTRPCRouter({
   getProfile: protectedProcedure.query(async ({ ctx }) => {
@@ -38,6 +48,8 @@ const appearanceRouter = createTRPCRouter({
         image: true,
       },
     });
+
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
     return user;
   }),
@@ -89,20 +101,31 @@ const appearanceRouter = createTRPCRouter({
 
     const user = await ctx.prisma.user.update({
       where: { id: ctx.session.user.id },
-      data: { ...update },
-      select: ThemeSelections,
+      data: {
+        layout: {
+          upsert: {
+            create: { ...update },
+            update: { ...update },
+          },
+        },
+      },
+      select: { layout: true },
     });
 
-    return user;
+    return user.layout;
   }),
 
   getLayout: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.session.user.id },
-      select: LayoutSelections,
+      select: {
+        layout: true,
+      },
     });
 
-    return user;
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    return user.layout;
   }),
 
   updateTheme: protectedProcedure.input(themeSchema).mutation(async ({ ctx, input }) => {
@@ -110,31 +133,47 @@ const appearanceRouter = createTRPCRouter({
 
     const user = await ctx.prisma.user.update({
       where: { id: ctx.session.user.id },
-      data: { ...update },
-      select: ThemeSelections,
+      data: {
+        theme: {
+          upsert: {
+            create: { ...update },
+            update: { ...update },
+          },
+        },
+      },
+      select: { theme: true },
     });
 
-    return user;
+    return user.theme;
   }),
 
   getTheme: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.session.user.id },
-      select: ThemeSelections,
+      select: { theme: true },
     });
 
-    return user;
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    return user.theme;
   }),
 
   deleteImage: protectedProcedure.mutation(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.session.user.id },
-      select: { bodyBackgroundImage: true, bodyBackgroundImagePublicId: true },
+      select: {
+        theme: {
+          select: {
+            bodyBackgroundImage: true,
+            bodyBackgroundImagePublicId: true,
+          },
+        },
+      },
     });
 
-    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+    if (!user || !user.theme) throw new TRPCError({ code: "NOT_FOUND" });
 
-    const { bodyBackgroundImage, bodyBackgroundImagePublicId } = user;
+    const { bodyBackgroundImage, bodyBackgroundImagePublicId } = user.theme;
 
     if (bodyBackgroundImage && bodyBackgroundImagePublicId) {
       await cloudinary.uploader.destroy(bodyBackgroundImagePublicId);
@@ -142,29 +181,47 @@ const appearanceRouter = createTRPCRouter({
 
     await ctx.prisma.user.update({
       where: { id: ctx.session.user.id },
-      data: { bodyBackgroundImage: null, bodyBackgroundImagePublicId: null },
+      data: {
+        theme: {
+          update: {
+            bodyBackgroundImage: null,
+            bodyBackgroundImagePublicId: null,
+          },
+        },
+      },
     });
 
     return;
   }),
 
   getButtonStyle: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
     const user = await ctx.prisma.user.findUnique({
-      where: { id: ctx.session.user.id },
+      where: { id: userId },
       select: {
-        buttonStyle: true,
-        buttonBackground: true,
+        button: true,
       },
     });
 
-    return user;
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    return user.button;
   }),
 
   updateButtonStyle: protectedProcedure.input(buttonSchema).mutation(async ({ ctx, input }) => {
     const update = input;
     await ctx.prisma.user.update({
       where: { id: ctx.session.user.id },
-      data: { ...update },
+      data: {
+        button: {
+          upsert: {
+            create: { ...update },
+            update: { ...update },
+          },
+        },
+      },
+      select: { button: true },
     });
     return;
   }),

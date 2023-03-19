@@ -9,19 +9,19 @@ import SocialLinks from "@/components/profile/SocialLinks";
 import Testimonials from "@/components/profile/Testimonials";
 import Wrapper from "@/components/profile/Wrapper";
 import ProfileProvider from "@/providers/profile";
+import {
+  ProfileButtonSelections,
+  ProfileLayoutSelections,
+  ProfileSettingsSelections,
+  ProfileThemeSelections,
+} from "@/server/api/routers/appearance";
 import { LinkSelections } from "@/server/api/routers/link";
 import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { prisma } from "@/server/db";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
 import type { UseTabsProps } from "@chakra-ui/react";
 import * as Chakra from "@chakra-ui/react";
-import type {
-  BackgroundType,
-  ButtonStyle,
-  CardShadow,
-  Layout,
-  SocialIconPlacement,
-} from "@prisma/client";
+import type { Button, Layout, Settings, Theme } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
 import { useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
@@ -55,14 +55,16 @@ const ProfilePage: NextPage<ProfileProps> = (
   return (
     <ProfileProvider profile={profile}>
       <SEO
-        title={profile.seoTitle || profile.username || ""}
-        description={profile.seoDescription || `@${profile.username}'s profile on Linkify`}
+        title={profile.settings?.seoTitle || profile.username || ""}
+        description={
+          profile.settings?.seoDescription || `@${profile.username}'s profile on Linkify`
+        }
       />
       <Chakra.Box
         background={
-          profile.bodyBackgroundType === "IMAGE"
-            ? `url('${profile.bodyBackgroundImage}')`
-            : profile.bodyBackgroundColor || "purple.50"
+          profile.theme?.bodyBackgroundType === "IMAGE"
+            ? `url('${profile.theme.bodyBackgroundImage}')`
+            : profile.theme?.bodyBackgroundColor || "purple.50"
         }
         backgroundSize="cover"
         backgroundPosition="center"
@@ -76,7 +78,7 @@ const ProfilePage: NextPage<ProfileProps> = (
           <Wrapper>
             <ProfileImage />
             <ProfileIntro />
-            {profile.socialIconPlacement === "TOP" && <SocialLinks />}
+            {profile.settings?.socialIconPlacement === "TOP" && <SocialLinks />}
             <Conditional
               condition={profile.testimonials.length > 0}
               component={
@@ -89,25 +91,25 @@ const ProfilePage: NextPage<ProfileProps> = (
                 >
                   <Chakra.TabList>
                     <Chakra.Tab
-                      color={profile.foreground || "gray.600"}
-                      borderBottomColor={profile.grayColor || "gray.300"}
+                      color={profile.theme?.foreground || "gray.600"}
+                      borderBottomColor={profile.theme?.grayColor || "gray.300"}
                       _active={{}}
                       _hover={{}}
                       _selected={{
-                        color: profile.themeColor || "purple.500",
-                        borderBottomColor: profile.themeColor || "purple.500",
+                        color: profile.theme?.themeColor || "purple.500",
+                        borderBottomColor: profile.theme?.themeColor || "purple.500",
                       }}
                     >
                       Links
                     </Chakra.Tab>
                     <Chakra.Tab
-                      color={profile.foreground || "gray.600"}
-                      borderBottomColor={profile.grayColor || "gray.300"}
+                      color={profile.theme?.foreground || "gray.600"}
+                      borderBottomColor={profile.theme?.grayColor || "gray.300"}
                       _active={{}}
                       _hover={{}}
                       _selected={{
-                        color: profile.themeColor || "purple.500",
-                        borderBottomColor: profile.themeColor || "purple.500",
+                        color: profile.theme?.themeColor || "purple.500",
+                        borderBottomColor: profile.theme?.themeColor || "purple.500",
                       }}
                     >
                       Testimonials
@@ -125,7 +127,7 @@ const ProfilePage: NextPage<ProfileProps> = (
               }
               fallback={<Sections />}
             />
-            {profile.socialIconPlacement === "BOTTOM" && <SocialLinks />}
+            {profile.settings?.socialIconPlacement === "BOTTOM" && <SocialLinks />}
           </Wrapper>
         </Container>
       </Chakra.Box>
@@ -135,6 +137,17 @@ const ProfilePage: NextPage<ProfileProps> = (
 
 export default ProfilePage;
 
+export type ProfileLayout = Omit<Layout, "id" | "userId">;
+
+export type ProfileTheme = Omit<
+  Theme,
+  "id" | "userId" | "isCustomTheme" | "theme" | "bodyBackgroundImagePublicId"
+>;
+
+export type ProfileButton = Omit<Button, "id" | "userId">;
+
+export type ProfileSettings = Omit<Settings, "id" | "userId">;
+
 export type Profile = {
   id: string;
   username: string | null;
@@ -142,23 +155,10 @@ export type Profile = {
   bio: string | null;
   image?: string | null;
   profileTitle?: string | null;
-  layout: Layout;
-  containerWidth: number;
-  cardShadow: CardShadow;
-  linksColumnCount: number;
-  bodyBackgroundType: BackgroundType;
-  bodyBackgroundColor?: string | null;
-  bodyBackgroundImage?: string | null;
-  cardBackgroundColor?: string | null;
-  themeColor?: string | null;
-  grayColor?: string | null;
-  foreground?: string | null;
-  buttonStyle: ButtonStyle;
-  buttonBackground?: string | null;
-  font?: string | null;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
-  socialIconPlacement?: SocialIconPlacement;
+  layout?: ProfileLayout | null;
+  theme?: ProfileTheme | null;
+  button?: ProfileButton | null;
+  settings?: ProfileSettings | null;
   sections: ProfileSection[];
   socialLinks: SocialLink[];
   testimonials: Testimonial[];
@@ -176,23 +176,10 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       bio: true,
       image: true,
       profileTitle: true,
-      seoTitle: true,
-      seoDescription: true,
-      socialIconPlacement: true,
-      layout: true,
-      containerWidth: true,
-      cardShadow: true,
-      linksColumnCount: true,
-      bodyBackgroundType: true,
-      bodyBackgroundColor: true,
-      bodyBackgroundImage: true,
-      cardBackgroundColor: true,
-      themeColor: true,
-      grayColor: true,
-      foreground: true,
-      buttonStyle: true,
-      buttonBackground: true,
-      font: true,
+      layout: { select: ProfileLayoutSelections },
+      theme: { select: ProfileThemeSelections },
+      settings: { select: ProfileSettingsSelections },
+      button: { select: ProfileButtonSelections },
       sections: {
         select: {
           id: true,

@@ -4,17 +4,20 @@ import * as Chakra from "@chakra-ui/react";
 
 export default function ProfileImage() {
   const profile = useProfileContext();
+
+  if (profile === undefined) return <></>;
+
   const defaultProps: AvatarProps = {
-    name: profile?.profileTitle,
+    name: profile.profileTitle,
     mx: "auto",
     boxSize: 100,
     src: profile?.image || "",
     rounded: "full",
     borderWidth: 2,
-    borderColor: profile?.themeColor,
+    borderColor: profile.theme.themeColor,
   };
 
-  if (profile?.layout === "CARD") {
+  if (profile.layout.layout === "CARD") {
     return (
       <legend className="mx-auto">
         <Chakra.Avatar {...defaultProps} />

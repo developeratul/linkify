@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ErrorMessage } from "../common/Message";
 import SectionWrapper from "./common/SectionWrapper";
 
 export const buttonVariants = [
@@ -73,7 +74,7 @@ type ButtonSchema = z.infer<typeof buttonSchema>;
 
 export default function Button() {
   const { data: theme } = api.appearance.getTheme.useQuery();
-  const { isLoading } = api.appearance.getButtonStyle.useQuery(undefined, {
+  const { isLoading, isError, error } = api.appearance.getButtonStyle.useQuery(undefined, {
     onSuccess(data) {
       if (data) {
         setValue("buttonStyle", data.buttonStyle);
@@ -96,12 +97,13 @@ export default function Button() {
       previewContext?.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
-        toast({ status: "success", description: err.message });
+        toast({ status: "error", description: err.message });
       }
     }
   };
 
   if (isLoading) return <SectionLoader />;
+  if (isError) return <ErrorMessage description={error.message} />;
 
   return (
     <SectionWrapper title="Buttons">

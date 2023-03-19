@@ -50,28 +50,48 @@ model VerificationToken {
 }
 
 model User {
-    id            String        @id @default(cuid())
+    id            String    @id @default(cuid())
     name          String?
-    username      String?       @unique
+    username      String?   @unique
     bio           String?
-    email         String?       @unique
+    profileTitle  String?
+    email         String?   @unique
     emailVerified DateTime?
     image         String?
     imagePublicId String?
-    accounts      Account[]
-    sessions      Session[]
-    sections      Section[]
-    links         Link[]
-    socialLinks   SocialLink[]
-    testimonials  Testimonial[]
 
-    profileTitle String?
+    accounts     Account[]
+    sessions     Session[]
+    sections     Section[]
+    links        Link[]
+    socialLinks  SocialLink[]
+    testimonials Testimonial[]
 
+    layout   Layout?
+    theme    Theme?
+    button   Button?
+    settings Settings?
+}
+
+model Settings {
+    id                  String              @id @default(cuid())
     seoTitle            String?
     seoDescription      String?
     socialIconPlacement SocialIconPlacement @default(TOP)
+    user                User                @relation(fields: [userId], references: [id])
+    userId              String              @unique
+}
 
-    layout                      Layout         @default(WIDE)
+model Button {
+    id               String      @id @default(cuid())
+    buttonStyle      ButtonStyle @default(CIRCLE)
+    buttonBackground String?
+    user             User        @relation(fields: [userId], references: [id])
+    userId           String      @unique
+}
+
+model Theme {
+    id                          String         @id @default(cuid())
     bodyBackgroundType          BackgroundType @default(COLOR)
     bodyBackgroundColor         String?
     bodyBackgroundImage         String?
@@ -80,12 +100,21 @@ model User {
     themeColor                  String?
     grayColor                   String?
     foreground                  String?
-    containerWidth              Int            @default(768)
     cardShadow                  CardShadow     @default(none)
-    linksColumnCount            Int            @default(1)
-    buttonStyle                 ButtonStyle    @default(ROUNDED)
-    buttonBackground            String?
     font                        String?
+    theme                       String?
+    isCustomTheme               Boolean        @default(false)
+    user                        User           @relation(fields: [userId], references: [id])
+    userId                      String         @unique
+}
+
+model Layout {
+    id               String      @id @default(cuid())
+    layout           LayoutTypes @default(WIDE)
+    containerWidth   Int         @default(768)
+    linksColumnCount Int         @default(1)
+    user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId           String      @unique
 }
 
 model Testimonial {
@@ -125,7 +154,7 @@ enum BackgroundType {
     COLOR
 }
 
-enum Layout {
+enum LayoutTypes {
     WIDE
     CARD
 }

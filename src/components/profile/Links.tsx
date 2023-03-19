@@ -9,8 +9,14 @@ export default function Links(props: { links: ProfileLinks }) {
   const { links } = props;
   const profile = useProfileContext();
 
+  if (profile === undefined) return <></>;
+
   return (
-    <Chakra.SimpleGrid columns={{ base: 1, md: profile?.linksColumnCount }} spacing="10px" w="full">
+    <Chakra.SimpleGrid
+      columns={{ base: 1, md: profile.layout.linksColumnCount }}
+      spacing="10px"
+      w="full"
+    >
       {links.map((link) => (
         <Link key={link.id} link={link} />
       ))}
@@ -33,12 +39,12 @@ function Link(props: { link: ProfileLink }) {
     mutate({ linkId: link.id });
   };
 
-  const isOutlinedButton = profile.buttonStyle.split("_").includes("OUTLINED");
+  const isOutlinedButton = profile.button.buttonStyle.split("_").includes("OUTLINED");
   const buttonTextColor = isOutlinedButton
-    ? profile.layout === "CARD"
-      ? getContrastColor(profile.cardBackgroundColor)
-      : getContrastColor(profile.bodyBackgroundColor)
-    : getContrastColor(profile.buttonBackground || (profile.themeColor as string));
+    ? profile.layout.layout === "CARD"
+      ? getContrastColor(profile.theme.cardBackgroundColor)
+      : getContrastColor(profile.theme.bodyBackgroundColor)
+    : getContrastColor(profile.button.buttonBackground || (profile.theme.themeColor as string));
 
   return (
     <Chakra.Box
@@ -46,9 +52,9 @@ function Link(props: { link: ProfileLink }) {
       rounded="md"
       w="full"
       onClick={handleLinkClick}
-      bg={profile.buttonBackground || profile.themeColor}
-      {...buttonVariantProps[profile?.buttonStyle as string]}
-      borderColor={profile.buttonBackground || profile.themeColor}
+      bg={profile.button.buttonBackground || profile.theme.themeColor}
+      {...buttonVariantProps[profile.button.buttonStyle as string]}
+      borderColor={profile.button.buttonBackground || profile.theme.themeColor}
       transition="100ms"
       transformOrigin="top"
       _hover={{
@@ -61,7 +67,7 @@ function Link(props: { link: ProfileLink }) {
           <Chakra.Image
             alt={link.text}
             objectFit="cover"
-            rounded={buttonImageRoundness[profile.buttonStyle]}
+            rounded={buttonImageRoundness[profile.button.buttonStyle]}
             boxSize={{ base: "40px", sm: 45 }}
             src={link.thumbnail}
           />

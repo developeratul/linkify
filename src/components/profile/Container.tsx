@@ -14,10 +14,10 @@ export default function Container(props: ContainerProps) {
 
   return (
     <Chakra.VStack
-      fontFamily={profile.font.style.fontFamily}
+      fontFamily={profile.theme.font.style.fontFamily}
       mx="auto"
-      color={profile.foreground}
-      maxW={profile.containerWidth}
+      color={profile.theme.foreground}
+      maxW={profile.layout.containerWidth}
     >
       {children}
     </Chakra.VStack>

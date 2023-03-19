@@ -14,19 +14,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const updatedSettings = await prisma.user.update({
       where: { id: session.user.id },
-      data: { ...update },
-      select: {
-        seoTitle: true,
-        seoDescription: true,
-        socialIconPlacement: true,
+      data: {
+        settings: {
+          upsert: {
+            create: { ...update },
+            update: { ...update },
+          },
+        },
       },
+      select: { settings: true },
     });
 
     return res.json({ settings: updatedSettings, message: "Settings updated" });
   } else {
-    return res
-      .status(405)
-      .json({ success: false, message: "Method Not Allowed" });
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
   }
 };
 
