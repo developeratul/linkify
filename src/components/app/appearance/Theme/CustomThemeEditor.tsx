@@ -32,8 +32,8 @@ export const themeSchema = z.object({
   foreground: z.string().optional(),
   grayColor: z.string().optional(),
   bodyBackgroundType: z.enum(["COLOR", "IMAGE"]),
-  bodyBackgroundColor: z.string().optional(),
-  bodyBackgroundImage: z.string().optional(),
+  bodyBackgroundColor: z.string().optional().nullable(),
+  bodyBackgroundImage: z.string().optional().nullable(),
   bodyBackgroundImagePublicId: z.string().optional(),
   cardBackgroundColor: z.string().optional(),
   cardShadow: z.enum(["sm", "md", "lg", "xl", "none"]),
@@ -70,6 +70,7 @@ export default function CustomThemeEditor() {
       foreground,
       bodyBackgroundType: "COLOR",
       bodyBackgroundColor,
+      bodyBackgroundImage: null,
       cardBackgroundColor,
       grayColor,
     },
@@ -244,8 +245,8 @@ export default function CustomThemeEditor() {
 }
 
 function AddBackgroundImage(props: {
-  bodyBackgroundImage: string | undefined;
-  bodyBackgroundImagePublicId: string | undefined;
+  bodyBackgroundImage?: string | null;
+  bodyBackgroundImagePublicId?: string | null;
   setValue: UseFormSetValue<ThemeSchema>;
 }) {
   const { bodyBackgroundImage, bodyBackgroundImagePublicId, setValue } = props;

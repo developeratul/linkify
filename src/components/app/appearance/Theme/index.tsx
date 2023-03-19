@@ -56,7 +56,11 @@ export default function Theme() {
                 handleThemeUpdate({ ...defaultTheme, name: "Default", font: "poppins" }, "");
               }}
               isSelected={!currentTheme}
-              theme={{ ...defaultTheme, name: "Default", font: "poppins" }}
+              theme={{
+                ...defaultTheme,
+                name: "Default",
+                font: "poppins",
+              }}
             />
             {Object.keys(themes).map((themeIndex) => {
               const theme = themes[themeIndex] as Theme;

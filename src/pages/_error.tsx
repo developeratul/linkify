@@ -8,7 +8,6 @@ interface ErrorProps {
 }
 
 const Error: NextPage<ErrorProps> = (error) => {
-  console.log({ error });
   return (
     <Chakra.Center bg="purple.50" w="full" h="100vh">
       <SEO title="Error" />

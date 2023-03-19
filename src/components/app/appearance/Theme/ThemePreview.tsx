@@ -18,7 +18,13 @@ export default function ThemePreview(props: ThemePreviewProps) {
         w="full"
         p={5}
         rounded="md"
-        bg={theme.bodyBackgroundColor}
+        backgroundSize="cover"
+        backgroundPosition="center"
+        bg={
+          theme.bodyBackgroundType === "COLOR"
+            ? theme.bodyBackgroundColor || ""
+            : `url(${theme.bodyBackgroundImage})`
+        }
       >
         <Chakra.VStack>
           {Array(5)

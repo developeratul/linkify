@@ -8,7 +8,9 @@ import { buttonImageRoundness } from "../app/appearance/Button";
 export default function SocialLinks() {
   const profile = useProfileContext();
 
-  if (!profile?.socialLinks.length) return <></>;
+  if (profile === undefined) return <></>;
+
+  if (!profile.socialLinks.length) return <></>;
 
   return (
     <Chakra.Stack

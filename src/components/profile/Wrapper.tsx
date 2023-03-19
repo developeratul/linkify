@@ -18,7 +18,7 @@ export default function Wrapper(props: WrapperProps) {
     color: profile.theme.foreground,
   };
 
-  if (profile?.layout === "CARD") {
+  if (profile.layout.layout === "CARD") {
     return (
       <Chakra.VStack
         mx="auto"
