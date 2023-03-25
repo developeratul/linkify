@@ -8,7 +8,7 @@ export default function ProfileImage() {
   if (profile === undefined) return <></>;
 
   const defaultProps: AvatarProps = {
-    name: profile.profileTitle,
+    name: profile.profileTitle || profile.username || "",
     mx: "auto",
     boxSize: 100,
     src: profile?.image || "",
