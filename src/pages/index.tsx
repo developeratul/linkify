@@ -2,7 +2,6 @@ import { SEO } from "@/components/common/SEO";
 import * as Chakra from "@chakra-ui/react";
 import { type NextPage } from "next";
 import dynamic from "next/dynamic";
-const Author = dynamic(() => import("@/components/home/Author"));
 const FAQ = dynamic(() => import("@/components/home/FAQ"));
 const FeaturesSection = dynamic(() => import("@/components/home/Features"));
 const Footer = dynamic(() => import("@/components/home/Footer"));
