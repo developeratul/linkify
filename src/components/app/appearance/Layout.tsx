@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ErrorMessage } from "../common/Message";
 import SectionWrapper from "./common/SectionWrapper";
 
 export const layoutSchema = z.object({
@@ -31,7 +32,7 @@ export default function Layout() {
     },
   });
 
-  const { isLoading } = api.appearance.getLayout.useQuery(undefined, {
+  const { isLoading, isError, error } = api.appearance.getLayout.useQuery(undefined, {
     onSuccess(data) {
       if (data) {
         (Object.keys(data) as ["layout", "containerWidth", "linksColumnCount"]).map((key) => {
@@ -62,6 +63,7 @@ export default function Layout() {
   };
 
   if (isLoading) return <SectionLoader />;
+  if (isError) return <ErrorMessage description={error.message} />;
 
   return (
     <SectionWrapper title="Layout">

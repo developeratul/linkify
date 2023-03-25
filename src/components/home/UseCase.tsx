@@ -28,7 +28,7 @@ const useCases: UseCase[] = [
 
 export default function UseCase() {
   return (
-    <SectionWrapper bg="purple.100" id="use-case">
+    <SectionWrapper id="use-case">
       <Chakra.HStack
         flexDir={{ base: "column-reverse", md: "row" }}
         rowGap={{ base: 10, md: 0 }}

@@ -1,5 +1,5 @@
 import { Conditional } from "@/components/common/Conditional";
-import Loader from "@/components/common/Loader";
+import Loader, { SectionLoader } from "@/components/common/Loader";
 import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
@@ -11,6 +11,7 @@ import { TRPCClientError } from "@trpc/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ErrorMessage } from "../common/Message";
 import SectionWrapper from "./common/SectionWrapper";
 
 export const updateProfileSchema = z.object({
@@ -21,7 +22,7 @@ export const updateProfileSchema = z.object({
 type UpdateProfileSchema = z.infer<typeof updateProfileSchema>;
 
 export function Profile() {
-  const { data, isLoading } = api.appearance.getProfile.useQuery();
+  const { data, isLoading, isError, error } = api.appearance.getProfile.useQuery();
   const [isImageProcessing, setImageProcessing] = React.useState(false);
   const { register, formState, handleSubmit } = useForm<UpdateProfileSchema>({
     resolver: zodResolver(updateProfileSchema),
@@ -63,6 +64,9 @@ export function Profile() {
       setImageProcessing(false);
     }
   };
+
+  if (isLoading) return <SectionLoader />;
+  if (isError) return <ErrorMessage description={error.message} />;
 
   return (
     <SectionWrapper title="Profile">

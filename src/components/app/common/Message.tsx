@@ -40,7 +40,7 @@ export function ErrorMessage(props: { description: string }) {
     <Chakra.Box w="full" borderWidth={2} borderColor="red.300" py={10} px={5} rounded="md">
       <Chakra.VStack margin="auto" textAlign="center" w="full" maxW="md">
         <Chakra.Heading size="lg" color="red.500" fontWeight="medium">
-          Application Error
+          Error
         </Chakra.Heading>
         <Chakra.Text>{description}</Chakra.Text>
       </Chakra.VStack>

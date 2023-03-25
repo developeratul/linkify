@@ -9,8 +9,8 @@ export default function ProfileIntro() {
   return (
     <Chakra.VStack spacing="5px" textAlign="center">
       <Chakra.Heading
-        fontFamily={profile.font.style.fontFamily}
-        color={profile.themeColor || "purple.500"}
+        fontFamily={profile.theme.font.style.fontFamily}
+        color={profile.theme.themeColor || "purple.500"}
         fontSize={24}
         fontWeight="medium"
       >

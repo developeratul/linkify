@@ -11,7 +11,7 @@ export default function SectionWrapper(props: SectionWrapperProps) {
   return (
     <Chakra.VStack w="full" align="start" spacing="3">
       <Chakra.Heading size="md">{title}</Chakra.Heading>
-      <Chakra.Card w="full" size="lg" bg="white">
+      <Chakra.Card w="full" size={{ base: "md", sm: "lg" }} bg="white">
         <Chakra.CardBody>{children}</Chakra.CardBody>
       </Chakra.Card>
     </Chakra.VStack>

@@ -43,7 +43,9 @@ export default function AddTestimonialModal() {
 
   if (profile === undefined) return <></>;
 
-  const buttonBackground = lightenColor(profile.buttonBackground || profile.themeColor);
+  const buttonBackground = lightenColor(
+    profile.button.buttonBackground || profile.theme.themeColor
+  );
 
   const onSubmit = async (values: TestimonialSchema) => {
     try {

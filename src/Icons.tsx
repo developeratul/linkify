@@ -18,6 +18,7 @@ import {
   Share2,
   Trash,
   UserPlus,
+  Wand2,
 } from "lucide-react";
 
 export const icons = {
@@ -40,6 +41,7 @@ export const icons = {
   Click: MousePointerClick,
   Join: UserPlus,
   Testimonial: MessageCircle,
+  CustomTheme: Wand2,
 };
 
 export function Icon(props: { size?: number; name: keyof typeof icons }) {

@@ -10,22 +10,24 @@ export default function Wrapper(props: WrapperProps) {
   const { children } = props;
   const profile = useProfileContext();
 
+  if (profile === undefined) return <></>;
+
   const defaultProps: Chakra.StackProps = {
     spacing: "20px",
     w: "full",
-    color: profile?.foreground,
+    color: profile.theme.foreground,
   };
 
-  if (profile?.layout === "CARD") {
+  if (profile.layout.layout === "CARD") {
     return (
       <Chakra.VStack
         mx="auto"
-        bg={profile.cardBackgroundColor}
+        bg={profile.theme.cardBackgroundColor}
         as="fieldset"
         pb={10}
         px={{ base: 5, md: 10 }}
         rounded="lg"
-        shadow={profile.cardShadow}
+        shadow={profile.theme.cardShadow}
         {...defaultProps}
       >
         {children}
