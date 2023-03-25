@@ -61,7 +61,7 @@ export const themes: Record<string, Theme> = {
     bodyBackgroundColor: "#1F2430",
     bodyBackgroundImage: null,
     cardShadow: "md",
-    font: "openSans",
+    font: "inter",
     cardBackgroundColor: "#1A1F29",
   },
   cobalt: {
@@ -85,7 +85,7 @@ export const themes: Record<string, Theme> = {
     bodyBackgroundColor: "#1A1B26",
     bodyBackgroundImage: null,
     cardShadow: "md",
-    font: "poppins",
+    font: "openSans",
     cardBackgroundColor: "#16161E",
   },
   winter: {

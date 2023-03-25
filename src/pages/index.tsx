@@ -22,7 +22,7 @@ const Home: NextPage = () => {
         <meta property="og:title" content="Linkify / Home" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="http://linkifyapp.com" />
-        <meta property="og:image" content="/public/og.jpg" />
+        <meta property="og:image" content="/og.jpg" />
         <meta property="og:description" content="The one link that connects your audience" />
         <meta property="og:site_name" content="Linkify" />
         <meta property="og:locale" content="en_US" />
@@ -39,7 +39,6 @@ const Home: NextPage = () => {
       <FeaturesSection />
       <UseCase />
       <Arrival />
-      <Author />
       <FAQ />
       <Footer />
     </Chakra.Box>
