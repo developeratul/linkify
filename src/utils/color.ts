@@ -12,3 +12,23 @@ export function lightenColor(color: string) {
   const lightenedColor = chromaColor.brighten(0.5);
   return lightenedColor.hex();
 }
+
+export function getColorMode(hexColor: string) {
+  // Convert the hex color to a Chroma.js color object
+  const color = chroma(hexColor);
+
+  // Get the contrast ratio between the color and white (light mode)
+  const lightContrast = chroma.contrast(color, "white");
+
+  // Get the contrast ratio between the color and black (dark mode)
+  const darkContrast = chroma.contrast(color, "black");
+
+  // Determine whether the color is suitable for light or dark mode
+  if (lightContrast >= 4.5) {
+    return "dark";
+  } else if (darkContrast >= 4.5) {
+    return "light";
+  } else {
+    return "dark";
+  }
+}

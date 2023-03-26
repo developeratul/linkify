@@ -16,6 +16,7 @@ export default function Container(props: ContainerProps) {
     <Chakra.VStack
       fontFamily={profile.theme.font.style.fontFamily}
       mx="auto"
+      spacing={50}
       color={profile.theme.foreground}
       maxW={profile.layout.containerWidth}
     >

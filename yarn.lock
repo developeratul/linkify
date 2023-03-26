@@ -1882,6 +1882,11 @@ color-name@^1.1.4, color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
+color2k@^1.1.1:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/color2k/-/color2k-1.2.5.tgz#3d8f08d213170f781fb6270424454dd3c0197b02"
+  integrity sha512-G39qNMGyM/fhl8hcy1YqpfXzQ810zSGyiJAgdMFlreCI7Hpwu3Jpu4tuBM/Oxu1Bek1FwyaBbtrtdkTr4HDhLA==
+
 color2k@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/color2k/-/color2k-2.0.1.tgz#bea59670b323265cc13a745f239c6bd6a89d9a89"
@@ -3545,6 +3550,13 @@ pac-resolver@^5.0.0:
     degenerator "^3.0.2"
     ip "^1.1.5"
     netmask "^2.0.2"
+
+palette-by-numbers@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/palette-by-numbers/-/palette-by-numbers-0.1.6.tgz#3e153ac070e1bcbad5baeb4e867058c06dd24bcc"
+  integrity sha512-Upb8RcPe7RqspaNiWgkOy5uxib2/zvkAxyK6pgMuLHu5KFmHGP9KoaaWzJmJu3QE+K2Bohs1f6Xhr49J15ZawA==
+  dependencies:
+    color2k "^1.1.1"
 
 parent-module@^1.0.0:
   version "1.0.1"

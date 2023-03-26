@@ -7,7 +7,10 @@ import type {
   ProfileSettings,
   ProfileTheme,
 } from "@/pages/[slug]";
+import { getColorMode } from "@/utils/color";
+import { ChakraProvider, ColorModeProvider, extendTheme } from "@chakra-ui/react";
 import type { NextFont } from "next/dist/compiled/@next/font";
+import { generatePalette } from "palette-by-numbers";
 import React from "react";
 
 type InitialState = Omit<Profile, "theme" | "layout" | "button" | "settings"> & {
@@ -43,6 +46,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
   const { children, profile } = props;
   const defaultTheme = useDefaultProfileTheme();
   const font = fonts[profile.theme?.font || DEFAULT_FONT_NAME] || defaultFont;
+
   const value: InitialState = {
     ...profile,
     profileTitle: profile.profileTitle || `${profile.username}`,
@@ -72,6 +76,22 @@ export default function ProfileProvider(props: ProfileProviderProps) {
       seoDescription: null,
     },
   };
-  return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
+
+  const chakraProfileTheme = extendTheme({
+    colors: {
+      brand: generatePalette(value.theme.themeColor),
+      gray: generatePalette(value.theme.grayColor),
+    },
+  });
+
+  return (
+    <ProfileContext.Provider value={value}>
+      <ChakraProvider resetCSS theme={chakraProfileTheme}>
+        <ColorModeProvider value={getColorMode(value.theme.cardBackgroundColor)}>
+          {children}
+        </ColorModeProvider>
+      </ChakraProvider>
+    </ProfileContext.Provider>
+  );
 }
 export const useProfileContext = () => React.useContext(ProfileContext);

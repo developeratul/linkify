@@ -2,6 +2,7 @@ import { Conditional } from "@/components/common/Conditional";
 import { SEO } from "@/components/common/SEO";
 import AddTestimonialModal from "@/components/profile/AddTestimonial";
 import Container from "@/components/profile/Container";
+import Footer from "@/components/profile/Footer";
 import ProfileImage from "@/components/profile/ProfileImage";
 import ProfileIntro from "@/components/profile/ProfileIntro";
 import Sections from "@/components/profile/Sections";
@@ -87,33 +88,12 @@ const ProfilePage: NextPage<ProfileProps> = (
                   defaultIndex={defaultTabIndex}
                   isLazy
                   isFitted
+                  colorScheme="brand"
                   w="full"
                 >
                   <Chakra.TabList>
-                    <Chakra.Tab
-                      color={profile.theme?.foreground || "gray.600"}
-                      borderBottomColor={profile.theme?.grayColor || "gray.300"}
-                      _active={{}}
-                      _hover={{}}
-                      _selected={{
-                        color: profile.theme?.themeColor || "purple.500",
-                        borderBottomColor: profile.theme?.themeColor || "purple.500",
-                      }}
-                    >
-                      Links
-                    </Chakra.Tab>
-                    <Chakra.Tab
-                      color={profile.theme?.foreground || "gray.600"}
-                      borderBottomColor={profile.theme?.grayColor || "gray.300"}
-                      _active={{}}
-                      _hover={{}}
-                      _selected={{
-                        color: profile.theme?.themeColor || "purple.500",
-                        borderBottomColor: profile.theme?.themeColor || "purple.500",
-                      }}
-                    >
-                      Testimonials
-                    </Chakra.Tab>
+                    <Chakra.Tab>Links</Chakra.Tab>
+                    <Chakra.Tab>Testimonials</Chakra.Tab>
                   </Chakra.TabList>
                   <Chakra.TabPanels>
                     <Chakra.TabPanel px={0} py={5}>
@@ -129,6 +109,7 @@ const ProfilePage: NextPage<ProfileProps> = (
             />
             {(profile.settings?.socialIconPlacement || "TOP") === "BOTTOM" && <SocialLinks />}
           </Wrapper>
+          <Footer />
         </Container>
       </Chakra.Box>
     </ProfileProvider>

@@ -1,4 +1,6 @@
 import FormsIllus from "@/assets/forms.svg";
+import { EmptyMessage } from "@/components/app/common/Message";
+import { Conditional } from "@/components/common/Conditional";
 import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
@@ -11,48 +13,15 @@ import { TRPCClientError } from "@trpc/client";
 import type { InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import type { NextPageWithLayout } from "../_app";
 
-function FormSubmissionsTable() {
-  return (
-    <Chakra.Box w="full" overflowX="auto">
-      <Chakra.Table colorScheme="purple" bg="white" rounded="lg" variant="striped">
-        <Chakra.Thead>
-          <Chakra.Tr>
-            <Chakra.Th>Name</Chakra.Th>
-            <Chakra.Th>Email</Chakra.Th>
-            <Chakra.Th>Phone</Chakra.Th>
-            <Chakra.Th>Message</Chakra.Th>
-          </Chakra.Tr>
-        </Chakra.Thead>
-        <Chakra.Tbody>
-          <Chakra.Tr>
-            <Chakra.Td>
-              <Chakra.Text noOfLines={1}>Ratul</Chakra.Text>
-            </Chakra.Td>
-            <Chakra.Td>
-              <Chakra.Text noOfLines={1}>azammmgol@gmail.com</Chakra.Text>
-            </Chakra.Td>
-            <Chakra.Td>
-              <Chakra.Text noOfLines={1}>0187278675</Chakra.Text>
-            </Chakra.Td>
-            <Chakra.Td>
-              <Chakra.Text noOfLines={1}>
-                Hello world I am a good person from Bangladesh and I will be your guide.
-              </Chakra.Text>
-            </Chakra.Td>
-          </Chakra.Tr>
-        </Chakra.Tbody>
-      </Chakra.Table>
-    </Chakra.Box>
-  );
-}
-
 type Field = {
   name: "nameField" | "emailField" | "subjectField" | "phoneField" | "messageField";
   label: string;
+  rawLabel: string;
   labelName:
     | "nameFieldLabel"
     | "emailFieldLabel"
@@ -62,12 +31,58 @@ type Field = {
 };
 
 const fields: Field[] = [
-  { name: "nameField", label: "Name field", labelName: "nameFieldLabel" },
-  { name: "emailField", label: "Email field", labelName: "emailFieldLabel" },
-  { name: "subjectField", label: "Subject field", labelName: "subjectFieldLabel" },
-  { name: "phoneField", label: "Phone field", labelName: "phoneFieldLabel" },
-  { name: "messageField", label: "Message field", labelName: "messageFieldLabel" },
+  { name: "nameField", label: "Name field", rawLabel: "Name", labelName: "nameFieldLabel" },
+  { name: "emailField", label: "Email field", rawLabel: "Email", labelName: "emailFieldLabel" },
+  {
+    name: "subjectField",
+    label: "Subject field",
+    rawLabel: "Subject",
+    labelName: "subjectFieldLabel",
+  },
+  { name: "phoneField", label: "Phone field", rawLabel: "Phone", labelName: "phoneFieldLabel" },
+  {
+    name: "messageField",
+    label: "Message field",
+    rawLabel: "Message",
+    labelName: "messageFieldLabel",
+  },
 ];
+
+function FormSubmissionsTable(props: { form: Form; submissions: FormSubmission[] }) {
+  const { form, submissions } = props;
+  const enabledFields = React.useMemo(() => {
+    return fields.filter((field) => !!form[field.name]);
+  }, [form]);
+  return (
+    <Chakra.Box w="full" overflowX="auto">
+      <Conditional
+        condition={submissions.length > 0}
+        component={
+          <Chakra.Table colorScheme="purple" bg="white" rounded="lg" variant="striped">
+            <Chakra.Thead>
+              <Chakra.Tr>
+                {enabledFields.map((field) => (
+                  <Chakra.Th key={field.name}>{field.rawLabel}</Chakra.Th>
+                ))}
+              </Chakra.Tr>
+            </Chakra.Thead>
+            <Chakra.Tbody>
+              {submissions.map((submission) => (
+                <Chakra.Tr key={submission.id}>
+                  <Chakra.Td>{submission.name}</Chakra.Td>
+                  <Chakra.Td>{submission.email}</Chakra.Td>
+                  <Chakra.Td>{submission.subject}</Chakra.Td>
+                  <Chakra.Td>{submission.message}</Chakra.Td>
+                </Chakra.Tr>
+              ))}
+            </Chakra.Tbody>
+          </Chakra.Table>
+        }
+        fallback={<EmptyMessage title="Empty" description="No form submissions yet" />}
+      />
+    </Chakra.Box>
+  );
+}
 
 export const formSchema = z.object({
   nameField: z.boolean().optional(),
@@ -215,10 +230,10 @@ function GetStarted() {
             </Chakra.Box>
             <Chakra.VStack spacing={3} textAlign="center">
               <Chakra.Heading size="lg" color="purple.500">
-                Contact form
+                Form
               </Chakra.Heading>
               <Chakra.Text>
-                Collect form submissions from your visitors and manage them from your dashboard.
+                Collect form submissions from your visitors and manage them in one place.
               </Chakra.Text>
             </Chakra.VStack>
             <Chakra.Button isLoading={isLoading} onClick={toggle} colorScheme="purple" w="full">
@@ -255,7 +270,7 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
             <FormSettingsModal form={form} />
           </Chakra.HStack>
         </Chakra.HStack>
-        <FormSubmissionsTable />
+        <FormSubmissionsTable form={form} submissions={submissions} />
       </Chakra.VStack>
     </Chakra.Container>
   );
