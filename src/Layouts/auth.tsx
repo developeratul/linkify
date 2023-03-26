@@ -1,4 +1,4 @@
-import { LogoSrc } from "@/components/common/Logo";
+import LogoSrc from "@/assets/logo.png";
 import type { AppProps } from "@/types";
 import * as Chakra from "@chakra-ui/react";
 import Image from "next/image";

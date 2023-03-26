@@ -1,6 +1,7 @@
 import analyticsRouter from "./routers/analytics";
 import appearanceRouter from "./routers/appearance";
 import { authRouter } from "./routers/auth";
+import formRouter from "./routers/form";
 import { linkRouter } from "./routers/link";
 import { sectionRouter } from "./routers/section";
 import { socialLinkRouter } from "./routers/social-link";
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   appearance: appearanceRouter,
   testimonial: testimonialRouter,
   analytics: analyticsRouter,
+  form: formRouter,
 });
 
 // export type definition of API

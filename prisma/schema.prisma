@@ -60,17 +60,52 @@ model User {
     image         String?
     imagePublicId String?
 
-    accounts     Account[]
-    sessions     Session[]
-    sections     Section[]
-    links        Link[]
-    socialLinks  SocialLink[]
-    testimonials Testimonial[]
+    accounts        Account[]
+    sessions        Session[]
+    sections        Section[]
+    links           Link[]
+    socialLinks     SocialLink[]
+    testimonials    Testimonial[]
+    formSubmissions FormSubmission[]
 
     layout   Layout?
     theme    Theme?
     button   Button?
     settings Settings?
+    form     Form?
+}
+
+model Form {
+    id String @id @default(cuid())
+
+    nameField    Boolean @default(true)
+    emailField   Boolean @default(true)
+    subjectField Boolean @default(true)
+    phoneField   Boolean @default(true)
+    messageField Boolean @default(true)
+
+    nameFieldLabel    String?
+    emailFieldLabel   String?
+    subjectFieldLabel String?
+    phoneFieldLabel   String?
+    messageFieldLabel String?
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String @unique
+}
+
+model FormSubmission {
+    id      String   @id @default(cuid())
+    name    String?
+    email   String?
+    subject String?
+    phone   String?
+    message String?  @db.LongText
+    sentAt  DateTime @default(now())
+    user    User     @relation(fields: [userId], references: [id])
+    userId  String
+
+    @@index([userId])
 }
 
 model Settings {

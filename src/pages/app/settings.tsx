@@ -106,7 +106,7 @@ export type Settings = {
 export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
-  const user = await prisma?.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: session?.user?.id },
     select: {
       username: true,

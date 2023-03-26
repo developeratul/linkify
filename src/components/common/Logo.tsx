@@ -1,13 +1,13 @@
-import LogoImage from "@/assets/logo.png";
+import LogoImageSrc from "@/assets/logo-sm.png";
 import Image from "next/image";
 import Link from "next/link";
 
-export const LogoSrc = LogoImage;
+export const LogoSrc = LogoImageSrc;
 
 export default function Logo() {
   return (
     <Link href="/">
-      <Image src={LogoSrc} width={100} alt="Linkify logo" />
+      <Image src={LogoSrc} width={50} alt="Linkify logo" />
     </Link>
   );
 }

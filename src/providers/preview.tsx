@@ -1,4 +1,3 @@
-import { Conditional } from "@/components/common/Conditional";
 import Loader from "@/components/common/Loader";
 import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
@@ -56,76 +55,37 @@ export function PreviewDrawer() {
   const { ref, username, isLoading } = previewContext;
 
   return (
-    <Chakra.Box
-      display={{ sm: "block", md: "none" }}
-      position="fixed"
-      bottom={5}
-      right={5}
-      zIndex="sticky"
-    >
-      <Chakra.Button
-        size="sm"
-        leftIcon={<Icon name="Preview" />}
-        onClick={onOpen}
-        colorScheme="purple"
-      >
-        Preview
-      </Chakra.Button>
-      <Chakra.Drawer isOpen={isOpen} onClose={onClose} placement="left" size="full">
-        <Chakra.DrawerOverlay />
-        <Chakra.DrawerContent>
-          <Chakra.DrawerCloseButton />
-          <Chakra.DrawerHeader>Preview</Chakra.DrawerHeader>
-          <Chakra.DrawerBody p={1}>
-            {isLoading ? (
-              <Loader />
-            ) : (
-              <iframe
-                src={`/${username}`}
-                ref={ref}
-                className="mx-auto h-full w-full max-w-md rounded-md"
-              />
-            )}
-          </Chakra.DrawerBody>
-        </Chakra.DrawerContent>
-      </Chakra.Drawer>
-    </Chakra.Box>
-  );
-}
-
-export function PreviewPanel() {
-  const previewContext = usePreviewContext();
-  if (previewContext === undefined) return <></>;
-
-  const { ref, username, isLoading } = previewContext;
-
-  return (
-    <Chakra.VStack
-      position="sticky"
-      top={"96px"}
-      right={0}
-      w="full"
-      h="calc(100vh - 96px)"
-      maxW={{ base: "full", md: 450, xl: 500, "2xl": 550 }}
-      display={{ base: "none", md: "block" }}
-      rounded="md"
-      overflow="hidden"
-      borderLeftWidth={1}
-      borderColor="purple.100"
-    >
-      <Conditional
-        condition={!isLoading}
-        component={
-          <Chakra.Center w="full" h="full" p={10}>
-            <iframe
-              className="mx-auto h-full w-full max-w-sm rounded-3xl border-8 border-gray-900"
-              src={`/${username}`}
-              ref={ref}
-            />
-          </Chakra.Center>
-        }
-        fallback={<Loader />}
-      />
-    </Chakra.VStack>
+    <Chakra.Hide above="md">
+      <Chakra.Box position="fixed" bottom={5} right={5} zIndex="sticky">
+        <Chakra.Button
+          size="sm"
+          leftIcon={<Icon name="Preview" />}
+          onClick={onOpen}
+          colorScheme="purple"
+        >
+          Preview
+        </Chakra.Button>
+        <Chakra.Drawer isOpen={isOpen} onClose={onClose} placement="left" size="full">
+          <Chakra.DrawerOverlay />
+          <Chakra.DrawerContent>
+            <Chakra.DrawerCloseButton />
+            <Chakra.DrawerHeader>Preview</Chakra.DrawerHeader>
+            <Chakra.DrawerBody p={0}>
+              {isLoading ? (
+                <Loader />
+              ) : (
+                <Chakra.Hide above="md">
+                  <iframe
+                    src={`/${username}`}
+                    ref={ref}
+                    className="mx-auto h-full w-full max-w-md"
+                  />
+                </Chakra.Hide>
+              )}
+            </Chakra.DrawerBody>
+          </Chakra.DrawerContent>
+        </Chakra.Drawer>
+      </Chakra.Box>
+    </Chakra.Hide>
   );
 }

@@ -1,8 +1,8 @@
+import LogoSrc from "@/assets/logo.png";
 import * as Chakra from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { LogoSrc } from "../common/Logo";
 import JoinWaitListButton from "./common/JoinWaitList";
 
 export default function TopBar() {
