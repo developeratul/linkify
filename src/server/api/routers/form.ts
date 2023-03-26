@@ -1,6 +1,8 @@
+import { formSubmissionSchema } from "@/components/profile/Form";
 import { formSchema } from "@/pages/app/form";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const formRouter = createTRPCRouter({
   enableFormToggle: protectedProcedure.mutation(async ({ ctx }) => {
@@ -45,6 +47,26 @@ const formRouter = createTRPCRouter({
 
     return "Successfully updated";
   }),
+
+  submit: publicProcedure
+    .input(formSubmissionSchema.extend({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId, ...data } = input;
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: userId },
+        select: { form: true },
+      });
+
+      if (!user || !user.form) throw new TRPCError({ code: "NOT_FOUND" });
+
+      await ctx.prisma.user.update({
+        where: { id: userId },
+        data: { formSubmissions: { create: { ...data } } },
+      });
+
+      return user.form.submissionSuccessMessage || "Your response was successfully submitted";
+    }),
 });
 
 export default formRouter;

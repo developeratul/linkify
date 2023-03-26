@@ -22,7 +22,7 @@ import { prisma } from "@/server/db";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
 import type { UseTabsProps } from "@chakra-ui/react";
 import * as Chakra from "@chakra-ui/react";
-import type { Button, Layout, Settings, Theme } from "@prisma/client";
+import type { Button, Form, Layout, Settings, Theme } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
 import { useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
@@ -140,6 +140,7 @@ export type Profile = {
   theme?: ProfileTheme | null;
   button?: ProfileButton | null;
   settings?: ProfileSettings | null;
+  form?: Form | null;
   sections: ProfileSection[];
   socialLinks: SocialLink[];
   testimonials: Testimonial[];
@@ -161,6 +162,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       theme: { select: ProfileThemeSelections },
       settings: { select: ProfileSettingsSelections },
       button: { select: ProfileButtonSelections },
+      form: true,
       sections: {
         select: {
           id: true,

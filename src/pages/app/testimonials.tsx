@@ -6,7 +6,7 @@ import { usePreviewContext } from "@/providers/preview";
 import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
-import { Testimonial } from "@/types";
+import type { Testimonial as TestimonialType } from "@/types";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
@@ -77,7 +77,7 @@ function DeleteTestimonial(props: { testimonialId: string }) {
   );
 }
 
-function Testimonial(props: { testimonial: Testimonial }) {
+function Testimonial(props: { testimonial: TestimonialType }) {
   const { testimonial } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleShow.useMutation();
   const toast = useToast();
@@ -141,7 +141,7 @@ const TestimonialsPage: NextPageWithLayout = (
           Testimonials
         </Chakra.Heading>
         <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, xl: 3 }} spacing={5}>
-          {testimonials.map((testimonial: Testimonial) => (
+          {testimonials.map((testimonial: TestimonialType) => (
             <Testimonial key={testimonial.id} testimonial={testimonial} />
           ))}
         </Chakra.SimpleGrid>

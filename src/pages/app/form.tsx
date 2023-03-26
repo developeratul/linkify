@@ -6,6 +6,7 @@ import { AppLayout } from "@/Layouts/app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { api } from "@/utils/api";
+import { formatDate } from "@/utils/date";
 import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Form, FormSubmission } from "@prisma/client";
@@ -20,6 +21,7 @@ import type { NextPageWithLayout } from "../_app";
 
 type Field = {
   name: "nameField" | "emailField" | "subjectField" | "phoneField" | "messageField";
+  rawName: "name" | "email" | "subject" | "phone" | "message";
   label: string;
   rawLabel: string;
   labelName:
@@ -28,23 +30,54 @@ type Field = {
     | "subjectFieldLabel"
     | "phoneFieldLabel"
     | "messageFieldLabel";
+  requiredName:
+    | "nameFieldRequired"
+    | "emailFieldRequired"
+    | "subjectFieldRequired"
+    | "phoneFieldRequired"
+    | "messageFieldRequired";
 };
 
 const fields: Field[] = [
-  { name: "nameField", label: "Name field", rawLabel: "Name", labelName: "nameFieldLabel" },
-  { name: "emailField", label: "Email field", rawLabel: "Email", labelName: "emailFieldLabel" },
+  {
+    name: "nameField",
+    rawName: "name",
+    label: "Name field",
+    rawLabel: "Name",
+    labelName: "nameFieldLabel",
+    requiredName: "nameFieldRequired",
+  },
+  {
+    name: "emailField",
+    rawName: "email",
+    label: "Email field",
+    rawLabel: "Email",
+    labelName: "emailFieldLabel",
+    requiredName: "emailFieldRequired",
+  },
   {
     name: "subjectField",
+    rawName: "subject",
     label: "Subject field",
     rawLabel: "Subject",
     labelName: "subjectFieldLabel",
+    requiredName: "subjectFieldRequired",
   },
-  { name: "phoneField", label: "Phone field", rawLabel: "Phone", labelName: "phoneFieldLabel" },
+  {
+    name: "phoneField",
+    rawName: "phone",
+    label: "Phone field",
+    rawLabel: "Phone",
+    labelName: "phoneFieldLabel",
+    requiredName: "phoneFieldRequired",
+  },
   {
     name: "messageField",
+    rawName: "message",
     label: "Message field",
     rawLabel: "Message",
     labelName: "messageFieldLabel",
+    requiredName: "messageFieldRequired",
   },
 ];
 
@@ -64,15 +97,16 @@ function FormSubmissionsTable(props: { form: Form; submissions: FormSubmission[]
                 {enabledFields.map((field) => (
                   <Chakra.Th key={field.name}>{field.rawLabel}</Chakra.Th>
                 ))}
+                <Chakra.Td>Time</Chakra.Td>
               </Chakra.Tr>
             </Chakra.Thead>
             <Chakra.Tbody>
               {submissions.map((submission) => (
                 <Chakra.Tr key={submission.id}>
-                  <Chakra.Td>{submission.name}</Chakra.Td>
-                  <Chakra.Td>{submission.email}</Chakra.Td>
-                  <Chakra.Td>{submission.subject}</Chakra.Td>
-                  <Chakra.Td>{submission.message}</Chakra.Td>
+                  {enabledFields.map((field) => (
+                    <Chakra.Td key={field.name}>{submission[field.rawName]}</Chakra.Td>
+                  ))}
+                  <Chakra.Td>{formatDate(submission.sentAt)}</Chakra.Td>
                 </Chakra.Tr>
               ))}
             </Chakra.Tbody>
@@ -95,6 +129,14 @@ export const formSchema = z.object({
   subjectFieldLabel: z.string().optional(),
   phoneFieldLabel: z.string().optional(),
   messageFieldLabel: z.string().optional(),
+  nameFieldRequired: z.boolean().optional(),
+  emailFieldRequired: z.boolean().optional(),
+  subjectFieldRequired: z.boolean().optional(),
+  phoneFieldRequired: z.boolean().optional(),
+  messageFieldRequired: z.boolean().optional(),
+  title: z.string().optional(),
+  submitButtonText: z.string().optional(),
+  submissionSuccessMessage: z.string().optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -110,6 +152,7 @@ function FormSettingsModal(props: { form: Form }) {
   const router = useRouter();
 
   const handleSaveChanges = async (values: FormSchema) => {
+    console.log({ values });
     try {
       const message = await mutateAsync(values);
       onClose();
@@ -144,7 +187,7 @@ function FormSettingsModal(props: { form: Form }) {
             >
               {fields.map((field) => (
                 <Chakra.FormControl key={field.name}>
-                  <Chakra.FormLabel>
+                  <Chakra.FormLabel htmlFor={`label_${field.name}`}>
                     <Chakra.HStack justify="space-between" align="center">
                       <Chakra.Text>{field.label}</Chakra.Text>
                       <Chakra.Switch
@@ -155,14 +198,46 @@ function FormSettingsModal(props: { form: Form }) {
                     </Chakra.HStack>
                   </Chakra.FormLabel>
                   <Chakra.Input
+                    id={`label_${field.name}`}
                     defaultValue={form[field.labelName] || ""}
                     {...register(field.labelName)}
                   />
                   <Chakra.FormHelperText>
-                    Enter label for this field (optional)
+                    <Chakra.HStack justify="space-between">
+                      <Chakra.Text>Custom label (optional)</Chakra.Text>
+                      <Chakra.Checkbox
+                        defaultChecked={form[field.requiredName]}
+                        {...register(field.requiredName)}
+                        colorScheme="purple"
+                      >
+                        Required
+                      </Chakra.Checkbox>
+                    </Chakra.HStack>
                   </Chakra.FormHelperText>
                 </Chakra.FormControl>
               ))}
+              <Chakra.Divider />
+              <Chakra.FormControl>
+                <Chakra.FormLabel>Form title</Chakra.FormLabel>
+                <Chakra.Input {...register("title")} defaultValue={form.title || ""} />
+              </Chakra.FormControl>
+              <Chakra.FormControl>
+                <Chakra.FormLabel>Form submit button text</Chakra.FormLabel>
+                <Chakra.Input
+                  {...register("submitButtonText")}
+                  defaultValue={form.submitButtonText || ""}
+                />
+              </Chakra.FormControl>
+              <Chakra.FormControl>
+                <Chakra.FormLabel>Success message</Chakra.FormLabel>
+                <Chakra.Input
+                  {...register("submissionSuccessMessage")}
+                  defaultValue={form.submissionSuccessMessage || ""}
+                />
+                <Chakra.FormHelperText>
+                  This messages will be shown after a successful form submission
+                </Chakra.FormHelperText>
+              </Chakra.FormControl>
             </Chakra.VStack>
           </Chakra.DrawerBody>
           <Chakra.DrawerFooter>

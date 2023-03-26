@@ -56,7 +56,7 @@ export const themes: Record<string, Theme> = {
     name: "Mirage",
     themeColor: "#FFAD66",
     foreground: "#CCCAC2",
-    grayColor: "#B8CFE680",
+    grayColor: "#B8CFE6",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#1F2430",
     bodyBackgroundImage: null,

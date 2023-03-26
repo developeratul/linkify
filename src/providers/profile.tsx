@@ -78,9 +78,15 @@ export default function ProfileProvider(props: ProfileProviderProps) {
   };
 
   const chakraProfileTheme = extendTheme({
+    fonts: { body: font.style.fontFamily, heading: font.style.fontFamily },
     colors: {
       brand: generatePalette(value.theme.themeColor),
       gray: generatePalette(value.theme.grayColor),
+    },
+    styles: {
+      global: {
+        body: { color: value.theme.foreground },
+      },
     },
   });
 

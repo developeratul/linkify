@@ -79,10 +79,7 @@ export default function AddTestimonialModal() {
       </Chakra.Tooltip>
       <Chakra.Modal isOpen={isOpen} scrollBehavior="inside" size="xl" onClose={closeModal}>
         <Chakra.ModalOverlay />
-        <Chakra.ModalContent
-          bg={profile.theme.cardBackgroundColor}
-          color={getContrastColor(profile.theme.cardBackgroundColor)}
-        >
+        <Chakra.ModalContent>
           <Chakra.ModalHeader>Add testimonial for {profile.profileTitle}</Chakra.ModalHeader>
           <Chakra.ModalCloseButton />
           <Chakra.ModalBody color={getContrastColor(profile.theme.cardBackgroundColor)}>

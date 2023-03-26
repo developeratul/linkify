@@ -90,6 +90,16 @@ model Form {
     phoneFieldLabel   String?
     messageFieldLabel String?
 
+    nameFieldRequired    Boolean @default(true)
+    emailFieldRequired   Boolean @default(true)
+    subjectFieldRequired Boolean @default(true)
+    phoneFieldRequired   Boolean @default(true)
+    messageFieldRequired Boolean @default(true)
+
+    title                    String? @map("formTitle")
+    submitButtonText         String? @map("formSubmitButtonText")
+    submissionSuccessMessage String? @map("formSubmissionSuccessMessage")
+
     user   User   @relation(fields: [userId], references: [id])
     userId String @unique
 }
