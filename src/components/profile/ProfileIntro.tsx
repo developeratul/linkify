@@ -16,7 +16,9 @@ export default function ProfileIntro() {
       >
         {profile.profileTitle || `@${profile.username}`}
       </Chakra.Heading>
-      <Chakra.Text fontSize={16}>{profile.bio}</Chakra.Text>
+      <Chakra.Text whiteSpace="pre-wrap" fontSize={16}>
+        {profile.bio}
+      </Chakra.Text>
     </Chakra.VStack>
   );
 }

@@ -42,11 +42,14 @@ export default function AppBar() {
       <LinkButton to="/app/testimonials" icon={<Icon name="Testimonial" />}>
         Testimonials
       </LinkButton>
+      <LinkButton to="/app/form" icon={<Icon name="Form" />}>
+        Form
+      </LinkButton>
     </>
   );
   return (
     <Chakra.Box zIndex="sticky" p={3} className="sticky top-0 left-0 h-24">
-      <Chakra.Card bg="white" size="sm" px={5} rounded="full" height="full">
+      <Chakra.Card bg="white" size="sm" rounded="full" height="full">
         <Chakra.CardBody className="flex items-center justify-between">
           <Chakra.HStack spacing={{ base: "2", sm: "10" }}>
             <Chakra.Box>

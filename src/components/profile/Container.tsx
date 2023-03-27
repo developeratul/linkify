@@ -13,12 +13,7 @@ export default function Container(props: ContainerProps) {
   if (profile === undefined) return <></>;
 
   return (
-    <Chakra.VStack
-      fontFamily={profile.theme.font.style.fontFamily}
-      mx="auto"
-      color={profile.theme.foreground}
-      maxW={profile.layout.containerWidth}
-    >
+    <Chakra.VStack mx="auto" spacing={50} maxW={profile.layout.containerWidth}>
       {children}
     </Chakra.VStack>
   );

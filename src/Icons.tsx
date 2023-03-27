@@ -14,6 +14,7 @@ import {
   Pencil,
   Plus,
   Save,
+  Send,
   Settings,
   Share2,
   Trash,
@@ -42,6 +43,7 @@ export const icons = {
   Join: UserPlus,
   Testimonial: MessageCircle,
   CustomTheme: Wand2,
+  Form: Send,
 };
 
 export function Icon(props: { size?: number; name: keyof typeof icons }) {

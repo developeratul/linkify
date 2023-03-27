@@ -82,7 +82,7 @@ export default function AddTestimonialModal() {
         <Chakra.ModalContent>
           <Chakra.ModalHeader>Add testimonial for {profile.profileTitle}</Chakra.ModalHeader>
           <Chakra.ModalCloseButton />
-          <Chakra.ModalBody>
+          <Chakra.ModalBody color={getContrastColor(profile.theme.cardBackgroundColor)}>
             <Chakra.VStack
               as="form"
               id="testimonial-form"
@@ -120,7 +120,7 @@ export default function AddTestimonialModal() {
                 </Chakra.FormErrorMessage>
               </Chakra.FormControl>
               <Chakra.FormControl isRequired>
-                <Chakra.Checkbox colorScheme="purple">
+                <Chakra.Checkbox colorScheme="brand">
                   I give permission to use this testimonial across social channels and other
                   marketing efforts
                 </Chakra.Checkbox>
@@ -133,7 +133,7 @@ export default function AddTestimonialModal() {
               type="submit"
               form="testimonial-form"
               w="full"
-              colorScheme="purple"
+              colorScheme="brand"
             >
               Send your testimonial
             </Chakra.Button>

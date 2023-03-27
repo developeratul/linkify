@@ -15,7 +15,6 @@ export default function Wrapper(props: WrapperProps) {
   const defaultProps: Chakra.StackProps = {
     spacing: "20px",
     w: "full",
-    color: profile.theme.foreground,
   };
 
   if (profile.layout.layout === "CARD") {

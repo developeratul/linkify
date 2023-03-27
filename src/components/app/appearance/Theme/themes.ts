@@ -56,7 +56,7 @@ export const themes: Record<string, Theme> = {
     name: "Mirage",
     themeColor: "#FFAD66",
     foreground: "#CCCAC2",
-    grayColor: "#B8CFE680",
+    grayColor: "#B8CFE6",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#1F2430",
     bodyBackgroundImage: null,
@@ -85,7 +85,7 @@ export const themes: Record<string, Theme> = {
     bodyBackgroundColor: "#1A1B26",
     bodyBackgroundImage: null,
     cardShadow: "md",
-    font: "openSans",
+    font: "poppins",
     cardBackgroundColor: "#16161E",
   },
   winter: {
@@ -122,7 +122,7 @@ export const themes: Record<string, Theme> = {
     bodyBackgroundImage: null,
     cardShadow: "md",
     font: "poppins",
-    cardBackgroundColor: "#F1F1F1",
+    cardBackgroundColor: "#FFFFFF",
   },
   theme_2077: {
     name: "2077",

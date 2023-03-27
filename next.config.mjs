@@ -14,4 +14,7 @@ const config = {
     defaultLocale: "en",
   },
 };
-export default config;
+
+import { withSuperjson } from "next-superjson";
+
+export default withSuperjson()(config);
