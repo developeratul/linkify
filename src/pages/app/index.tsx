@@ -1,6 +1,7 @@
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
+import { prisma } from "@/server/db";
 import * as Chakra from "@chakra-ui/react";
 import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
@@ -17,13 +18,11 @@ const AppPage: NextPageWithLayout = () => {
   );
 };
 
-export default AppPage;
 AppPage.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-import { prisma } from "@/server/db";
-
+export default AppPage;
 export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -32,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
     select: { username: true, bio: true },
   });
 
-  if (!user?.username) {
+  if (!user?.username || !user.bio) {
     return {
       redirect: {
         destination: "/auth/onboarding",

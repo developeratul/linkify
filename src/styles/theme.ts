@@ -1,10 +1,10 @@
-import { poppins, spaceMono } from "@/fonts";
+import { inter } from "@/fonts/profile";
 import { extendTheme } from "@chakra-ui/react";
 
 export const theme = extendTheme({
   fonts: {
-    heading: spaceMono.style.fontFamily,
-    body: poppins.style.fontFamily,
+    heading: inter.style.fontFamily,
+    body: inter.style.fontFamily,
   },
   colors: {
     purple: {

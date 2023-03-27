@@ -150,10 +150,11 @@ const TestimonialsPage: NextPageWithLayout = (
   );
 };
 
-export default TestimonialsPage;
 TestimonialsPage.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
 };
+
+export default TestimonialsPage;
 
 export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);

@@ -88,6 +88,10 @@ const SettingsPage: NextPageWithLayout<{ settings: Settings }> = (
   );
 };
 
+SettingsPage.getLayout = (page) => {
+  return <AppLayout>{page}</AppLayout>;
+};
+
 export default SettingsPage;
 
 import { usePreviewContext } from "@/providers/preview";
@@ -127,7 +131,3 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
     props: { settings },
   };
 });
-
-SettingsPage.getLayout = (page) => {
-  return <AppLayout>{page}</AppLayout>;
-};

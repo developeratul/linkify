@@ -81,40 +81,155 @@ const fields: Field[] = [
   },
 ];
 
+function DeleteSubmission(props: { submissionId: string }) {
+  const { submissionId } = props;
+  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const { mutateAsync, isLoading } = api.form.deleteSubmission.useMutation();
+  const cancelRef = React.useRef<HTMLButtonElement | null>(null);
+  const toast = Chakra.useToast();
+  const router = useRouter();
+
+  const handleDeleteSubmission = async () => {
+    try {
+      const message = await mutateAsync({ submissionId });
+      onClose();
+      await router.push(router.asPath);
+      toast({ status: "success", description: message });
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Chakra.Box>
+      <Chakra.Button onClick={onOpen} leftIcon={<Icon name="Delete" />} colorScheme="red">
+        Delete
+      </Chakra.Button>
+      <Chakra.AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+      >
+        <Chakra.AlertDialogOverlay />
+        <Chakra.AlertDialogContent>
+          <Chakra.AlertDialogHeader>Delete submission?</Chakra.AlertDialogHeader>
+          <Chakra.AlertDialogCloseButton />
+          <Chakra.AlertDialogBody>
+            Are you sure? This action will cause permanent data loss.
+          </Chakra.AlertDialogBody>
+          <Chakra.AlertDialogFooter>
+            <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
+              No
+            </Chakra.Button>
+            <Chakra.Button
+              isLoading={isLoading}
+              onClick={handleDeleteSubmission}
+              colorScheme="purple"
+            >
+              Yes
+            </Chakra.Button>
+          </Chakra.AlertDialogFooter>
+        </Chakra.AlertDialogContent>
+      </Chakra.AlertDialog>
+    </Chakra.Box>
+  );
+}
+
+function SubmissionDetails(props: { submission: FormSubmission; enabledFields: Field[] }) {
+  const { submission, enabledFields } = props;
+  const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
+
+  const KeyValuePairDisplay = (props: { keyName: string; value: string | null }) => {
+    const { keyName, value } = props;
+    return (
+      <Chakra.VStack>
+        <Chakra.Text whiteSpace="normal" w="full">
+          <b>{keyName}</b>
+        </Chakra.Text>
+        <Chakra.Text whiteSpace="pre-wrap" w="full">
+          {value || "Not Provided"}
+        </Chakra.Text>
+      </Chakra.VStack>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      <Chakra.Tr
+        _hover={{ bg: "purple.100" }}
+        cursor="pointer"
+        key={submission.id}
+        onClick={onOpen}
+      >
+        {enabledFields.map((field) => (
+          <Chakra.Td maxW={200} key={field.name}>
+            <Chakra.Text whiteSpace="normal" noOfLines={1} w="full">
+              {submission[field.rawName]}
+            </Chakra.Text>
+          </Chakra.Td>
+        ))}
+        <Chakra.Td noOfLines={1}>{formatDate(submission.sentAt)}</Chakra.Td>
+      </Chakra.Tr>
+      <Chakra.Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
+        <Chakra.DrawerOverlay />
+        <Chakra.DrawerContent>
+          <Chakra.DrawerCloseButton />
+          <Chakra.DrawerHeader>Submission details</Chakra.DrawerHeader>
+          <Chakra.DrawerBody>
+            <Chakra.VStack w="full" align="start" spacing={10}>
+              <Chakra.VStack spacing={5} w="full" align="start">
+                <KeyValuePairDisplay keyName="Name" value={submission.name} />
+                <KeyValuePairDisplay keyName="Phone" value={submission.phone} />
+                <KeyValuePairDisplay keyName="Email" value={submission.email} />
+                <KeyValuePairDisplay keyName="Subject" value={submission.subject} />
+                <KeyValuePairDisplay keyName="Message" value={submission.message} />
+              </Chakra.VStack>
+              <DeleteSubmission submissionId={submission.id} />
+            </Chakra.VStack>
+          </Chakra.DrawerBody>
+          <Chakra.DrawerFooter />
+        </Chakra.DrawerContent>
+      </Chakra.Drawer>
+    </React.Fragment>
+  );
+}
+
 function FormSubmissionsTable(props: { form: Form; submissions: FormSubmission[] }) {
   const { form, submissions } = props;
   const enabledFields = React.useMemo(() => {
     return fields.filter((field) => !!form[field.name]);
   }, [form]);
   return (
-    <Chakra.Box w="full" overflowX="auto">
+    <Chakra.TableContainer w="full">
       <Conditional
         condition={submissions.length > 0}
         component={
-          <Chakra.Table colorScheme="purple" bg="white" rounded="lg" variant="striped">
+          <Chakra.Table colorScheme="purple" bg="white" rounded="lg">
             <Chakra.Thead>
               <Chakra.Tr>
                 {enabledFields.map((field) => (
                   <Chakra.Th key={field.name}>{field.rawLabel}</Chakra.Th>
                 ))}
-                <Chakra.Td>Time</Chakra.Td>
+                <Chakra.Th>Time</Chakra.Th>
               </Chakra.Tr>
             </Chakra.Thead>
             <Chakra.Tbody>
               {submissions.map((submission) => (
-                <Chakra.Tr key={submission.id}>
-                  {enabledFields.map((field) => (
-                    <Chakra.Td key={field.name}>{submission[field.rawName]}</Chakra.Td>
-                  ))}
-                  <Chakra.Td>{formatDate(submission.sentAt)}</Chakra.Td>
-                </Chakra.Tr>
+                <SubmissionDetails
+                  submission={submission}
+                  enabledFields={enabledFields}
+                  key={submission.id}
+                />
               ))}
             </Chakra.Tbody>
           </Chakra.Table>
         }
         fallback={<EmptyMessage title="Empty" description="No form submissions yet" />}
       />
-    </Chakra.Box>
+    </Chakra.TableContainer>
   );
 }
 
@@ -351,11 +466,11 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
   );
 };
 
-export default FormPage;
-
 FormPage.getLayout = (page) => {
   return <AppLayout hidePreviewPanel>{page}</AppLayout>;
 };
+
+export default FormPage;
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -366,7 +481,9 @@ export const getServerSideProps = requireAuth(async (ctx) => {
       username: true,
       bio: true,
       form: true,
-      formSubmissions: true,
+      formSubmissions: {
+        orderBy: { sentAt: "desc" },
+      },
     },
   });
 
