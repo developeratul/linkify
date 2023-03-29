@@ -1,0 +1,47 @@
+{
+  "name": "landing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.5.4",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@tabler/icons-react": "^2.12.0",
+    "@vercel/analytics": "^0.1.11",
+    "assets": "*",
+    "components": "*",
+    "framer-motion": "^10.9.2",
+    "next": "^13.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "theme": "*",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.21.3",
+    "@types/node": "^18.15.5",
+    "@types/prettier": "^2.7.2",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.36.0",
+    "eslint-config-next": "^13.2.4",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.6",
+    "prettier-plugin-tailwindcss": "^0.2.5",
+    "tailwindcss": "^3.2.7",
+    "tsconfig": "*",
+    "typescript": "^5.0.2"
+  },
+  "ct3aMetadata": {
+    "initVersion": "7.10.0"
+  }
+}
