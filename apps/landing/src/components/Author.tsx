@@ -1,6 +1,6 @@
 import Ratul from "@/assets/ratul.jpg";
-import { SocialIcon } from "@/Icons";
 import * as Chakra from "@chakra-ui/react";
+import { SocialIcon } from "components";
 import Image from "next/image";
 import JoinWaitListButton from "./common/JoinWaitList";
 import SectionWrapper from "./common/SectionWrapper";
@@ -21,29 +21,38 @@ export default function Author() {
           rowGap={{ base: 10, lg: 0 }}
           align={{ base: "center", lg: "start" }}
         >
-          <Image src={Ratul} alt="Minhazur Rahaman Ratul" width={300} className="rounded-lg" />
+          <Image
+            src={Ratul}
+            alt="Minhazur Rahaman Ratul"
+            width={300}
+            className="rounded-lg"
+          />
           <Chakra.VStack align="start" spacing={5}>
             <Chakra.Heading fontSize="2xl" color="purple.500">
               Minhazur Rahaman Ratul
             </Chakra.Heading>
             <Chakra.VStack spacing={3} fontSize="lg">
               <Chakra.Text>
-                Hi! I am Ratul a full stack developer from Bangladesh 🇧🇩. I have been coding
-                professionally for more than 2 years. But I was doing it privately. No one knew what
-                I was doing. I came across Twitter and met a lot of developers out there. They all
-                were building and sharing their journey which attracted my interest. So, I took
-                inspiration from there and started working on Linkify. This is going to be my first
-                ever <Chakra.Code>#buildinpublic</Chakra.Code> project.
+                Hi! I am Ratul a full stack developer from Bangladesh 🇧🇩. I have
+                been coding professionally for more than 2 years. But I was
+                doing it privately. No one knew what I was doing. I came across
+                Twitter and met a lot of developers out there. They all were
+                building and sharing their journey which attracted my interest.
+                So, I took inspiration from there and started working on
+                Linkify. This is going to be my first ever{" "}
+                <Chakra.Code>#buildinpublic</Chakra.Code> project.
               </Chakra.Text>
               <Chakra.Text>
-                Linkify aims to provide you everything you need in one place in order to connect
-                with your audience effectively. It will be an all-in-one tool that gives you the
-                ability to set up an amazing profile page that you can customize in any way you see
-                fit. You will showcase your links there. You can collect testimonials from your
-                audience, you can collect form submissions from them and also they can subscribe to
-                your newsletter which you will run while being a subscriber of my app. So if that
-                interests you, you may join our wait list to be among the first to use this. I
-                assure you that the wait will be worthwhile.
+                Linkify aims to provide you everything you need in one place in
+                order to connect with your audience effectively. It will be an
+                all-in-one tool that gives you the ability to set up an amazing
+                profile page that you can customize in any way you see fit. You
+                will showcase your links there. You can collect testimonials
+                from your audience, you can collect form submissions from them
+                and also they can subscribe to your newsletter which you will
+                run while being a subscriber of my app. So if that interests
+                you, you may join our wait list to be among the first to use
+                this. I assure you that the wait will be worthwhile.
               </Chakra.Text>
             </Chakra.VStack>
             <Chakra.HStack flexWrap="wrap" rowGap={3} spacing={3}>
