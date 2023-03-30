@@ -29,6 +29,29 @@ const formRouter = createTRPCRouter({
     return;
   }),
 
+  toggleSubmissionAcceptance: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: userId },
+      select: { form: true },
+    });
+
+    if (!user || !user.form) throw new TRPCError({ code: "NOT_FOUND" });
+
+    const updatedUser = await ctx.prisma.user.update({
+      where: { id: userId },
+      data: { form: { update: { isAcceptingSubmissions: !user.form.isAcceptingSubmissions } } },
+      select: { form: { select: { isAcceptingSubmissions: true } } },
+    });
+
+    const message = updatedUser.form?.isAcceptingSubmissions
+      ? "You will receive submissions"
+      : "You will not receive submissions anymore";
+
+    return message;
+  }),
+
   updateForm: protectedProcedure.input(formSchema).mutation(async ({ ctx, input }) => {
     const update = input;
     const userId = ctx.session.user.id;
@@ -59,6 +82,7 @@ const formRouter = createTRPCRouter({
       });
 
       if (!user || !user.form) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!user.form.isAcceptingSubmissions) throw new TRPCError({ code: "FORBIDDEN" });
 
       await ctx.prisma.user.update({
         where: { id: userId },

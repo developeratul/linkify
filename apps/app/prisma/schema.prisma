@@ -76,7 +76,8 @@ model User {
 }
 
 model Form {
-    id String @id @default(cuid())
+    id                     String  @id @default(cuid())
+    isAcceptingSubmissions Boolean @default(true)
 
     nameField    Boolean @default(true)
     emailField   Boolean @default(true)

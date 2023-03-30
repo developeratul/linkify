@@ -407,17 +407,32 @@ function useEnableFormToggle() {
   return { toggle: handleClick, isLoading };
 }
 
-function EnableFormToggle(props: { isEnabled: boolean }) {
-  const { isEnabled } = props;
-  const { toggle, isLoading } = useEnableFormToggle();
+function ToggleSubmissionAcceptance(props: { isAccepting: boolean }) {
+  const { isAccepting } = props;
+  const { mutateAsync, isLoading } = api.form.toggleSubmissionAcceptance.useMutation();
+  const toast = Chakra.useToast();
+  const router = useRouter();
+
+  const handleClick = async () => {
+    try {
+      const message = await mutateAsync();
+      await router.push(router.asPath);
+      toast({ status: "info", description: message });
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
 
   return (
-    <Chakra.Switch
-      defaultChecked={isEnabled}
-      onChange={toggle}
-      disabled={isLoading}
-      colorScheme="purple"
-    />
+    <Chakra.Button
+      colorScheme={isAccepting ? "red" : "purple"}
+      isLoading={isLoading}
+      onClick={handleClick}
+    >
+      {isAccepting ? "Pause submissions" : "Resume submissions"}
+    </Chakra.Button>
   );
 }
 
@@ -468,8 +483,8 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
           <Chakra.Heading size="md" color="purple.500">
             Form
           </Chakra.Heading>
-          <Chakra.HStack align="center" gap={5}>
-            <EnableFormToggle isEnabled={!!form} />
+          <Chakra.HStack align="center" spacing={3}>
+            <ToggleSubmissionAcceptance isAccepting={form.isAcceptingSubmissions} />
             <FormSettingsModal form={form} />
           </Chakra.HStack>
         </Chakra.HStack>

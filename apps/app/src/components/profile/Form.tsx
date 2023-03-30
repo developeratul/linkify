@@ -38,6 +38,7 @@ export default function Form() {
   const toast = useToast();
 
   if (profile === undefined || !profile.form) return <></>;
+  if (!profile.form || !profile.form.isAcceptingSubmissions) return <></>;
 
   const { form } = profile;
 
