@@ -3,6 +3,7 @@ import { EmptyMessage } from "@/components/app/common/Message";
 import { Conditional } from "@/components/common/Conditional";
 import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
+import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { api } from "@/utils/api";
@@ -11,13 +12,13 @@ import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Form, FormSubmission } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
+import Linkify from "linkify-react";
 import type { InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import type { NextPageWithLayout } from "../_app";
 
 type Field = {
   name: "nameField" | "emailField" | "subjectField" | "phoneField" | "messageField";
@@ -149,9 +150,21 @@ function SubmissionDetails(props: { submission: FormSubmission; enabledFields: F
         <Chakra.Text whiteSpace="normal" w="full">
           <b>{keyName}</b>
         </Chakra.Text>
-        <Chakra.Text whiteSpace="pre-wrap" w="full">
-          {value || "Not Provided"}
-        </Chakra.Text>
+        <Linkify
+          options={{
+            render({ attributes, content }) {
+              return (
+                <Chakra.Link {...attributes} target="_blank" color="purple.500">
+                  {content}
+                </Chakra.Link>
+              );
+            },
+          }}
+        >
+          <Chakra.Text whiteSpace="pre-wrap" w="full">
+            {value || "Not Provided"}
+          </Chakra.Text>
+        </Linkify>
       </Chakra.VStack>
     );
   };

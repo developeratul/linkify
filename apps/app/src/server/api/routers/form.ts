@@ -1,5 +1,5 @@
 import { formSubmissionSchema } from "@/components/profile/Form";
-import { formSchema } from "@/pages/app/form";
+import { formSchema } from "@/pages/form";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";

@@ -8,6 +8,7 @@ import {
   Quicksand,
   Roboto_Mono,
   Roboto_Slab,
+  Space_Grotesk,
   Space_Mono,
 } from "next/font/google";
 
@@ -17,7 +18,7 @@ export const spaceMono = Space_Mono({
 });
 
 export const robotoMono = Roboto_Mono({
-  weight: "400",
+  weight: "variable",
   subsets: ["latin"],
 });
 
@@ -27,12 +28,12 @@ export const poppins = Poppins({
 });
 
 export const inter = Inter({
-  weight: "400",
+  weight: "variable",
   subsets: ["latin"],
 });
 
 export const ebGaramond = EB_Garamond({
-  weight: "400",
+  weight: "variable",
   subsets: ["latin"],
 });
 
@@ -47,12 +48,17 @@ export const quicksand = Quicksand({
 });
 
 export const openSans = Open_Sans({
-  weight: "400",
+  weight: "variable",
   subsets: ["latin"],
 });
 
 export const robotoSlab = Roboto_Slab({
-  weight: "400",
+  weight: "variable",
+  subsets: ["latin"],
+});
+
+export const spaceGrotesk = Space_Grotesk({
+  weight: "variable",
   subsets: ["latin"],
 });
 
@@ -66,7 +72,8 @@ export const fonts: Record<string, NextFont> = {
   quicksand,
   openSans,
   robotoSlab,
+  spaceGrotesk,
 };
 
-export const DEFAULT_FONT_NAME = "poppins";
-export const defaultFont = poppins;
+export const DEFAULT_FONT_NAME = "spaceGrotesk";
+export const defaultFont = spaceGrotesk;

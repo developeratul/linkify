@@ -81,7 +81,7 @@ export default function Theme() {
                 <Chakra.Heading color="purple.500">
                   <Icon name="CustomTheme" size={30} />
                 </Chakra.Heading>
-                <Chakra.Text>Custom</Chakra.Text>
+                <Chakra.Text>Make it your own</Chakra.Text>
                 <Chakra.Button
                   onClick={async () => {
                     await toggleCustomTheme();
@@ -91,7 +91,7 @@ export default function Theme() {
                   colorScheme="purple"
                   w="full"
                 >
-                  Create
+                  Customize
                 </Chakra.Button>
               </Chakra.VStack>
             </Chakra.Center>

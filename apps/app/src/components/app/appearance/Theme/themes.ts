@@ -25,7 +25,7 @@ export const themes: Record<string, Theme> = {
     bodyBackgroundColor: "#22212C",
     bodyBackgroundImage: null,
     cardShadow: "md",
-    font: "quicksand",
+    font: "spaceGrotesk",
     cardBackgroundColor: "#151320",
   },
   night_owl: {
@@ -109,7 +109,7 @@ export const themes: Record<string, Theme> = {
     bodyBackgroundColor: "#262335",
     bodyBackgroundImage: null,
     cardShadow: "md",
-    font: "dmSans",
+    font: "quicksand",
     cardBackgroundColor: "#241B2F",
   },
   bluloco: {

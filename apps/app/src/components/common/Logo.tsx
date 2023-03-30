@@ -1,8 +1,8 @@
-import LogoImageSrc from "@/assets/logo-sm.png";
+import { LogoSm } from "assets";
 import Image from "next/image";
 import Link from "next/link";
 
-export const LogoSrc = LogoImageSrc;
+export const LogoSrc = LogoSm;
 
 export default function Logo() {
   return (

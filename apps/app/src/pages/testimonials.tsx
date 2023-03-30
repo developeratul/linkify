@@ -2,6 +2,7 @@ import { EmptyMessage } from "@/components/app/common/Message";
 import Rating from "@/components/app/common/Rating";
 import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
+import type { NextPageWithLayout } from "@/pages/_app";
 import { usePreviewContext } from "@/providers/preview";
 import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
@@ -14,7 +15,6 @@ import { TRPCClientError } from "@trpc/client";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import React from "react";
-import type { NextPageWithLayout } from "../_app";
 
 function DeleteTestimonial(props: { testimonialId: string }) {
   const { testimonialId } = props;

@@ -18,10 +18,9 @@ export const onboardingSchema = z.object({
 export type OnboardingSchema = z.infer<typeof onboardingSchema>;
 
 const OnBoardingPage: NextPage = () => {
-  const { register, formState, handleSubmit, setError } =
-    useForm<OnboardingSchema>({
-      resolver: zodResolver(onboardingSchema),
-    });
+  const { register, formState, handleSubmit, setError } = useForm<OnboardingSchema>({
+    resolver: zodResolver(onboardingSchema),
+  });
   const { mutateAsync, isLoading } = api.auth.setupAccount.useMutation();
   const toast = useToast();
   const router = useRouter();
@@ -29,7 +28,7 @@ const OnBoardingPage: NextPage = () => {
   const onSubmit = async (values: OnboardingSchema) => {
     try {
       const { title, description } = await mutateAsync(values);
-      router.push("/app");
+      await router.push("/");
       toast({ status: "success", description, title });
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -42,32 +41,18 @@ const OnBoardingPage: NextPage = () => {
 
   return (
     <AuthLayout title="Setup your account">
-      <Chakra.VStack
-        onSubmit={handleSubmit(onSubmit)}
-        as="form"
-        id="onboarding-form"
-        spacing={3}
-      >
+      <Chakra.VStack onSubmit={handleSubmit(onSubmit)} as="form" id="onboarding-form" spacing={3}>
         <Chakra.FormControl isRequired isInvalid={!!formState.errors?.username}>
           <Chakra.FormLabel>Username</Chakra.FormLabel>
           <Chakra.Input {...register("username")} />
-          <Chakra.FormErrorMessage>
-            {formState.errors.username?.message}
-          </Chakra.FormErrorMessage>
+          <Chakra.FormErrorMessage>{formState.errors.username?.message}</Chakra.FormErrorMessage>
         </Chakra.FormControl>
         <Chakra.FormControl isRequired isInvalid={!!formState.errors?.bio}>
           <Chakra.FormLabel>Bio</Chakra.FormLabel>
           <Chakra.Textarea {...register("bio")} />
-          <Chakra.FormErrorMessage>
-            {formState.errors.bio?.message}
-          </Chakra.FormErrorMessage>
+          <Chakra.FormErrorMessage>{formState.errors.bio?.message}</Chakra.FormErrorMessage>
         </Chakra.FormControl>
-        <Chakra.Button
-          isLoading={isLoading}
-          type="submit"
-          w="full"
-          colorScheme="purple"
-        >
+        <Chakra.Button isLoading={isLoading} type="submit" w="full" colorScheme="purple">
           Finish
         </Chakra.Button>
       </Chakra.VStack>
@@ -76,28 +61,26 @@ const OnBoardingPage: NextPage = () => {
 };
 
 export default OnBoardingPage;
-export const getServerSideProps: GetServerSideProps = requireAuth(
-  async (ctx) => {
-    const session = await getServerAuthSession(ctx);
+export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) => {
+  const session = await getServerAuthSession(ctx);
 
-    if (session) {
-      const user = await prisma?.user.findUnique({
-        where: { id: session.user?.id },
-        select: { username: true },
-      });
+  if (session) {
+    const user = await prisma?.user.findUnique({
+      where: { id: session.user?.id },
+      select: { username: true },
+    });
 
-      if (user?.username) {
-        return {
-          redirect: {
-            destination: "/app",
-            permanent: true,
-          },
-        };
-      }
+    if (user?.username) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: true,
+        },
+      };
     }
-
-    return {
-      props: {},
-    };
   }
-);
+
+  return {
+    props: {},
+  };
+});

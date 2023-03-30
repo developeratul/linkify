@@ -30,25 +30,25 @@ function LinkButton(props: AppProps & { icon: React.ReactElement; to: string }) 
 export default function AppBar() {
   const links = (
     <>
-      <LinkButton to="/app" icon={<Icon name="Link" />}>
+      <LinkButton to="/" icon={<Icon name="Link" />}>
         Links
       </LinkButton>
-      <LinkButton to="/app/appearance" icon={<Icon name="Appearance" />}>
+      <LinkButton to="/appearance" icon={<Icon name="Appearance" />}>
         Appearance
       </LinkButton>
-      <LinkButton to="/app/settings" icon={<Icon name="Settings" />}>
+      <LinkButton to="/settings" icon={<Icon name="Settings" />}>
         Settings
       </LinkButton>
-      <LinkButton to="/app/testimonials" icon={<Icon name="Testimonial" />}>
+      <LinkButton to="/testimonials" icon={<Icon name="Testimonial" />}>
         Testimonials
       </LinkButton>
-      <LinkButton to="/app/form" icon={<Icon name="Form" />}>
+      <LinkButton to="/form" icon={<Icon name="Form" />}>
         Form
       </LinkButton>
     </>
   );
   return (
-    <Chakra.Box zIndex="sticky" p={3} className="sticky top-0 left-0 h-24">
+    <Chakra.Box zIndex="sticky" p={3} className="sticky left-0 top-0 h-24">
       <Chakra.Card bg="white" size="sm" rounded="full" height="full">
         <Chakra.CardBody className="flex items-center justify-between">
           <Chakra.HStack spacing={{ base: "2", sm: "10" }}>

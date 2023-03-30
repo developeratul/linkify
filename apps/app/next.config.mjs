@@ -13,6 +13,7 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  transpilePackages: ["components"],
 };
 
 import { withSuperjson } from "next-superjson";

@@ -10,6 +10,7 @@ import {
   quicksand,
   robotoMono,
   robotoSlab,
+  spaceGrotesk,
   spaceMono,
 } from "@/fonts/profile";
 import { Icon } from "@/Icons";
@@ -47,6 +48,7 @@ const shadows = ["sm", "md", "lg", "xl", "none"];
 const fonts = [
   { name: "Roboto Mono", src: robotoMono, fontIndex: "robotoMono" },
   { name: "Space Mono", src: spaceMono, fontIndex: "spaceMono" },
+  { name: "Space Grotesk", src: spaceGrotesk, fontIndex: "spaceGrotesk" },
   { name: "Poppins", src: poppins, fontIndex: "poppins" },
   { name: "Inter", src: inter, fontIndex: "inter" },
   { name: "EB Garamond", src: ebGaramond, fontIndex: "ebGaramond" },

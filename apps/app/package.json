@@ -23,11 +23,15 @@
     "@trpc/next": "^10.7.0",
     "@trpc/react-query": "^10.7.0",
     "@trpc/server": "^10.7.0",
+    "assets": "*",
     "axios": "^1.2.2",
     "chroma-js": "^2.4.2",
     "cloudinary": "^1.33.0",
     "clsx": "^1.2.1",
+    "components": "*",
     "framer-motion": "^8.2.4",
+    "linkify-react": "^4.1.1",
+    "linkifyjs": "^4.1.1",
     "lucide-react": "^0.105.0",
     "next": "^13.2.1",
     "next-auth": "^4.18.7",
@@ -42,8 +46,9 @@
     "react-hook-form": "^7.41.5",
     "react-star-ratings": "^2.3.0",
     "superjson": "1.9.1",
-    "zod": "^3.20.2",
-    "theme": "*"
+    "theme": "*",
+    "tsconfig": "*",
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@types/chroma-js": "^2.4.0",
