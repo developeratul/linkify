@@ -1,6 +1,5 @@
 import ColorInput from "@/components/app/common/ColorInput";
 import { SectionLoader } from "@/components/common/Loader";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import type { BoxProps } from "@chakra-ui/react";
@@ -8,6 +7,7 @@ import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "../common/Message";

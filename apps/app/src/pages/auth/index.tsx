@@ -1,8 +1,8 @@
 import { SEO } from "@/components/common/SEO";
-import { Icon } from "@/Icons";
 import { AuthLayout } from "@/Layouts/auth";
 import { redirectAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
+import { Icon } from "components";
 import type { GetServerSideProps, NextPage } from "next";
 import type { BuiltInProviderType } from "next-auth/providers";
 import { signIn } from "next-auth/react";

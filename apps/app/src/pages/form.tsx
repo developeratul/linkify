@@ -1,7 +1,6 @@
 import FormsIllus from "@/assets/forms.svg";
 import { EmptyMessage } from "@/components/app/common/Message";
 import { Conditional } from "@/components/common/Conditional";
-import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
@@ -12,6 +11,7 @@ import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Form, FormSubmission } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import Linkify from "linkify-react";
 import type { InferGetServerSidePropsType } from "next";
 import Image from "next/image";

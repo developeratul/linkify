@@ -1,5 +1,6 @@
 import { IconBrandGoogle } from "@tabler/icons-react";
 import {
+  Download,
   Edit,
   Eye,
   Github,
@@ -44,6 +45,7 @@ export const icons = {
   Testimonial: MessageCircle,
   CustomTheme: Wand2,
   Form: Send,
+  Export: Download,
 };
 
 export function Icon(props: { size?: number; name: keyof typeof icons }) {
@@ -54,7 +56,7 @@ export function Icon(props: { size?: number; name: keyof typeof icons }) {
 
 import * as TablerIcons from "@tabler/icons-react";
 
-export function SocialIcon(props: { name: string }) {
+export function TablerIcon(props: { name: string }) {
   const { name } = props;
   const iconsObj = TablerIcons as { [key: string]: any };
   const IconElement = iconsObj[name];

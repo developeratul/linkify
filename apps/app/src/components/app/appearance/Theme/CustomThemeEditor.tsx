@@ -13,7 +13,6 @@ import {
   spaceGrotesk,
   spaceMono,
 } from "@/fonts/profile";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import { getContrastColor } from "@/utils/color";
@@ -22,6 +21,7 @@ import * as Chakra from "@chakra-ui/react";
 import { useToken } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import type { ChangeEvent } from "react";
 import React from "react";
 import type { UseFormSetValue } from "react-hook-form";

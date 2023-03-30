@@ -1,8 +1,8 @@
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import React from "react";
 
 export function DeleteLink(props: { linkId: string }) {
@@ -29,15 +29,27 @@ export function DeleteLink(props: { linkId: string }) {
 
   return (
     <Chakra.Box>
-      <Chakra.Button onClick={onOpen} leftIcon={<Icon name="Delete" />} variant="ghost" colorScheme="red">
+      <Chakra.Button
+        onClick={onOpen}
+        leftIcon={<Icon name="Delete" />}
+        variant="ghost"
+        colorScheme="red"
+      >
         Delete
       </Chakra.Button>
-      <Chakra.AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose} isCentered>
+      <Chakra.AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+      >
         <Chakra.AlertDialogOverlay />
         <Chakra.AlertDialogContent>
           <Chakra.AlertDialogHeader>Delete link?</Chakra.AlertDialogHeader>
           <Chakra.AlertDialogCloseButton />
-          <Chakra.AlertDialogBody>Are you sure? This action will cause permanent data loss.</Chakra.AlertDialogBody>
+          <Chakra.AlertDialogBody>
+            Are you sure? This action will cause permanent data loss.
+          </Chakra.AlertDialogBody>
           <Chakra.AlertDialogFooter>
             <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
               No

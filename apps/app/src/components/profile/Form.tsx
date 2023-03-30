@@ -1,4 +1,3 @@
-import { Icon } from "@/Icons";
 import { useProfileContext } from "@/providers/profile";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -15,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 

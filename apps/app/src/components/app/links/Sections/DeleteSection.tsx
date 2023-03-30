@@ -1,8 +1,8 @@
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import React from "react";
 
 export default function DeleteSection(props: { sectionId: string }) {

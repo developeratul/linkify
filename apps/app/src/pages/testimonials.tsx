@@ -1,20 +1,49 @@
 import { EmptyMessage } from "@/components/app/common/Message";
 import Rating from "@/components/app/common/Rating";
-import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { usePreviewContext } from "@/providers/preview";
-import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
+import TestimonialService from "@/services/testimonial";
 import type { Testimonial as TestimonialType } from "@/types";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
+import { saveAs } from "file-saver";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import React from "react";
+
+function ExportAsCSV() {
+  const { mutateAsync, isLoading } = api.testimonial.exportAsCSV.useMutation();
+  const toast = Chakra.useToast();
+
+  const handleClick = async () => {
+    try {
+      const data = await mutateAsync();
+      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob);
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Chakra.Button
+      isLoading={isLoading}
+      onClick={handleClick}
+      colorScheme="purple"
+      leftIcon={<Icon name="Export" />}
+    >
+      Export
+    </Chakra.Button>
+  );
+}
 
 function DeleteTestimonial(props: { testimonialId: string }) {
   const { testimonialId } = props;
@@ -137,9 +166,14 @@ const TestimonialsPage: NextPageWithLayout = (
   return (
     <Chakra.Box w="full">
       <Chakra.VStack align="start" spacing={5}>
-        <Chakra.Heading size="md" color="purple.500">
-          Testimonials
-        </Chakra.Heading>
+        <Chakra.HStack w="full" align="center" justify="space-between">
+          <Chakra.Heading size="md" color="purple.500">
+            Testimonials
+          </Chakra.Heading>
+          <Chakra.HStack>
+            <ExportAsCSV />
+          </Chakra.HStack>
+        </Chakra.HStack>
         <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, xl: 3 }} spacing={5}>
           {testimonials.map((testimonial: TestimonialType) => (
             <Testimonial key={testimonial.id} testimonial={testimonial} />
@@ -174,11 +208,7 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
     };
   }
 
-  const testimonials = await prisma.testimonial.findMany({
-    where: { userId: user.id },
-    select: TestimonialSelections,
-    orderBy: { createdAt: "desc" },
-  });
+  const testimonials = await TestimonialService.findMany(user.id);
 
   return {
     props: { testimonials },

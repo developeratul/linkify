@@ -1,7 +1,7 @@
-import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
+import { Icon } from "components";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";

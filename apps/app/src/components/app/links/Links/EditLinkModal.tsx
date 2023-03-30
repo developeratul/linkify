@@ -1,4 +1,3 @@
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import type { Link } from "@/types";
 import { api } from "@/utils/api";
@@ -6,6 +5,7 @@ import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DeleteLink } from "./DeleteLink";

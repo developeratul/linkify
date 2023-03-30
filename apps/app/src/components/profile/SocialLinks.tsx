@@ -1,8 +1,8 @@
-import { SocialIcon } from "@/Icons";
 import { useProfileContext } from "@/providers/profile";
 import { SocialLink } from "@/types";
 import { getContrastColor } from "@/utils/color";
 import * as Chakra from "@chakra-ui/react";
+import { TablerIcon } from "components";
 import { buttonImageRoundness } from "../app/appearance/Button";
 
 export default function SocialLinks() {
@@ -48,7 +48,7 @@ function SocialLink(props: { link: SocialLink }) {
       href={link.url}
       referrerPolicy="no-referrer"
     >
-      <SocialIcon name={link.icon} />
+      <TablerIcon name={link.icon} />
     </Chakra.Stack>
   );
 }

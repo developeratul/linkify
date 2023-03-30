@@ -1,6 +1,5 @@
 import { Conditional } from "@/components/common/Conditional";
 import Loader, { SectionLoader } from "@/components/common/Loader";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
@@ -8,6 +7,7 @@ import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -81,7 +81,7 @@ export function Profile() {
             src={data?.image || ""}
             name={formState.defaultValues?.profileTitle}
           />
-          <label className="absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100 group-hover:opacity-100">
+          <label className="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100 group-hover:opacity-100">
             <Conditional
               condition={isImageProcessing}
               component={<Loader />}

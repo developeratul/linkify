@@ -1,10 +1,10 @@
 import IconPicker from "@/components/app/common/IconPicker";
-import { Icon, SocialIcon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
+import { Icon, TablerIcon } from "components";
 import React from "react";
 import { z } from "zod";
 
@@ -62,7 +62,7 @@ export function AddSocialLinkModal() {
                     title="Pick an icon"
                     colorScheme="purple"
                     aria-label="Pick icon"
-                    icon={iconName ? <SocialIcon name={iconName} /> : <Icon name="Thumbnail" />}
+                    icon={iconName ? <TablerIcon name={iconName} /> : <Icon name="Thumbnail" />}
                   />
                 }
               />

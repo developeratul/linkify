@@ -1,6 +1,6 @@
-import { Icon, SocialIcon } from "@/Icons";
 import type { SocialLink as SocialLinkType } from "@/types";
 import * as Chakra from "@chakra-ui/react";
+import { Icon, TablerIcon } from "components";
 import { Draggable } from "react-beautiful-dnd";
 import { DeleteSocialLink } from "./DeleteSocialLink";
 
@@ -40,7 +40,7 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
                 {socialLink.url}
               </Chakra.Text>
               <Chakra.Box color="purple.500">
-                <SocialIcon name={socialLink.icon} />
+                <TablerIcon name={socialLink.icon} />
               </Chakra.Box>
             </Chakra.HStack>
           </Chakra.Flex>

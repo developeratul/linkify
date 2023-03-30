@@ -1,6 +1,6 @@
-import { Icon } from "@/Icons";
 import type { Link as LinkType } from "@/types";
 import * as Chakra from "@chakra-ui/react";
+import { Icon } from "components";
 import { Draggable } from "react-beautiful-dnd";
 import { AddThumbnail } from "./AddThumbnail";
 import { EditLinkModal } from "./EditLinkModal";

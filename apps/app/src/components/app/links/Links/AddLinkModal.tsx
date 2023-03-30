@@ -1,9 +1,9 @@
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -45,7 +45,13 @@ export function AddLinkModal(props: { sectionId: string }) {
 
   return (
     <Chakra.Box w="full">
-      <Chakra.Button onClick={onOpen} w="full" colorScheme="purple" leftIcon={<Icon name="Add" />} variant="outline">
+      <Chakra.Button
+        onClick={onOpen}
+        w="full"
+        colorScheme="purple"
+        leftIcon={<Icon name="Add" />}
+        variant="outline"
+      >
         Add new link
       </Chakra.Button>
       <Chakra.Modal isOpen={isOpen} onClose={onClose}>
@@ -54,7 +60,13 @@ export function AddLinkModal(props: { sectionId: string }) {
           <Chakra.ModalHeader>Add link</Chakra.ModalHeader>
           <Chakra.ModalCloseButton />
           <Chakra.ModalBody>
-            <Chakra.VStack as="form" id="add-link-form" onSubmit={handleSubmit(onSubmit)} w="full" spacing={5}>
+            <Chakra.VStack
+              as="form"
+              id="add-link-form"
+              onSubmit={handleSubmit(onSubmit)}
+              w="full"
+              spacing={5}
+            >
               <Chakra.FormControl isRequired isInvalid={!!formState.errors.text}>
                 <Chakra.FormLabel>Link text</Chakra.FormLabel>
                 <Chakra.Input {...register("text")} />

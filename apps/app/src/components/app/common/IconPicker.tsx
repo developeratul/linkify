@@ -1,7 +1,7 @@
-import { SocialIcon } from "@/Icons";
 import { formatter } from "@/utils/number-formatter";
 import * as Chakra from "@chakra-ui/react";
 import * as Icons from "@tabler/icons-react";
+import { TablerIcon } from "components";
 import React from "react";
 import { Conditional } from "../../common/Conditional";
 
@@ -74,7 +74,7 @@ export default function IconPicker(props: IconPickerProps) {
                           onClick={() => handleSelect(iconName)}
                           key={iconName}
                           aria-label={iconName}
-                          icon={<SocialIcon name={iconName} />}
+                          icon={<TablerIcon name={iconName} />}
                         />
                       );
                     })}

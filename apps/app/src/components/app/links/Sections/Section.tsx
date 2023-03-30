@@ -1,8 +1,8 @@
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import type { Section } from "@/types";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
+import { Icon } from "components";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import Links from "../Links";

@@ -1,19 +1,10 @@
 import { testimonialSchema } from "@/components/profile/AddTestimonial";
 import { authorizeAuthor } from "@/helpers/auth";
-import type { Prisma } from "@prisma/client";
+import TestimonialService from "@/services/testimonial";
 import { TRPCError } from "@trpc/server";
+import { json2csv } from "json-2-csv";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-
-export const TestimonialSelections = {
-  id: true,
-  name: true,
-  email: true,
-  message: true,
-  rating: true,
-  shouldShow: true,
-  avatar: true,
-} satisfies Prisma.TestimonialSelect;
 
 const testimonialRouter = createTRPCRouter({
   add: publicProcedure
@@ -63,6 +54,23 @@ const testimonialRouter = createTRPCRouter({
     });
 
     return;
+  }),
+
+  exportAsCSV: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const testimonials = await TestimonialService.findMany(userId, {
+      name: true,
+      avatar: true,
+      email: true,
+      rating: true,
+      message: true,
+      createdAt: true,
+    });
+
+    const data = await json2csv(testimonials);
+
+    return data;
   }),
 });
 

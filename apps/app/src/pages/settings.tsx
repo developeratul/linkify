@@ -1,8 +1,8 @@
-import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import * as Chakra from "@chakra-ui/react";
+import { Icon } from "components";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useForm } from "react-hook-form";
 

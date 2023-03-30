@@ -1,7 +1,7 @@
 import Loader from "@/components/common/Loader";
-import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
 import * as Chakra from "@chakra-ui/react";
+import { Icon } from "components";
 import { useSession } from "next-auth/react";
 import React from "react";
 
