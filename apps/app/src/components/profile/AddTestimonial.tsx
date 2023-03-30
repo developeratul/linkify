@@ -8,7 +8,7 @@ import { Icon } from "components";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Rating from "../app/common/Rating";
+import Rating from "../common/Rating";
 
 export const testimonialSchema = z.object({
   name: z.string(),

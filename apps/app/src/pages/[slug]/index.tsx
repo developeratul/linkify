@@ -17,8 +17,8 @@ import {
   ProfileThemeSelections,
 } from "@/server/api/routers/appearance";
 import { LinkSelections } from "@/server/api/routers/link";
-import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { prisma } from "@/server/db";
+import { TestimonialSelections } from "@/services/testimonial";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
 import type { UseTabsProps } from "@chakra-ui/react";
 import * as Chakra from "@chakra-ui/react";
@@ -32,6 +32,18 @@ const tabs = {
   testimonials: 1,
 };
 
+const getTabIndex = (tabName: string | null) => {
+  let index = 0;
+
+  (Object.keys(tabs) as ["links" | "testimonials"]).map((key) => {
+    if (key === tabName) {
+      index = tabs[key];
+    }
+  });
+
+  return index;
+};
+
 type ProfileProps = {
   profile: Profile;
 };
@@ -42,7 +54,7 @@ const ProfilePage: NextPage<ProfileProps> = (
   const { profile } = props;
   const router = useRouter();
   const { tab }: { tab?: "links" | "testimonials" } = router.query;
-  const [, setCurrentTab] = useQueryState("tab");
+  const [currentTab, setCurrentTab] = useQueryState("tab");
   const defaultTabIndex = tab ? tabs[tab] || 0 : 0;
 
   const handleTabsChange: UseTabsProps["onChange"] = (index) => {
@@ -86,6 +98,7 @@ const ProfilePage: NextPage<ProfileProps> = (
                 <Chakra.Tabs
                   onChange={handleTabsChange}
                   defaultIndex={defaultTabIndex}
+                  index={getTabIndex(currentTab)}
                   isLazy
                   isFitted
                   colorScheme="brand"
@@ -169,47 +182,25 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
           name: true,
           links: {
             where: { hidden: false },
-            select: {
-              ...LinkSelections,
-              hidden: false,
-              clickCount: false,
-            },
-            orderBy: {
-              index: "asc",
-            },
+            select: { ...LinkSelections, hidden: false, clickCount: false },
+            orderBy: { index: "asc" },
           },
         },
-        orderBy: {
-          index: "asc",
-        },
+        orderBy: { index: "asc" },
       },
       socialLinks: {
-        select: {
-          id: true,
-          icon: true,
-          url: true,
-        },
-        orderBy: {
-          index: "asc",
-        },
+        select: { id: true, icon: true, url: true },
+        orderBy: { index: "asc" },
       },
       testimonials: {
-        where: {
-          shouldShow: true,
-        },
+        where: { shouldShow: true },
         select: TestimonialSelections,
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: { createdAt: "desc" },
       },
     },
   });
 
-  if (!user || !user.username || !user.bio) {
-    return {
-      notFound: true,
-    };
-  }
+  if (!user || !user.username || !user.bio) return { notFound: true };
 
   return {
     props: { profile: user satisfies Profile },

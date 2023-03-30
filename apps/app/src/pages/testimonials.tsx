@@ -1,5 +1,5 @@
 import { EmptyMessage } from "@/components/app/common/Message";
-import Rating from "@/components/app/common/Rating";
+import Rating from "@/components/common/Rating";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { usePreviewContext } from "@/providers/preview";

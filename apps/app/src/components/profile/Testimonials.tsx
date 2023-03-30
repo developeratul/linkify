@@ -1,6 +1,6 @@
 import { useProfileContext } from "@/providers/profile";
 import * as Chakra from "@chakra-ui/react";
-import Rating from "../app/common/Rating";
+import Rating from "../common/Rating";
 
 export default function Testimonials() {
   const profile = useProfileContext();
