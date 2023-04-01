@@ -13,7 +13,7 @@ export default function Wrapper(props: WrapperProps) {
   if (profile === undefined) return <></>;
 
   const defaultProps: Chakra.StackProps = {
-    spacing: "20px",
+    spacing: "30px",
     w: "full",
   };
 
