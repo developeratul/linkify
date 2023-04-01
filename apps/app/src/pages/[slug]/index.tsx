@@ -20,29 +20,9 @@ import { LinkSelections } from "@/server/api/routers/link";
 import { prisma } from "@/server/db";
 import { TestimonialSelections } from "@/services/testimonial";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
-import type { UseTabsProps } from "@chakra-ui/react";
 import * as Chakra from "@chakra-ui/react";
 import type { Button, Form, Layout, Settings, Theme } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
-import { useQueryState } from "next-usequerystate";
-import { useRouter } from "next/router";
-
-const tabs = {
-  links: 0,
-  testimonials: 1,
-};
-
-const getTabIndex = (tabName: string | null) => {
-  let index = 0;
-
-  (Object.keys(tabs) as ["links" | "testimonials"]).map((key) => {
-    if (key === tabName) {
-      index = tabs[key];
-    }
-  });
-
-  return index;
-};
 
 type ProfileProps = {
   profile: Profile;
@@ -52,18 +32,6 @@ const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { profile } = props;
-  const router = useRouter();
-  const { tab }: { tab?: "links" | "testimonials" } = router.query;
-  const [currentTab, setCurrentTab] = useQueryState("tab");
-  const defaultTabIndex = tab ? tabs[tab] || 0 : 0;
-
-  const handleTabsChange: UseTabsProps["onChange"] = (index) => {
-    for (const prop in tabs) {
-      if (tabs.hasOwnProperty(prop) && tabs[prop as keyof typeof tabs] === index) {
-        setCurrentTab(prop);
-      }
-    }
-  };
 
   return (
     <ProfileProvider profile={profile}>
@@ -95,15 +63,7 @@ const ProfilePage: NextPage<ProfileProps> = (
             <Conditional
               condition={profile.testimonials.length > 0}
               component={
-                <Chakra.Tabs
-                  onChange={handleTabsChange}
-                  defaultIndex={defaultTabIndex}
-                  index={getTabIndex(currentTab)}
-                  isLazy
-                  isFitted
-                  colorScheme="brand"
-                  w="full"
-                >
+                <Chakra.Tabs isLazy isFitted colorScheme="brand" w="full">
                   <Chakra.TabList>
                     <Chakra.Tab>Links</Chakra.Tab>
                     <Chakra.Tab>Testimonials</Chakra.Tab>
