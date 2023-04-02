@@ -17,6 +17,39 @@ import type { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 
+function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
+  const { isAccepting } = props;
+  const { mutateAsync, isLoading } = api.testimonial.toggleTestimonialAcceptance.useMutation();
+  const toast = Chakra.useToast();
+  const router = useRouter();
+  const previewContext = usePreviewContext();
+
+  const handleToggle = async () => {
+    try {
+      await mutateAsync();
+      await router.push(router.asPath);
+      previewContext?.reload();
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Chakra.Box>
+      <Chakra.Switch
+        disabled={isLoading}
+        onChange={handleToggle}
+        colorScheme="purple"
+        defaultChecked={isAccepting}
+      >
+        Accepting
+      </Chakra.Switch>
+    </Chakra.Box>
+  );
+}
+
 function ExportAsCSV() {
   const { mutateAsync, isLoading } = api.testimonial.exportAsCSV.useMutation();
   const toast = Chakra.useToast();
@@ -160,7 +193,7 @@ function Testimonial(props: { testimonial: TestimonialType }) {
 const TestimonialsPage: NextPageWithLayout = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const { testimonials } = props;
+  const { testimonials, profile } = props;
   const [sortType, setSortType] = React.useState("");
 
   const sortedTestimonials = React.useMemo(() => {
@@ -180,9 +213,9 @@ const TestimonialsPage: NextPageWithLayout = (
     <Chakra.Box w="full">
       <Chakra.VStack align="start" spacing={5}>
         <Chakra.HStack w="full" align="center" justify="space-between">
-          <Chakra.Heading size="md" color="purple.500">
-            Testimonials
-          </Chakra.Heading>
+          <Chakra.HStack>
+            <ToggleTestimonialAcceptance isAccepting={profile.isAcceptingTestimonials} />
+          </Chakra.HStack>
           <Chakra.HStack align="center">
             <Chakra.Select
               value={sortType}
@@ -220,6 +253,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
       id: true,
       username: true,
       bio: true,
+      isAcceptingTestimonials: true,
     },
   });
 
@@ -232,6 +266,6 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   const testimonials = await TestimonialService.findMany(user.id);
 
   return {
-    props: { testimonials },
+    props: { testimonials, profile: user },
   };
 });

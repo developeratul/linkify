@@ -54,7 +54,7 @@ const ProfilePage: NextPage<ProfileProps> = (
         py={50}
         px={{ base: 3, md: 5 }}
       >
-        <AddTestimonialModal />
+        {profile.isAcceptingTestimonials && <AddTestimonialModal />}
         <Container>
           <Wrapper>
             <ProfileImage />
@@ -109,6 +109,7 @@ export type Profile = {
   bio: string | null;
   image?: string | null;
   profileTitle?: string | null;
+  isAcceptingTestimonials: boolean;
   layout?: ProfileLayout | null;
   theme?: ProfileTheme | null;
   button?: ProfileButton | null;
@@ -131,6 +132,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       bio: true,
       image: true,
       profileTitle: true,
+      isAcceptingTestimonials: true,
       layout: { select: ProfileLayoutSelections },
       theme: { select: ProfileThemeSelections },
       settings: { select: ProfileSettingsSelections },

@@ -10,6 +10,18 @@ const testimonialRouter = createTRPCRouter({
   add: publicProcedure
     .input(testimonialSchema.extend({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: input.userId },
+        select: { isAcceptingTestimonials: true },
+      });
+
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!user.isAcceptingTestimonials)
+        throw new TRPCError({
+          message: "User is not accepting testimonials anymore",
+          code: "FORBIDDEN",
+        });
+
       await ctx.prisma.testimonial.create({
         data: input,
       });
@@ -71,6 +83,29 @@ const testimonialRouter = createTRPCRouter({
     const data = await json2csv(testimonials);
 
     return data;
+  }),
+
+  toggleTestimonialAcceptance: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: userId },
+      select: { isAcceptingTestimonials: true },
+    });
+
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    const updatedUser = await ctx.prisma.user.update({
+      where: { id: userId },
+      data: { isAcceptingTestimonials: !user.isAcceptingTestimonials },
+      select: { isAcceptingTestimonials: true },
+    });
+
+    const message = updatedUser.isAcceptingTestimonials
+      ? "You will receive testimonials"
+      : "You will not receive testimonials anymore";
+
+    return message;
   }),
 });
 

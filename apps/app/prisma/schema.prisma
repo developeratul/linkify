@@ -50,15 +50,16 @@ model VerificationToken {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    username      String?   @unique
-    bio           String?
-    profileTitle  String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    imagePublicId String?
+    id                      String    @id @default(cuid())
+    name                    String?
+    username                String?   @unique
+    bio                     String?
+    profileTitle            String?
+    email                   String?   @unique
+    emailVerified           DateTime?
+    image                   String?
+    imagePublicId           String?
+    isAcceptingTestimonials Boolean   @default(true)
 
     accounts        Account[]
     sessions        Session[]
