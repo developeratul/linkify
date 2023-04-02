@@ -41,4 +41,5 @@ export type Testimonial = {
   rating: number;
   shouldShow: boolean;
   avatar: string | null;
+  createdAt: Date;
 };

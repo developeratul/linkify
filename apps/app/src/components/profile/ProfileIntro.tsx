@@ -1,7 +1,6 @@
 import Rating from "@/components/common/Rating";
 import { useProfileContext } from "@/providers/profile";
 import * as Chakra from "@chakra-ui/react";
-import Link from "next/link";
 import React from "react";
 
 export default function ProfileIntro() {
@@ -30,11 +29,7 @@ export default function ProfileIntro() {
         {profile.bio}
       </Chakra.Text>
       {profile.testimonials.length > 0 && averageRating > 0 && (
-        <Chakra.HStack
-          as={Link}
-          href={{ query: { tab: "testimonials", slug: profile.username } }}
-          align="center"
-        >
+        <Chakra.HStack justify="center" align="center">
           <Rating starDimension="15px" starSpacing="1px" rating={averageRating} />
           <Chakra.Text fontSize="sm">
             {averageRating}{" "}

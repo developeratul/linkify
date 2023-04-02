@@ -13,7 +13,7 @@ import { useToast } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import { Icon } from "components";
 import { saveAs } from "file-saver";
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import type { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -34,14 +34,16 @@ function ExportAsCSV() {
   };
 
   return (
-    <Chakra.Button
-      isLoading={isLoading}
-      onClick={handleClick}
-      colorScheme="purple"
-      leftIcon={<Icon name="Export" />}
-    >
-      Export
-    </Chakra.Button>
+    <Chakra.Box>
+      <Chakra.Button
+        isLoading={isLoading}
+        onClick={handleClick}
+        colorScheme="purple"
+        leftIcon={<Icon name="Export" />}
+      >
+        Export
+      </Chakra.Button>
+    </Chakra.Box>
   );
 }
 
@@ -159,6 +161,17 @@ const TestimonialsPage: NextPageWithLayout = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { testimonials } = props;
+  const [sortType, setSortType] = React.useState("");
+
+  const sortedTestimonials = React.useMemo(() => {
+    if (sortType === "")
+      return testimonials.sort(
+        (a: TestimonialType, b: TestimonialType) => b.createdAt.getTime() - a.createdAt.getTime()
+      );
+    return testimonials.sort(
+      (a: TestimonialType, b: TestimonialType) => a.createdAt.getTime() - b.createdAt.getTime()
+    );
+  }, [sortType, testimonials]);
 
   if (!testimonials.length)
     return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
@@ -170,12 +183,20 @@ const TestimonialsPage: NextPageWithLayout = (
           <Chakra.Heading size="md" color="purple.500">
             Testimonials
           </Chakra.Heading>
-          <Chakra.HStack>
+          <Chakra.HStack align="center">
+            <Chakra.Select
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value)}
+              variant="filled"
+            >
+              <option value="">Latest</option>
+              <option value="oldest">Oldest</option>
+            </Chakra.Select>
             <ExportAsCSV />
           </Chakra.HStack>
         </Chakra.HStack>
         <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, xl: 3 }} spacing={5}>
-          {testimonials.map((testimonial: TestimonialType) => (
+          {sortedTestimonials.map((testimonial: TestimonialType) => (
             <Testimonial key={testimonial.id} testimonial={testimonial} />
           ))}
         </Chakra.SimpleGrid>
@@ -190,7 +211,7 @@ TestimonialsPage.getLayout = (page) => {
 
 export default TestimonialsPage;
 
-export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) => {
+export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
   const user = await prisma?.user.findUnique({

@@ -9,6 +9,7 @@ export const TestimonialSelections = {
   rating: true,
   shouldShow: true,
   avatar: true,
+  createdAt: true,
 } satisfies Prisma.TestimonialSelect;
 
 const TestimonialService = {
