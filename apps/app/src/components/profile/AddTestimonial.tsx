@@ -1,6 +1,7 @@
 import { useProfileContext } from "@/providers/profile";
 import { api } from "@/utils/api";
-import { getContrastColor, lightenColor } from "@/utils/color";
+import { getContrastColor } from "@/utils/color";
+import uploadFile from "@/utils/uploadFile";
 import * as Chakra from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
@@ -23,11 +24,13 @@ type TestimonialSchema = z.infer<typeof testimonialSchema>;
 export default function AddTestimonialModal() {
   const profile = useProfileContext();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const [avatarPublicId, setAvatarPublicId] = React.useState("");
   const [yellow] = Chakra.useToken("colors", ["orange.400"]);
   const { register, setValue, watch, reset, handleSubmit, formState } = useForm<TestimonialSchema>({
     resolver: zodResolver(testimonialSchema),
   });
   const { mutateAsync, isLoading } = api.testimonial.add.useMutation();
+  const { mutateAsync: deleteImage } = api.cloudinary.destroyImage.useMutation();
   const toast = Chakra.useToast();
 
   const closeModal = () => {
@@ -43,9 +46,20 @@ export default function AddTestimonialModal() {
 
   if (profile === undefined) return <></>;
 
-  const buttonBackground = lightenColor(
-    profile.button.buttonBackground || profile.theme.themeColor
-  );
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      if (avatarPublicId) {
+        await deleteImage(avatarPublicId);
+        setAvatarPublicId("");
+      }
+      toast({ status: "info", description: "Uploading..." });
+      const fileObj = e.target.files[0];
+      const uploadData = await uploadFile(fileObj);
+      setValue("avatar", uploadData.secure_url);
+      setAvatarPublicId(uploadData.public_id);
+      toast({ status: "success", description: "Uploaded successfully" });
+    }
+  };
 
   const onSubmit = async (values: TestimonialSchema) => {
     try {
@@ -68,12 +82,9 @@ export default function AddTestimonialModal() {
       >
         <Chakra.IconButton
           onClick={onOpen}
+          colorScheme="brand"
           aria-label="Add testimonial"
           icon={<Icon name="Testimonial" />}
-          background={buttonBackground}
-          color={getContrastColor(buttonBackground)}
-          _hover={{}}
-          _active={{}}
           shadow="md"
         />
       </Chakra.Tooltip>
@@ -89,6 +100,19 @@ export default function AddTestimonialModal() {
               onSubmit={handleSubmit(onSubmit)}
               spacing={10}
             >
+              <Chakra.FormControl justifyContent="center" display="grid">
+                <Chakra.Tooltip hasArrow label="Upload avatar">
+                  <Chakra.Box display="block" as="label">
+                    <Chakra.Avatar
+                      name={watch("name")}
+                      src={watch("avatar")}
+                      cursor="pointer"
+                      size="lg"
+                    />
+                    <input onChange={handleAvatarUpload} type="file" hidden accept="image/*" />
+                  </Chakra.Box>
+                </Chakra.Tooltip>
+              </Chakra.FormControl>
               <Chakra.FormControl isRequired isInvalid={!!formState.errors.name}>
                 <Chakra.FormLabel>Your name</Chakra.FormLabel>
                 <Chakra.Input {...register("name")} />
