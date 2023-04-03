@@ -1,12 +1,44 @@
 import { testimonialSchema } from "@/components/profile/AddTestimonial";
 import { authorizeAuthor } from "@/helpers/auth";
-import TestimonialService from "@/services/testimonial";
+import TestimonialService, { TestimonialSelections } from "@/services/testimonial";
 import { TRPCError } from "@trpc/server";
 import { json2csv } from "json-2-csv";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const testimonialRouter = createTRPCRouter({
+  findMany: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100),
+        cursor: z.any().nullish(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { cursor, limit } = input;
+
+      const user = await prisma?.user.findUnique({ where: { id: ctx.session.user.id } });
+
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const testimonials = await ctx.prisma.testimonial.findMany({
+        where: { userId: ctx.session.user.id },
+        select: TestimonialSelections,
+        orderBy: { createdAt: "desc" },
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (testimonials.length > limit) {
+        const nextItem = testimonials.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return { testimonials, nextCursor };
+    }),
+
   add: publicProcedure
     .input(testimonialSchema.extend({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {

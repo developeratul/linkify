@@ -1,15 +1,14 @@
-import { EmptyMessage } from "@/components/app/common/Message";
+import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
+import Loader from "@/components/common/Loader";
 import Rating from "@/components/common/Rating";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { usePreviewContext } from "@/providers/preview";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
-import TestimonialService from "@/services/testimonial";
 import type { Testimonial as TestimonialType } from "@/types";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import { Icon } from "components";
 import { saveAs } from "file-saver";
@@ -85,7 +84,7 @@ function DeleteTestimonial(props: { testimonialId: string }) {
   const { isLoading, mutateAsync } = api.testimonial.deleteOne.useMutation();
   const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
-  const toast = useToast();
+  const toast = Chakra.useToast();
   const router = useRouter();
   const previewContext = usePreviewContext();
 
@@ -144,7 +143,7 @@ function DeleteTestimonial(props: { testimonialId: string }) {
 function Testimonial(props: { testimonial: TestimonialType }) {
   const { testimonial } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleShow.useMutation();
-  const toast = useToast();
+  const toast = Chakra.useToast();
   const router = useRouter();
   const previewContext = usePreviewContext();
 
@@ -193,28 +192,37 @@ function Testimonial(props: { testimonial: TestimonialType }) {
 const TestimonialsPage: NextPageWithLayout = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const { testimonials, profile } = props;
+  const { isAcceptingTestimonials, totalTestimonials } = props;
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    api.testimonial.findMany.useInfiniteQuery(
+      { limit: 12 },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    );
   const [sortType, setSortType] = React.useState("");
 
-  const sortedTestimonials = React.useMemo(() => {
-    if (sortType === "")
-      return testimonials.sort(
-        (a: TestimonialType, b: TestimonialType) => b.createdAt.getTime() - a.createdAt.getTime()
-      );
-    return testimonials.sort(
-      (a: TestimonialType, b: TestimonialType) => a.createdAt.getTime() - b.createdAt.getTime()
-    );
-  }, [sortType, testimonials]);
+  // const sortedTestimonials = React.useMemo(() => {
+  //   return
+  //   // if (sortType === "")
+  //   //   return testimonials.sort(
+  //   //     (a: TestimonialType, b: TestimonialType) => b.createdAt.getTime() - a.createdAt.getTime()
+  //   //   );
+  //   // return testimonials.sort(
+  //   //   (a: TestimonialType, b: TestimonialType) => a.createdAt.getTime() - b.createdAt.getTime()
+  //   // );
+  // }, [sortType, testimonials]);
 
-  if (!testimonials.length)
+  if (isLoading) return <Loader />;
+  if (isError) return <ErrorMessage description={error.message} />;
+  if (!data.pages.length)
     return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
 
   return (
     <Chakra.Box w="full">
       <Chakra.VStack align="start" spacing={5}>
         <Chakra.HStack w="full" align="center" justify="space-between">
-          <Chakra.HStack>
-            <ToggleTestimonialAcceptance isAccepting={profile.isAcceptingTestimonials} />
+          <Chakra.HStack align="center" spacing={3}>
+            <ToggleTestimonialAcceptance isAccepting={isAcceptingTestimonials} />
+            <Chakra.Text>({totalTestimonials})</Chakra.Text>
           </Chakra.HStack>
           <Chakra.HStack align="center">
             <Chakra.Select
@@ -228,11 +236,26 @@ const TestimonialsPage: NextPageWithLayout = (
             <ExportAsCSV />
           </Chakra.HStack>
         </Chakra.HStack>
-        <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, xl: 3 }} spacing={5}>
-          {sortedTestimonials.map((testimonial: TestimonialType) => (
-            <Testimonial key={testimonial.id} testimonial={testimonial} />
-          ))}
+        <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, "2xl": 3 }} spacing={5}>
+          {data.pages.map((page) =>
+            page.testimonials.map((testimonial) => (
+              <Testimonial key={testimonial.id} testimonial={testimonial} />
+            ))
+          )}
         </Chakra.SimpleGrid>
+        {hasNextPage && (
+          <Chakra.Stack justify="center" align="center" w="full">
+            <Chakra.Button
+              w="full"
+              maxW="md"
+              isLoading={isFetchingNextPage}
+              onClick={() => fetchNextPage()}
+              colorScheme="purple"
+            >
+              Load more
+            </Chakra.Button>
+          </Chakra.Stack>
+        )}
       </Chakra.VStack>
     </Chakra.Box>
   );
@@ -249,12 +272,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 
   const user = await prisma?.user.findUnique({
     where: { id: session?.user?.id },
-    select: {
-      id: true,
-      username: true,
-      bio: true,
-      isAcceptingTestimonials: true,
-    },
+    include: { _count: { select: { testimonials: true } } },
   });
 
   if (!user?.username || !user?.bio) {
@@ -263,9 +281,10 @@ export const getServerSideProps = requireAuth(async (ctx) => {
     };
   }
 
-  const testimonials = await TestimonialService.findMany(user.id);
-
   return {
-    props: { testimonials, profile: user },
+    props: {
+      isAcceptingTestimonials: user.isAcceptingTestimonials,
+      totalTestimonials: user._count.testimonials,
+    },
   };
 });
