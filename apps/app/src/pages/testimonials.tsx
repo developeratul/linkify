@@ -200,16 +200,16 @@ const TestimonialsPage: NextPageWithLayout = (
     );
   const [sortType, setSortType] = React.useState("");
 
-  // const sortedTestimonials = React.useMemo(() => {
-  //   return
-  //   // if (sortType === "")
-  //   //   return testimonials.sort(
-  //   //     (a: TestimonialType, b: TestimonialType) => b.createdAt.getTime() - a.createdAt.getTime()
-  //   //   );
-  //   // return testimonials.sort(
-  //   //   (a: TestimonialType, b: TestimonialType) => a.createdAt.getTime() - b.createdAt.getTime()
-  //   // );
-  // }, [sortType, testimonials]);
+  const testimonials = data?.pages
+    .map((page) => page.testimonials.map((testimonial) => testimonial))
+    .flat();
+
+  const sortedTestimonials = React.useMemo(() => {
+    if (sortType === "") {
+      return testimonials?.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    }
+    return testimonials?.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  }, [sortType, testimonials]);
 
   if (isLoading) return <Loader />;
   if (isError) return <ErrorMessage description={error.message} />;
@@ -237,11 +237,9 @@ const TestimonialsPage: NextPageWithLayout = (
           </Chakra.HStack>
         </Chakra.HStack>
         <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, "2xl": 3 }} spacing={5}>
-          {data.pages.map((page) =>
-            page.testimonials.map((testimonial) => (
-              <Testimonial key={testimonial.id} testimonial={testimonial} />
-            ))
-          )}
+          {sortedTestimonials?.map((testimonial) => (
+            <Testimonial key={testimonial.id} testimonial={testimonial} />
+          ))}
         </Chakra.SimpleGrid>
         {hasNextPage && (
           <Chakra.Stack justify="center" align="center" w="full">
