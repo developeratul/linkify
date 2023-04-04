@@ -20,13 +20,13 @@ function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
   const { isAccepting } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleTestimonialAcceptance.useMutation();
   const toast = Chakra.useToast();
-  const router = useRouter();
   const previewContext = usePreviewContext();
+  const utils = api.useContext();
 
   const handleToggle = async () => {
     try {
       await mutateAsync();
-      await router.push(router.asPath);
+      await utils.testimonial.findMany.invalidate();
       previewContext?.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -87,10 +87,12 @@ function DeleteTestimonial(props: { testimonialId: string }) {
   const toast = Chakra.useToast();
   const router = useRouter();
   const previewContext = usePreviewContext();
+  const utils = api.useContext();
 
   const handleClick = async () => {
     try {
       await mutateAsync(testimonialId);
+      await utils.testimonial.findMany.invalidate();
       router.push(router.asPath);
       previewContext?.reload();
       onClose();
@@ -144,13 +146,13 @@ function Testimonial(props: { testimonial: TestimonialType }) {
   const { testimonial } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleShow.useMutation();
   const toast = Chakra.useToast();
-  const router = useRouter();
   const previewContext = usePreviewContext();
+  const utils = api.useContext();
 
   const handleToggleTestimonialShow = async () => {
     try {
       await mutateAsync(testimonial.id);
-      router.push(router.asPath);
+      await utils.testimonial.findMany.invalidate();
       previewContext?.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
