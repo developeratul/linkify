@@ -1,6 +1,7 @@
 import type { AppProps } from "@/types";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
+import type { IconNames } from "components";
 import { Icon } from "components";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -27,44 +28,86 @@ function LinkButton(props: AppProps & { icon: React.ReactElement; to: string }) 
   );
 }
 
+type AppBarLink = {
+  label: string;
+  to: string;
+  icon: IconNames;
+};
+
+const links: AppBarLink[] = [
+  { label: "Links", to: "/", icon: "Link" },
+  { label: "Appearance", to: "/appearance", icon: "Appearance" },
+  { label: "Analytics", to: "/analytics", icon: "Analytics" },
+  { label: "Settings", to: "/settings", icon: "Settings" },
+  { label: "Testimonials", to: "/testimonials", icon: "Testimonial" },
+  { label: "Form", to: "/form", icon: "Form" },
+];
+
 export default function AppBar() {
-  const links = (
-    <>
-      <LinkButton to="/" icon={<Icon name="Link" />}>
-        Links
-      </LinkButton>
-      <LinkButton to="/appearance" icon={<Icon name="Appearance" />}>
-        Appearance
-      </LinkButton>
-      <LinkButton to="/settings" icon={<Icon name="Settings" />}>
-        Settings
-      </LinkButton>
-      <LinkButton to="/testimonials" icon={<Icon name="Testimonial" />}>
-        Testimonials
-      </LinkButton>
-      <LinkButton to="/form" icon={<Icon name="Form" />}>
-        Form
-      </LinkButton>
-    </>
-  );
+  const visibleLinks = links.slice(0, 3);
+  const menuLinks = links.slice(3, links.length);
   return (
     <Chakra.Box zIndex="sticky" p={3} className="sticky left-0 top-0 h-24">
       <Chakra.Card bg="white" size="sm" rounded="full" height="full">
         <Chakra.CardBody className="flex items-center justify-between">
-          <Chakra.HStack spacing={{ base: "2", sm: "10" }}>
+          <Chakra.HStack spacing={{ base: "2", md: "14" }}>
             <Chakra.Box>
               <Logo />
             </Chakra.Box>
             <Chakra.Show above="md">
-              <Chakra.HStack>{links}</Chakra.HStack>
+              <Chakra.HStack>
+                {visibleLinks.map((link) => (
+                  <LinkButton to={link.to} key={link.label} icon={<Icon name={link.icon} />}>
+                    {link.label}
+                  </LinkButton>
+                ))}
+                <Chakra.Menu isLazy>
+                  <Chakra.MenuButton>
+                    <Chakra.IconButton
+                      size="sm"
+                      variant="outline"
+                      colorScheme="purple"
+                      icon={<Icon name="Menu" />}
+                      aria-label="Menu"
+                    />
+                  </Chakra.MenuButton>
+                  <Chakra.MenuList>
+                    {menuLinks.map((link) => (
+                      <Chakra.MenuItem
+                        key={link.label}
+                        as={Link}
+                        href={link.to}
+                        icon={<Icon name={link.icon} />}
+                      >
+                        {link.label}
+                      </Chakra.MenuItem>
+                    ))}
+                  </Chakra.MenuList>
+                </Chakra.Menu>
+              </Chakra.HStack>
             </Chakra.Show>
             <Chakra.Show below="md">
-              <Chakra.Menu>
+              <Chakra.Menu isLazy>
                 <Chakra.MenuButton as="div">
-                  <Chakra.IconButton icon={<Icon name="Menu" />} aria-label="Links" />
+                  <Chakra.IconButton
+                    size="sm"
+                    variant="outline"
+                    colorScheme="purple"
+                    icon={<Icon name="Menu" />}
+                    aria-label="Links"
+                  />
                 </Chakra.MenuButton>
                 <Chakra.MenuList>
-                  <Chakra.VStack align="start">{links}</Chakra.VStack>
+                  {links.map((link) => (
+                    <Chakra.MenuItem
+                      href={link.to}
+                      as={Link}
+                      icon={<Icon name={link.icon} />}
+                      key={link.label}
+                    >
+                      {link.label}
+                    </Chakra.MenuItem>
+                  ))}
                 </Chakra.MenuList>
               </Chakra.Menu>
             </Chakra.Show>
