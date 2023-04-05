@@ -1,6 +1,6 @@
 import type { ButtonProps } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
-import { SocialIcon } from "components";
+import { TablerIcon } from "components";
 
 export default function SupportUsButton(props: ButtonProps) {
   const { colorScheme = "purple", ...restProps } = props;
@@ -11,7 +11,7 @@ export default function SupportUsButton(props: ButtonProps) {
       as="a"
       href="https://www.buymeacoffee.com/Linkify"
       target="_blank"
-      leftIcon={<SocialIcon name="IconCup" />}
+      leftIcon={<TablerIcon name="IconCup" />}
     >
       Support us
     </Button>
