@@ -31,7 +31,6 @@ import { z } from "zod";
 export const themeSchema = z.object({
   themeColor: z.string().optional(),
   foreground: z.string().optional(),
-  grayColor: z.string().optional(),
   bodyBackgroundType: z.enum(["COLOR", "IMAGE"]),
   bodyBackgroundColor: z.string().optional().nullable(),
   bodyBackgroundImage: z.string().optional().nullable(),
@@ -59,10 +58,13 @@ const fonts = [
 ];
 
 export default function CustomThemeEditor() {
-  const [bodyBackgroundColor, cardBackgroundColor, themeColor, foreground, grayColor] = useToken(
-    "colors",
-    ["purple.50", "purple.100", "purple.500", "gray.600", "gray.300"]
-  );
+  const [bodyBackgroundColor, cardBackgroundColor, themeColor, foreground] = useToken("colors", [
+    "purple.50",
+    "purple.100",
+    "purple.500",
+    "gray.600",
+    "gray.300",
+  ]);
   const toast = Chakra.useToast();
 
   const { register, watch, setValue, handleSubmit } = useForm<ThemeSchema>({
@@ -74,7 +76,6 @@ export default function CustomThemeEditor() {
       bodyBackgroundColor,
       bodyBackgroundImage: null,
       cardBackgroundColor,
-      grayColor,
     },
   });
 
@@ -90,7 +91,6 @@ export default function CustomThemeEditor() {
             "bodyBackgroundImage",
             "bodyBackgroundImagePublicId",
             "cardBackgroundColor",
-            "grayColor",
             "font"
           ]
         ).map((key) => {
@@ -202,12 +202,6 @@ export default function CustomThemeEditor() {
         helperText="The text color throughout your profile"
         value={watch("foreground") || ""}
         onChange={(newColor) => setValue("foreground", newColor.hex)}
-      />
-      <ColorInput
-        label="Low contrast text color"
-        helperText="Color of the texts that will have low priority"
-        value={watch("grayColor") || ""}
-        onChange={(newColor) => setValue("grayColor", newColor.hex)}
       />
       <Chakra.FormControl>
         <Chakra.FormLabel>Font</Chakra.FormLabel>

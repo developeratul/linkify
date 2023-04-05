@@ -6,7 +6,6 @@ export type Theme = {
   name: string;
   themeColor: string;
   foreground: string;
-  grayColor: string;
   bodyBackgroundType: BackgroundType;
   bodyBackgroundColor?: string | null;
   bodyBackgroundImage?: string | null;
@@ -20,7 +19,6 @@ export const themes: Record<string, Theme> = {
     name: "Dracula",
     themeColor: "#9580FF",
     foreground: "#F8F8F2",
-    grayColor: "#7970A9",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#22212C",
     bodyBackgroundImage: null,
@@ -32,7 +30,6 @@ export const themes: Record<string, Theme> = {
     name: "Night Owl",
     themeColor: "#C792EA",
     foreground: "#D6DEEB",
-    grayColor: "#637777",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#011627",
     bodyBackgroundImage: null,
@@ -44,7 +41,6 @@ export const themes: Record<string, Theme> = {
     name: "Shades of purple",
     themeColor: "#FAD000",
     foreground: "#A599E9",
-    grayColor: "#B362FF",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#2D2B55",
     bodyBackgroundImage: null,
@@ -56,7 +52,6 @@ export const themes: Record<string, Theme> = {
     name: "Mirage",
     themeColor: "#FFAD66",
     foreground: "#CCCAC2",
-    grayColor: "#B8CFE6",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#1F2430",
     bodyBackgroundImage: null,
@@ -68,7 +63,6 @@ export const themes: Record<string, Theme> = {
     name: "Cobalt",
     themeColor: "#FF9D00",
     foreground: "#FFFFFF",
-    grayColor: "#0088FF",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#193549",
     bodyBackgroundImage: null,
@@ -80,7 +74,6 @@ export const themes: Record<string, Theme> = {
     name: "Tokyo Night",
     themeColor: "#7DCFFF",
     foreground: "#C0CAF5",
-    grayColor: "#444B6A",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#1A1B26",
     bodyBackgroundImage: null,
@@ -92,7 +85,6 @@ export const themes: Record<string, Theme> = {
     name: "Winter is coming",
     themeColor: "#00BFF9",
     foreground: "#D6DEEB",
-    grayColor: "#999999",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#011627",
     bodyBackgroundImage: null,
@@ -104,7 +96,6 @@ export const themes: Record<string, Theme> = {
     name: "SynthWave",
     themeColor: "#FF7EDB",
     foreground: "#BBBBBB",
-    grayColor: "#848BBD",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#262335",
     bodyBackgroundImage: null,
@@ -116,7 +107,6 @@ export const themes: Record<string, Theme> = {
     name: "Bluloco",
     themeColor: "#D52753",
     foreground: "#383A42",
-    grayColor: "#A0A1A7",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#F9F9F9",
     bodyBackgroundImage: null,
@@ -128,7 +118,6 @@ export const themes: Record<string, Theme> = {
     name: "2077",
     themeColor: "#FF2E97",
     foreground: "#FFD400",
-    grayColor: "#0098DF",
     bodyBackgroundType: "COLOR",
     bodyBackgroundColor: "#030D22",
     bodyBackgroundImage: null,
@@ -144,11 +133,10 @@ export const getRawTheme = (theme: Theme) => {
 };
 
 export const useDefaultProfileTheme = () => {
-  const [purple50, purple100, purple500, gray300, gray600] = useToken("colors", [
+  const [purple50, purple100, purple500, gray600] = useToken("colors", [
     "purple.50",
     "purple.100",
     "purple.500",
-    "gray.300",
     "gray.600",
   ]);
 
@@ -156,7 +144,6 @@ export const useDefaultProfileTheme = () => {
     bodyBackgroundColor: purple50,
     cardBackgroundColor: purple100,
     themeColor: purple500,
-    grayColor: gray300,
     foreground: gray600,
     bodyBackgroundImage: null,
     bodyBackgroundType: "COLOR" as BackgroundType,

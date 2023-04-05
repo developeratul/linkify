@@ -18,17 +18,11 @@ import React from "react";
 type InitialState = Omit<Profile, "theme" | "layout" | "button" | "settings"> & {
   theme: Omit<
     ProfileTheme,
-    | "font"
-    | "bodyBackgroundColor"
-    | "cardBackgroundColor"
-    | "themeColor"
-    | "grayColor"
-    | "foreground"
+    "font" | "bodyBackgroundColor" | "cardBackgroundColor" | "themeColor" | "foreground"
   > & {
     bodyBackgroundColor: string;
     cardBackgroundColor: string;
     themeColor: string;
-    grayColor: string;
     foreground: string;
     font: NextFont;
   };
@@ -65,7 +59,6 @@ export default function ProfileProvider(props: ProfileProviderProps) {
       cardShadow: profile.theme?.cardShadow || defaultTheme.cardShadow,
       font,
       foreground: profile.theme?.foreground || defaultTheme.foreground,
-      grayColor: profile.theme?.grayColor || defaultTheme.grayColor,
       themeColor: profile.theme?.themeColor || defaultTheme.themeColor,
     },
     button: profile.button || {
@@ -83,7 +76,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
     fonts: { body: font.style.fontFamily, heading: font.style.fontFamily },
     colors: {
       brand: generatePalette(value.theme.themeColor),
-      gray: generatePalette(value.theme.grayColor),
+      gray: generatePalette(value.theme.bodyBackgroundColor),
     },
     styles: {
       global: {

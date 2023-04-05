@@ -164,7 +164,6 @@ model Theme {
     bodyBackgroundImagePublicId String?
     cardBackgroundColor         String?
     themeColor                  String?
-    grayColor                   String?
     foreground                  String?
     cardShadow                  CardShadow     @default(none)
     font                        String?
