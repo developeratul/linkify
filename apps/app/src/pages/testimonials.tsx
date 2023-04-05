@@ -191,37 +191,37 @@ function Testimonial(props: { testimonial: TestimonialType }) {
   );
 }
 
+type SortType = "desc" | "asc";
+
 const TestimonialsPage: NextPageWithLayout = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { isAcceptingTestimonials, totalTestimonials } = props;
+  const [sortType, setSortType] = React.useState<SortType>("desc");
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     api.testimonial.findMany.useInfiniteQuery(
-      { limit: 12 },
+      { limit: 12, orderBy: sortType },
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
-  const [sortType, setSortType] = React.useState("");
-
-  const testimonials = data?.pages
-    .map((page) => page.testimonials.map((testimonial) => testimonial))
-    .flat();
-
-  const sortedTestimonials = React.useMemo(() => {
-    if (sortType === "") {
-      return testimonials?.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-    }
-    return testimonials?.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-  }, [sortType, testimonials]);
 
   if (isLoading) return <Loader />;
   if (isError) return <ErrorMessage description={error.message} />;
   if (!data.pages.length)
     return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
 
+  const testimonials = data.pages
+    .map((page) => page.testimonials.map((testimonial) => testimonial))
+    .flat();
+
   return (
     <Chakra.Box w="full">
       <Chakra.VStack align="start" spacing={5}>
-        <Chakra.HStack w="full" align="center" justify="space-between">
+        <Chakra.Stack
+          w="full"
+          spacing={5}
+          flexDir={{ base: "column", sm: "row", md: "column", lg: "row" }}
+          justify={{ base: "stretch", sm: "space-between", md: "stretch", lg: "space-between" }}
+        >
           <Chakra.HStack align="center" spacing={3}>
             <ToggleTestimonialAcceptance isAccepting={isAcceptingTestimonials} />
             <Chakra.Text>({totalTestimonials})</Chakra.Text>
@@ -229,17 +229,21 @@ const TestimonialsPage: NextPageWithLayout = (
           <Chakra.HStack align="center">
             <Chakra.Select
               value={sortType}
-              onChange={(e) => setSortType(e.target.value)}
+              onChange={(e) => setSortType(e.target.value as SortType)}
               variant="filled"
             >
-              <option value="">Latest</option>
-              <option value="oldest">Oldest</option>
+              <option value="desc">Latest</option>
+              <option value="asc">Oldest</option>
             </Chakra.Select>
             <ExportAsCSV />
           </Chakra.HStack>
-        </Chakra.HStack>
-        <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, "2xl": 3 }} spacing={5}>
-          {sortedTestimonials?.map((testimonial) => (
+        </Chakra.Stack>
+        <Chakra.SimpleGrid
+          w="full"
+          columns={{ base: 1, sm: 2, md: 1, lg: 2, "2xl": 3 }}
+          spacing={5}
+        >
+          {testimonials.map((testimonial) => (
             <Testimonial key={testimonial.id} testimonial={testimonial} />
           ))}
         </Chakra.SimpleGrid>

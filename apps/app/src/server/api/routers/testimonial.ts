@@ -11,11 +11,12 @@ const testimonialRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(100),
+        orderBy: z.enum(["desc", "asc"]).default("desc"),
         cursor: z.any().nullish(),
       })
     )
     .query(async ({ input, ctx }) => {
-      const { cursor, limit } = input;
+      const { cursor, limit, orderBy = "desc" } = input;
 
       const user = await prisma?.user.findUnique({ where: { id: ctx.session.user.id } });
 
@@ -24,7 +25,7 @@ const testimonialRouter = createTRPCRouter({
       const testimonials = await ctx.prisma.testimonial.findMany({
         where: { userId: ctx.session.user.id },
         select: TestimonialSelections,
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: orderBy },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
       });
