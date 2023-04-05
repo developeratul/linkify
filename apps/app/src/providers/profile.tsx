@@ -1,5 +1,5 @@
 import { useDefaultProfileTheme } from "@/components/app/appearance/Theme/themes";
-import { defaultFont, DEFAULT_FONT_NAME, fonts } from "@/fonts/profile";
+import { DEFAULT_FONT_NAME, defaultFont, fonts } from "@/fonts/profile";
 import type {
   Profile,
   ProfileButton,
@@ -9,6 +9,8 @@ import type {
 } from "@/pages/[slug]";
 import { getColorMode } from "@/utils/color";
 import { ChakraProvider, ColorModeProvider, extendTheme } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import type { NextFont } from "next/dist/compiled/@next/font";
 import { generatePalette } from "palette-by-numbers";
 import React from "react";
@@ -88,6 +90,12 @@ export default function ProfileProvider(props: ProfileProviderProps) {
         body: { color: value.theme.foreground },
       },
     },
+  });
+
+  // capture page view
+  useQuery({
+    queryKey: ["capture-page-view", value.id],
+    queryFn: ({ queryKey }) => axios.post("/api/analytics", { userId: queryKey[1] }),
   });
 
   return (
