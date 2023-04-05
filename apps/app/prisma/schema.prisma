@@ -68,12 +68,31 @@ model User {
     socialLinks     SocialLink[]
     testimonials    Testimonial[]
     formSubmissions FormSubmission[]
+    analytics       Analytics[]
 
     layout   Layout?
     theme    Theme?
     button   Button?
     settings Settings?
     form     Form?
+}
+
+model Analytics {
+    id          String   @id @default(cuid())
+    event       Events
+    fromCountry String?
+    fromBrowser String?
+    user        User     @relation(fields: [userId], references: [id])
+    userId      String
+    createdAt   DateTime @default(now())
+
+    @@index([userId])
+}
+
+enum Events {
+    CLICK
+    VIEW
+    UNIQUE_VIEW
 }
 
 model Form {

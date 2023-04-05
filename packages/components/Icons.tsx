@@ -7,6 +7,7 @@ import {
   GripVertical,
   ImageIcon,
   LayoutTemplate,
+  LineChart,
   Link,
   LogOut,
   Menu,
@@ -46,9 +47,12 @@ export const icons = {
   CustomTheme: Wand2,
   Form: Send,
   Export: Download,
+  Analytics: LineChart,
 };
 
-export function Icon(props: { size?: number; name: keyof typeof icons }) {
+export type IconNames = keyof typeof icons;
+
+export function Icon(props: { size?: number; name: IconNames }) {
   const { size = 16, name } = props;
   const IconElement = icons[name];
   return <IconElement size={size} />;

@@ -22,7 +22,9 @@ import { TestimonialSelections } from "@/services/testimonial";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
 import * as Chakra from "@chakra-ui/react";
 import type { Button, Form, Layout, Settings, Theme } from "@prisma/client";
+import axios from "axios";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
+import React from "react";
 
 type ProfileProps = {
   profile: Profile;
@@ -32,6 +34,19 @@ const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { profile } = props;
+
+  const capturePageView = async () => {
+    try {
+      const res = await axios.post("/api/analytics", { userId: profile.id });
+      console.log({ res });
+    } catch (err) {
+      //
+    }
+  };
+
+  React.useEffect(() => {
+    capturePageView();
+  }, []);
 
   return (
     <ProfileProvider profile={profile}>
