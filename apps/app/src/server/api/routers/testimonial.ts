@@ -1,6 +1,6 @@
 import { testimonialSchema } from "@/components/profile/AddTestimonial";
 import { authorizeAuthor } from "@/helpers/auth";
-import TestimonialService, { TestimonialSelections } from "@/services/testimonial";
+import TestimonialService from "@/services/testimonial";
 import { TRPCError } from "@trpc/server";
 import { json2csv } from "json-2-csv";
 import { z } from "zod";
@@ -17,14 +17,14 @@ const testimonialRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }) => {
       const { cursor, limit, orderBy = "desc" } = input;
+      const userId = ctx.session.user.id;
 
-      const user = await prisma?.user.findUnique({ where: { id: ctx.session.user.id } });
+      const user = await ctx.prisma.user.findUnique({ where: { id: userId } });
 
       if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
       const testimonials = await ctx.prisma.testimonial.findMany({
-        where: { userId: ctx.session.user.id },
-        select: TestimonialSelections,
+        where: { userId: userId },
         orderBy: { createdAt: orderBy },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,

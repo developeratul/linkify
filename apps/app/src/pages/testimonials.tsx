@@ -206,12 +206,13 @@ const TestimonialsPage: NextPageWithLayout = (
 
   if (isLoading) return <Loader />;
   if (isError) return <ErrorMessage description={error.message} />;
-  if (!data.pages.length)
-    return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
 
   const testimonials = data.pages
     .map((page) => page.testimonials.map((testimonial) => testimonial))
     .flat();
+
+  if (!testimonials.length)
+    return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
 
   return (
     <Chakra.Box w="full">
@@ -250,8 +251,7 @@ const TestimonialsPage: NextPageWithLayout = (
         {hasNextPage && (
           <Chakra.Stack justify="center" align="center" w="full">
             <Chakra.Button
-              w="full"
-              maxW="md"
+              size="sm"
               isLoading={isFetchingNextPage}
               onClick={() => fetchNextPage()}
               colorScheme="purple"

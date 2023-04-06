@@ -5,6 +5,39 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const formRouter = createTRPCRouter({
+  findMany: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100),
+        orderBy: z.enum(["desc", "asc"]).default("desc"),
+        cursor: z.any().nullish(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { cursor, limit, orderBy = "desc" } = input;
+      const userId = ctx.session.user.id;
+
+      const user = await ctx.prisma.user.findUnique({ where: { id: userId } });
+
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const submissions = await ctx.prisma.formSubmission.findMany({
+        where: { userId: userId },
+        orderBy: { sentAt: orderBy },
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (submissions.length > limit) {
+        const nextItem = submissions.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return { submissions, nextCursor };
+    }),
+
   enableFormToggle: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
