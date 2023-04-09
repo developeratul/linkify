@@ -23,6 +23,9 @@ export const serverSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
+  LEMON_SQUEEZY_API_KEY: z.string(),
+  LEMON_SQUEEZY_STORE_ID: z.string(),
+  LEMONS_SQUEEZY_SIGNATURE_SECRET: z.string(),
 });
 
 /**
