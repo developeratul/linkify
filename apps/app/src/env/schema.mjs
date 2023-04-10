@@ -26,6 +26,7 @@ export const serverSchema = z.object({
   LEMON_SQUEEZY_API_KEY: z.string(),
   LEMON_SQUEEZY_STORE_ID: z.string(),
   LEMONS_SQUEEZY_SIGNATURE_SECRET: z.string(),
+  LEMONS_SQUEEZY_PRODUCT_ID: z.string(),
 });
 
 /**

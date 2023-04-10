@@ -5,7 +5,11 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "dependencies": {
+    "@chakra-ui/react": "^2.5.5",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@tabler/icons-react": "^2.12.0",
+    "framer-motion": "^10.11.2",
     "lucide-react": "^0.129.0"
   },
   "devDependencies": {

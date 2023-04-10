@@ -1,4 +1,5 @@
 import type { AppProps } from "@/types";
+import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import type { IconNames } from "components";
@@ -65,6 +66,7 @@ export default function AppBar() {
                   <Chakra.MenuButton>
                     <Chakra.IconButton
                       size="sm"
+                      as="span"
                       variant="outline"
                       colorScheme="purple"
                       icon={<Icon name="Menu" />}
@@ -91,6 +93,7 @@ export default function AppBar() {
                 <Chakra.MenuButton as="div">
                   <Chakra.IconButton
                     size="sm"
+                    as="span"
                     variant="outline"
                     colorScheme="purple"
                     icon={<Icon name="Menu" />}
@@ -124,13 +127,18 @@ export default function AppBar() {
 
 export function AppMenu() {
   const { data } = useSession();
+  const { data: subscription } = api.payment.getSubscription.useQuery();
   return (
     <Chakra.Menu>
       <Chakra.MenuButton>
         <Chakra.Avatar
           src={data?.user?.image as string}
           name={(data?.user?.name || data?.user?.username) as string}
-        />
+        >
+          {subscription?.isPro ? (
+            <Chakra.AvatarBadge boxSize="1.25rem" placement="top-end" bg="purple.500" />
+          ) : null}
+        </Chakra.Avatar>
       </Chakra.MenuButton>
       <Chakra.MenuList>
         <Chakra.MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>

@@ -69,10 +69,7 @@ export default function UseCase() {
           </Chakra.VStack>
         </Chakra.VStack>
         <Chakra.Box w="full" maxW="md">
-          <Image
-            src={(UseCaseImage as StaticImageData).src}
-            alt="Linkify usecase"
-          />
+          <Image src={UseCaseImage as StaticImageData} alt="Linkify usecase" />
         </Chakra.Box>
       </Chakra.HStack>
     </SectionWrapper>
