@@ -79,16 +79,6 @@ export function Link(props: LinkProps) {
             </Chakra.HStack>
 
             <Chakra.HStack spacing={3}>
-              <Chakra.Tooltip label="Clicks">
-                <Chakra.HStack
-                  display={{ base: "none", sm: "flex" }}
-                  align="center"
-                  color={link.hidden ? "gray.600" : "purple.600"}
-                >
-                  <Chakra.Text fontWeight="medium">{link.clickCount}</Chakra.Text>
-                  <Icon name="Click" />
-                </Chakra.HStack>
-              </Chakra.Tooltip>
               <Chakra.Tooltip label="Drag n drop link">
                 <Chakra.IconButton
                   size={{ base: "xs" }}

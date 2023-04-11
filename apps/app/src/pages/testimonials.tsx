@@ -1,6 +1,7 @@
 import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
 import Loader from "@/components/common/Loader";
 import Rating from "@/components/common/Rating";
+import UpgradeButton from "@/components/common/UpgradeButton";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { usePreviewContext } from "@/providers/preview";
@@ -33,8 +34,11 @@ function LimitExceededAlert() {
   return (
     <Chakra.Alert status="warning">
       <Chakra.AlertIcon />
-      <Chakra.AlertTitle>Attention</Chakra.AlertTitle>
-      <Chakra.AlertDescription>{hasExceededMessage}</Chakra.AlertDescription>
+      <Chakra.Box flex={1}>
+        <Chakra.AlertTitle>Attention</Chakra.AlertTitle>
+        <Chakra.AlertDescription>{hasExceededMessage}</Chakra.AlertDescription>
+      </Chakra.Box>
+      <UpgradeButton variant="outline" colorScheme="orange" />
     </Chakra.Alert>
   );
 }

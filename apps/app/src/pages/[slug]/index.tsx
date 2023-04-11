@@ -143,7 +143,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
           name: true,
           links: {
             where: { hidden: false },
-            select: { ...LinkSelections, hidden: false, clickCount: false },
+            select: { ...LinkSelections, hidden: false },
             orderBy: { index: "asc" },
           },
         },

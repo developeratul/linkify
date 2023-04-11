@@ -7,14 +7,13 @@ import cloudinary from "@/utils/cloudinary";
 import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const LinkSelections = {
   id: true,
   text: true,
   url: true,
   thumbnail: true,
-  clickCount: true,
   hidden: true,
 } satisfies Prisma.LinkSelect;
 
@@ -208,24 +207,4 @@ export const linkRouter = createTRPCRouter({
 
     return updatedLink;
   }),
-
-  captureClick: publicProcedure
-    .input(z.object({ linkId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { linkId } = input;
-
-      const link = await ctx.prisma.link.findUnique({
-        where: { id: linkId },
-        select: { clickCount: true },
-      });
-
-      if (!link) throw new TRPCError({ code: "NOT_FOUND" });
-
-      await ctx.prisma.link.update({
-        where: { id: linkId },
-        data: { clickCount: (link.clickCount || 0) + 1 },
-      });
-
-      return;
-    }),
 });

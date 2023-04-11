@@ -1,3 +1,4 @@
+import UpgradeButton from "@/components/common/UpgradeButton";
 import type { AppProps } from "@/types";
 import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
@@ -114,18 +115,7 @@ export default function AppBar() {
             </Chakra.Show>
           </Chakra.HStack>
           <Chakra.HStack align="center" spacing={5}>
-            {!subscription?.isPro && (
-              <Chakra.Button
-                as={Link}
-                href="/subscribe"
-                colorScheme="purple"
-                leftIcon={<TablerIcon size={20} name="IconBolt" />}
-                rounded="full"
-                size="sm"
-              >
-                Upgrade
-              </Chakra.Button>
-            )}
+            <UpgradeButton />
             <AppMenu />
           </Chakra.HStack>
         </Chakra.CardBody>

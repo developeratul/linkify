@@ -90,9 +90,12 @@ model Analytics {
     fromBrowser String?
     user        User     @relation(fields: [userId], references: [id])
     userId      String
+    linkId      String? /// in case it was a click event for a link
+    Link        Link?    @relation(fields: [linkId], references: [id])
     createdAt   DateTime @default(now())
 
     @@index([userId])
+    @@index([linkId])
 }
 
 enum Events {
@@ -247,18 +250,18 @@ model Section {
 }
 
 model Link {
-    id                String  @id @default(cuid())
+    id                String      @id @default(cuid())
     index             Int
     text              String
     url               String
     thumbnail         String?
     thumbnailPublicId String?
-    user              User    @relation(fields: [userId], references: [id])
+    user              User        @relation(fields: [userId], references: [id])
     userId            String
-    clickCount        Int     @default(0)
-    hidden            Boolean @default(false)
-    section           Section @relation(fields: [sectionId], references: [id])
+    hidden            Boolean     @default(false)
+    section           Section     @relation(fields: [sectionId], references: [id])
     sectionId         String
+    analytics         Analytics[]
 
     @@index([userId])
     @@index([sectionId])

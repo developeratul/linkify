@@ -36,7 +36,7 @@ function Link(props: { link: ProfileLink }) {
     anchor.href = link.url;
     anchor.target = "_blank";
     anchor.click();
-    mutate({ linkId: link.id });
+    mutate({ linkId: link.id, profileId: profile.id, userAgent: window.navigator.userAgent });
   };
 
   const isOutlinedButton = profile.button.buttonStyle.split("_").includes("OUTLINED");
