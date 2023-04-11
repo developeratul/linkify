@@ -60,9 +60,9 @@ export function Icon(props: { size?: number; name: IconNames }) {
 
 import * as TablerIcons from "@tabler/icons-react";
 
-export function TablerIcon(props: { name: string }) {
-  const { name } = props;
+export function TablerIcon(props: { name: string; size?: number }) {
+  const { name, size = 24 } = props;
   const iconsObj = TablerIcons as { [key: string]: any };
   const IconElement = iconsObj[name];
-  return <IconElement />;
+  return <IconElement stroke={1.5} size={size} />;
 }

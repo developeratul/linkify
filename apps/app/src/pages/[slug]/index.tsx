@@ -1,11 +1,11 @@
 import { Conditional } from "@/components/common/Conditional";
 import { SEO } from "@/components/common/SEO";
-import AddTestimonialModal from "@/components/profile/AddTestimonial";
 import Container from "@/components/profile/Container";
 import Footer from "@/components/profile/Footer";
 import ProfileImage from "@/components/profile/ProfileImage";
 import ProfileIntro from "@/components/profile/ProfileIntro";
 import Sections from "@/components/profile/Sections";
+import SendTestimonial from "@/components/profile/SendTestimonial";
 import SocialLinks from "@/components/profile/SocialLinks";
 import Testimonials from "@/components/profile/Testimonials";
 import Wrapper from "@/components/profile/Wrapper";
@@ -53,7 +53,7 @@ const ProfilePage: NextPage<ProfileProps> = (
         py={50}
         px={{ base: 3, md: 5 }}
       >
-        {profile.isAcceptingTestimonials && <AddTestimonialModal />}
+        {profile.isAcceptingTestimonials && <SendTestimonial />}
         <Container>
           <Wrapper>
             <ProfileImage />
