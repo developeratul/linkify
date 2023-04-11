@@ -16,6 +16,29 @@ import type { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 
+function LimitExceededAlert() {
+  const { isLoading, data, isError, error } = api.testimonial.hasLimitExceeded.useQuery();
+
+  if (isLoading) return <></>;
+  if (isError) return <ErrorMessage description={error.message} />;
+
+  const { hasExceeded, isPro } = data;
+
+  if (!hasExceeded) return <></>;
+
+  const hasExceededMessage = isPro
+    ? "Your monthly limit to accept testimonials has been exceeded in your pro plan. Please contact the team to request a new plan."
+    : "Your monthly limit to accept testimonials has been exceeded. Please upgrade to pro.";
+
+  return (
+    <Chakra.Alert status="warning">
+      <Chakra.AlertIcon />
+      <Chakra.AlertTitle>Attention</Chakra.AlertTitle>
+      <Chakra.AlertDescription>{hasExceededMessage}</Chakra.AlertDescription>
+    </Chakra.Alert>
+  );
+}
+
 function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
   const { isAccepting } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleTestimonialAcceptance.useMutation();
@@ -25,9 +48,10 @@ function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
 
   const handleToggle = async () => {
     try {
-      await mutateAsync();
+      const message = await mutateAsync();
       await utils.testimonial.findMany.invalidate();
       previewContext?.reload();
+      toast({ status: "info", description: message });
     } catch (err) {
       if (err instanceof TRPCClientError) {
         toast({ status: "error", description: err.message });
@@ -93,6 +117,7 @@ function DeleteTestimonial(props: { testimonialId: string }) {
     try {
       await mutateAsync(testimonialId);
       await utils.testimonial.findMany.invalidate();
+      await utils.testimonial.hasLimitExceeded.invalidate();
       router.push(router.asPath);
       previewContext?.reload();
       onClose();
@@ -206,16 +231,18 @@ const TestimonialsPage: NextPageWithLayout = (
 
   if (isLoading) return <Loader />;
   if (isError) return <ErrorMessage description={error.message} />;
-  if (!data.pages.length)
-    return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
 
   const testimonials = data.pages
     .map((page) => page.testimonials.map((testimonial) => testimonial))
     .flat();
 
+  if (!testimonials.length)
+    return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
+
   return (
     <Chakra.Box w="full">
       <Chakra.VStack align="start" spacing={5}>
+        <LimitExceededAlert />
         <Chakra.Stack
           w="full"
           spacing={5}
@@ -250,8 +277,7 @@ const TestimonialsPage: NextPageWithLayout = (
         {hasNextPage && (
           <Chakra.Stack justify="center" align="center" w="full">
             <Chakra.Button
-              w="full"
-              maxW="md"
+              size="sm"
               isLoading={isFetchingNextPage}
               onClick={() => fetchNextPage()}
               colorScheme="purple"

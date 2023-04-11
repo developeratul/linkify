@@ -1,13 +1,11 @@
 import type { AppProps } from "@/types";
+import { api } from "@/utils/api";
 import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
-import type { IconNames } from "components";
-import { Icon } from "components";
+import { Icon, IconNames, TablerIcon } from "components";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { Conditional } from "../../common/Conditional";
 import Logo from "../../common/Logo";
 
 function LinkButton(props: AppProps & { icon: React.ReactElement; to: string }) {
@@ -46,6 +44,7 @@ const links: AppBarLink[] = [
 export default function AppBar() {
   const visibleLinks = links.slice(0, 3);
   const menuLinks = links.slice(3, links.length);
+  const { data: subscription } = api.payment.getSubscription.useQuery();
   return (
     <Chakra.Box zIndex="sticky" p={3} className="sticky left-0 top-0 h-24">
       <Chakra.Card bg="white" size="sm" rounded="full" height="full">
@@ -65,6 +64,7 @@ export default function AppBar() {
                   <Chakra.MenuButton>
                     <Chakra.IconButton
                       size="sm"
+                      as="span"
                       variant="outline"
                       colorScheme="purple"
                       icon={<Icon name="Menu" />}
@@ -91,6 +91,7 @@ export default function AppBar() {
                 <Chakra.MenuButton as="div">
                   <Chakra.IconButton
                     size="sm"
+                    as="span"
                     variant="outline"
                     colorScheme="purple"
                     icon={<Icon name="Menu" />}
@@ -113,7 +114,18 @@ export default function AppBar() {
             </Chakra.Show>
           </Chakra.HStack>
           <Chakra.HStack align="center" spacing={5}>
-            <SharePopover />
+            {!subscription?.isPro && (
+              <Chakra.Button
+                as={Link}
+                href="/subscribe"
+                colorScheme="purple"
+                leftIcon={<TablerIcon size={20} name="IconBolt" />}
+                rounded="full"
+                size="sm"
+              >
+                Upgrade
+              </Chakra.Button>
+            )}
             <AppMenu />
           </Chakra.HStack>
         </Chakra.CardBody>
@@ -124,71 +136,29 @@ export default function AppBar() {
 
 export function AppMenu() {
   const { data } = useSession();
+  const { data: subscription } = api.payment.getSubscription.useQuery();
   return (
     <Chakra.Menu>
       <Chakra.MenuButton>
         <Chakra.Avatar
           src={data?.user?.image as string}
           name={(data?.user?.name || data?.user?.username) as string}
-        />
+        >
+          {subscription?.isPro ? (
+            <Chakra.AvatarBadge boxSize="1rem" placement="top-end" bg="purple.500" />
+          ) : null}
+        </Chakra.Avatar>
       </Chakra.MenuButton>
       <Chakra.MenuList>
+        {!subscription?.isPro && (
+          <Chakra.MenuItem as={Link} href="/subscribe" icon={<TablerIcon name="IconBolt" />}>
+            Upgrade to pro
+          </Chakra.MenuItem>
+        )}
         <Chakra.MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>
           Logout from app
         </Chakra.MenuItem>
       </Chakra.MenuList>
     </Chakra.Menu>
-  );
-}
-
-export function SharePopover() {
-  const { status, data } = useSession();
-  const [link, setLink] = React.useState("");
-  const toast = useToast();
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(link);
-    toast({ status: "info", description: "Linked copied!" });
-  };
-
-  React.useEffect(() => {
-    setLink(`${window.origin}/${data?.user?.username}`);
-  }, [data]);
-
-  return (
-    <Chakra.Show above="md">
-      <Conditional
-        condition={status === "authenticated"}
-        component={
-          <Chakra.Popover strategy="fixed">
-            <Chakra.PopoverTrigger>
-              <Chakra.Button variant="outline" rounded="full" leftIcon={<Icon name="Share" />}>
-                Share
-              </Chakra.Button>
-            </Chakra.PopoverTrigger>
-            <Chakra.PopoverContent>
-              <Chakra.PopoverArrow />
-              <Chakra.PopoverBody>
-                <Chakra.VStack spacing="3">
-                  <Chakra.Text>
-                    Once you have finished setting up your tree, you can now share this link on
-                    media platforms!
-                  </Chakra.Text>
-                  <Chakra.InputGroup size="md">
-                    <Chakra.Input fontSize="sm" pr="4.5rem" value={link} readOnly />
-                    <Chakra.InputRightElement width="4.5rem">
-                      <Chakra.Button onClick={handleCopy} colorScheme="blue" h="1.75rem" size="xs">
-                        Copy
-                      </Chakra.Button>
-                    </Chakra.InputRightElement>
-                  </Chakra.InputGroup>
-                </Chakra.VStack>
-              </Chakra.PopoverBody>
-            </Chakra.PopoverContent>
-          </Chakra.Popover>
-        }
-        fallback={<></>}
-      />
-    </Chakra.Show>
   );
 }

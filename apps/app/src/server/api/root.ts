@@ -4,6 +4,7 @@ import { authRouter } from "./routers/auth";
 import cloudinaryRouter from "./routers/cloudinary";
 import formRouter from "./routers/form";
 import { linkRouter } from "./routers/link";
+import paymentRouter from "./routers/payment";
 import { sectionRouter } from "./routers/section";
 import { socialLinkRouter } from "./routers/social-link";
 import testimonialRouter from "./routers/testimonial";
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   analytics: analyticsRouter,
   form: formRouter,
   cloudinary: cloudinaryRouter,
+  payment: paymentRouter,
 });
 
 // export type definition of API

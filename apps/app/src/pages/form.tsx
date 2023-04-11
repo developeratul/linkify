@@ -1,6 +1,6 @@
 import FormsIllus from "@/assets/forms.svg";
-import { EmptyMessage } from "@/components/app/common/Message";
-import { Conditional } from "@/components/common/Conditional";
+import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
+import Loader from "@/components/common/Loader";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
@@ -86,15 +86,15 @@ function DeleteSubmission(props: { submissionId: string }) {
   const { submissionId } = props;
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const { mutateAsync, isLoading } = api.form.deleteSubmission.useMutation();
+  const utils = api.useContext();
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = Chakra.useToast();
-  const router = useRouter();
 
   const handleDeleteSubmission = async () => {
     try {
       const message = await mutateAsync({ submissionId });
+      await utils.form.findMany.invalidate();
       onClose();
-      await router.push(router.asPath);
       toast({ status: "success", description: message });
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -139,8 +139,13 @@ function DeleteSubmission(props: { submissionId: string }) {
   );
 }
 
-function SubmissionDetails(props: { submission: FormSubmission; enabledFields: Field[] }) {
-  const { submission, enabledFields } = props;
+function SubmissionDetails(props: {
+  submission: FormSubmission;
+  enabledFields: Field[];
+  lastHoveredItemId: string;
+  setLastHoveredItemId: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const { submission, enabledFields, lastHoveredItemId, setLastHoveredItemId } = props;
   const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
 
   const KeyValuePairDisplay = (props: { keyName: string; value: string | null }) => {
@@ -172,7 +177,8 @@ function SubmissionDetails(props: { submission: FormSubmission; enabledFields: F
   return (
     <React.Fragment>
       <Chakra.Tr
-        _hover={{ bg: "purple.100" }}
+        onMouseOver={() => setLastHoveredItemId(submission.id)}
+        bg={lastHoveredItemId === submission.id ? "purple.100" : "white"}
         cursor="pointer"
         key={submission.id}
         onClick={onOpen}
@@ -210,38 +216,64 @@ function SubmissionDetails(props: { submission: FormSubmission; enabledFields: F
   );
 }
 
-function FormSubmissionsTable(props: { form: Form; submissions: FormSubmission[] }) {
-  const { form, submissions } = props;
+function FormSubmissionsTable(props: { form: Form; sortType: SortType }) {
+  const { form, sortType } = props;
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    api.form.findMany.useInfiniteQuery(
+      { limit: 20, orderBy: sortType },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    );
+  const [lastHoveredItemId, setLastHoveredItemId] = React.useState("");
+
   const enabledFields = React.useMemo(() => {
     return fields.filter((field) => !!form[field.name]);
   }, [form]);
+
+  if (isLoading) return <Loader />;
+  if (isError) return <ErrorMessage description={error.message} />;
+
+  const submissions = data.pages
+    .map((page) => page.submissions.map((submission) => submission))
+    .flat();
+
+  if (!submissions.length)
+    return <EmptyMessage title="Empty" description="No form submissions yet" />;
+
   return (
     <Chakra.TableContainer w="full">
-      <Conditional
-        condition={submissions.length > 0}
-        component={
-          <Chakra.Table colorScheme="purple" bg="white" rounded="lg">
-            <Chakra.Thead>
-              <Chakra.Tr>
-                {enabledFields.map((field) => (
-                  <Chakra.Th key={field.name}>{field.rawLabel}</Chakra.Th>
-                ))}
-                <Chakra.Th>Time</Chakra.Th>
-              </Chakra.Tr>
-            </Chakra.Thead>
-            <Chakra.Tbody>
-              {submissions.map((submission) => (
-                <SubmissionDetails
-                  submission={submission}
-                  enabledFields={enabledFields}
-                  key={submission.id}
-                />
-              ))}
-            </Chakra.Tbody>
-          </Chakra.Table>
-        }
-        fallback={<EmptyMessage title="Empty" description="No form submissions yet" />}
-      />
+      <Chakra.Table colorScheme="purple" bg="white" rounded="lg" size={{ base: "sm", md: "md" }}>
+        <Chakra.Thead>
+          <Chakra.Tr>
+            {enabledFields.map((field) => (
+              <Chakra.Th key={field.name}>{field.rawLabel}</Chakra.Th>
+            ))}
+            <Chakra.Th>Time</Chakra.Th>
+          </Chakra.Tr>
+        </Chakra.Thead>
+        <Chakra.Tbody>
+          {submissions.map((submission) => (
+            <SubmissionDetails
+              key={submission.id}
+              lastHoveredItemId={lastHoveredItemId}
+              setLastHoveredItemId={setLastHoveredItemId}
+              submission={submission}
+              enabledFields={enabledFields}
+            />
+          ))}
+        </Chakra.Tbody>
+        {hasNextPage && (
+          <Chakra.TableCaption>
+            <Chakra.Button
+              isLoading={isFetchingNextPage}
+              onClick={() => fetchNextPage()}
+              colorScheme="purple"
+              size="sm"
+            >
+              Load more
+            </Chakra.Button>
+          </Chakra.TableCaption>
+        )}
+      </Chakra.Table>
     </Chakra.TableContainer>
   );
 }
@@ -283,8 +315,8 @@ function FormSettingsModal(props: { form: Form }) {
     console.log({ values });
     try {
       const message = await mutateAsync(values);
+      router.push(router.asPath);
       onClose();
-      await router.push(router.asPath);
       toast({ status: "success", description: message });
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -391,12 +423,12 @@ function FormSettingsModal(props: { form: Form }) {
 function useEnableFormToggle() {
   const { mutateAsync, isLoading } = api.form.enableFormToggle.useMutation();
   const toast = Chakra.useToast();
-  const router = useRouter();
+  const utils = api.useContext();
 
   const handleClick = async () => {
     try {
       await mutateAsync();
-      await router.push(router.asPath);
+      await utils.form.findMany.invalidate();
     } catch (err) {
       if (err instanceof TRPCClientError) {
         toast({ status: "error", description: err.message });
@@ -411,12 +443,12 @@ function ToggleSubmissionAcceptance(props: { isAccepting: boolean }) {
   const { isAccepting } = props;
   const { mutateAsync, isLoading } = api.form.toggleSubmissionAcceptance.useMutation();
   const toast = Chakra.useToast();
-  const router = useRouter();
+  const utils = api.useContext();
 
   const handleClick = async () => {
     try {
       const message = await mutateAsync();
-      await router.push(router.asPath);
+      await utils.form.findMany.invalidate();
       toast({ status: "info", description: message });
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -469,10 +501,13 @@ type FormPageProps = {
   submissions: FormSubmission[];
 };
 
+type SortType = "desc" | "asc";
+
 const FormPage: NextPageWithLayout<FormPageProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const { form, submissions } = props;
+  const { form } = props;
+  const [sortType, setSortType] = React.useState<SortType>("desc");
 
   if (!form) return <GetStarted />;
 
@@ -480,23 +515,28 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
     <Chakra.Container maxW="container.xl">
       <Chakra.VStack align="start" spacing={10}>
         <Chakra.HStack w="full" justify="space-between" align="center">
-          <Chakra.Heading size="md" color="purple.500">
-            Form
-          </Chakra.Heading>
+          <Chakra.HStack>
+            <Chakra.Select
+              variant="filled"
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value as SortType)}
+            >
+              <option value="desc">Latest</option>
+              <option value="asc">Oldest</option>
+            </Chakra.Select>
+          </Chakra.HStack>
           <Chakra.HStack align="center" spacing={3}>
             <ToggleSubmissionAcceptance isAccepting={form.isAcceptingSubmissions} />
             <FormSettingsModal form={form} />
           </Chakra.HStack>
         </Chakra.HStack>
-        <FormSubmissionsTable form={form} submissions={submissions} />
+        <FormSubmissionsTable sortType={sortType} form={form} />
       </Chakra.VStack>
     </Chakra.Container>
   );
 };
 
-FormPage.getLayout = (page) => {
-  return <AppLayout hidePreviewPanel>{page}</AppLayout>;
-};
+FormPage.getLayout = (page) => <AppLayout hidePreviewPanel>{page}</AppLayout>;
 
 export default FormPage;
 
@@ -509,19 +549,12 @@ export const getServerSideProps = requireAuth(async (ctx) => {
       username: true,
       bio: true,
       form: true,
-      formSubmissions: {
-        orderBy: { sentAt: "desc" },
-      },
     },
   });
 
   if (!user?.username || !user?.bio) {
-    return {
-      redirect: { destination: "/auth/onboarding", permanent: false },
-    };
+    return { redirect: { destination: "/auth/onboarding", permanent: false } };
   }
 
-  return {
-    props: { form: user.form, submissions: user.formSubmissions },
-  };
+  return { props: { form: user.form } };
 });

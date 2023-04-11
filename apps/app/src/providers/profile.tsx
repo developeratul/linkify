@@ -1,5 +1,6 @@
 import { useDefaultProfileTheme } from "@/components/app/appearance/Theme/themes";
 import { DEFAULT_FONT_NAME, defaultFont, fonts } from "@/fonts/profile";
+import { toastOptions } from "@/lib/theme";
 import type {
   Profile,
   ProfileButton,
@@ -93,7 +94,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
 
   return (
     <ProfileContext.Provider value={value}>
-      <ChakraProvider resetCSS theme={chakraProfileTheme}>
+      <ChakraProvider toastOptions={toastOptions} resetCSS theme={chakraProfileTheme}>
         <ColorModeProvider value={getColorMode(value.theme.cardBackgroundColor)}>
           {children}
         </ColorModeProvider>

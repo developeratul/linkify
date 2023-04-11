@@ -21,7 +21,7 @@ export const testimonialSchema = z.object({
 
 type TestimonialSchema = z.infer<typeof testimonialSchema>;
 
-export default function AddTestimonialModal() {
+export default function SendTestimonial() {
   const profile = useProfileContext();
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const [avatarPublicId, setAvatarPublicId] = React.useState("");
@@ -76,7 +76,7 @@ export default function AddTestimonialModal() {
   return (
     <Chakra.Box zIndex="sticky" position="fixed" bottom={0} right={0} m={5}>
       <Chakra.Tooltip
-        label={`Add testimonial for ${profile.profileTitle}`}
+        label={`Send testimonial to ${profile.profileTitle}`}
         hasArrow
         placement="start"
       >
@@ -91,7 +91,7 @@ export default function AddTestimonialModal() {
       <Chakra.Modal isOpen={isOpen} scrollBehavior="inside" size="xl" onClose={closeModal}>
         <Chakra.ModalOverlay />
         <Chakra.ModalContent>
-          <Chakra.ModalHeader>Add testimonial for {profile.profileTitle}</Chakra.ModalHeader>
+          <Chakra.ModalHeader>Send testimonial to {profile.profileTitle}</Chakra.ModalHeader>
           <Chakra.ModalCloseButton />
           <Chakra.ModalBody color={getContrastColor(profile.theme.cardBackgroundColor)}>
             <Chakra.VStack

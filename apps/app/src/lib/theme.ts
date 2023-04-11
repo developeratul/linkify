@@ -1,5 +1,5 @@
 import { spaceGrotesk } from "@/fonts";
-import { extendTheme } from "@chakra-ui/react";
+import { ChakraProviderProps, extendTheme } from "@chakra-ui/react";
 import customTheme from "theme";
 
 export const theme = extendTheme({
@@ -9,3 +9,10 @@ export const theme = extendTheme({
   },
   ...customTheme,
 });
+
+export const toastOptions: ChakraProviderProps["toastOptions"] = {
+  defaultOptions: {
+    position: "top",
+    isClosable: true,
+  },
+};
