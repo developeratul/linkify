@@ -1,8 +1,9 @@
+import AnalyticsService, { analyticsWithin } from "@/services/analytics";
 import { detectCountry } from "@/utils/country-detector";
 import deviceDetector from "@/utils/device-detector";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const analyticsRouter = createTRPCRouter({
   captureLinkClick: publicProcedure
@@ -34,6 +35,50 @@ const analyticsRouter = createTRPCRouter({
       });
 
       return;
+    }),
+
+  getEventData: protectedProcedure
+    .input(z.object({ within: analyticsWithin, event: z.enum(["UNIQUE_VIEW", "VIEW", "CLICK"]) }))
+    .query(async ({ ctx, input }) => {
+      const { within, event } = input;
+      const userId = ctx.session.user.id;
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const data = await AnalyticsService.get(event, userId, within);
+
+      return data;
+    }),
+
+  getCTRData: protectedProcedure
+    .input(z.object({ within: analyticsWithin }))
+    .query(async ({ ctx, input }) => {
+      const { within } = input;
+      const userId = ctx.session.user.id;
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const { currentCount: currentTotalClicks } = await AnalyticsService.get(
+        "CLICK",
+        userId,
+        within
+      );
+      const { currentCount: currentTotalViews } = await AnalyticsService.get(
+        "VIEW",
+        userId,
+        within
+      );
+      const currentCTR = (currentTotalClicks / currentTotalViews) * 100;
+
+      return { currentCTR };
     }),
 });
 
