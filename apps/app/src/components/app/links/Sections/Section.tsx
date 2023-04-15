@@ -1,7 +1,17 @@
 import { usePreviewContext } from "@/providers/preview";
 import type { Section } from "@/types";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Editable,
+  EditableInput,
+  EditablePreview,
+  HStack,
+  IconButton,
+  Text,
+  Tooltip,
+  UseEditableProps,
+  VStack,
+} from "@chakra-ui/react";
 import { Icon } from "components";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
@@ -20,7 +30,7 @@ export default function Section(props: SectionProps) {
   const { mutateAsync } = api.section.edit.useMutation();
   const utils = api.useContext();
   const previewContext = usePreviewContext();
-  const handleUpdateName: Chakra.UseEditableProps["onSubmit"] = async (value) => {
+  const handleUpdateName: UseEditableProps["onSubmit"] = async (value) => {
     try {
       if (name === "") setName("Untitled");
       if (name === "Untitled") return;
@@ -34,7 +44,7 @@ export default function Section(props: SectionProps) {
   return (
     <Draggable draggableId={section.id} index={index}>
       {(provided) => (
-        <Chakra.VStack
+        <VStack
           ref={provided.innerRef}
           {...provided.draggableProps}
           w="full"
@@ -45,10 +55,10 @@ export default function Section(props: SectionProps) {
           p={{ base: 3, md: 5 }}
           rounded="md"
         >
-          <Chakra.HStack justify="space-between" align="center" w="full">
-            <Chakra.HStack align="center">
-              <Chakra.Tooltip hasArrow label="Drag n drop section">
-                <Chakra.IconButton
+          <HStack justify="space-between" align="center" w="full">
+            <HStack align="center">
+              <Tooltip hasArrow label="Drag n drop section">
+                <IconButton
                   {...provided.dragHandleProps}
                   cursor="inherit"
                   colorScheme="purple"
@@ -57,31 +67,31 @@ export default function Section(props: SectionProps) {
                   icon={<Icon name="Drag" />}
                   size="sm"
                 />
-              </Chakra.Tooltip>
-              <Chakra.Editable
+              </Tooltip>
+              <Editable
                 onSubmit={handleUpdateName}
                 value={name}
                 onChange={(value) => setName(value)}
               >
-                <Chakra.EditablePreview
-                  as={Chakra.Text}
+                <EditablePreview
+                  as={Text}
                   fontSize="lg"
                   noOfLines={1}
                   color="purple.600"
                   fontWeight="medium"
                 />
-                <Chakra.EditableInput fontWeight="medium" fontSize="lg" color="purple.600" />
-              </Chakra.Editable>
-            </Chakra.HStack>
-            <Chakra.HStack align="center" spacing={3}>
+                <EditableInput fontWeight="medium" fontSize="lg" color="purple.600" />
+              </Editable>
+            </HStack>
+            <HStack align="center" spacing={3}>
               <DeleteSection sectionId={section.id} />
-            </Chakra.HStack>
-          </Chakra.HStack>
-          <Chakra.VStack w="full" spacing={5}>
+            </HStack>
+          </HStack>
+          <VStack w="full" spacing={5}>
             <Links links={section.links} />
             <AddLinkModal sectionId={section.id} />
-          </Chakra.VStack>
-        </Chakra.VStack>
+          </VStack>
+        </VStack>
       )}
     </Draggable>
   );

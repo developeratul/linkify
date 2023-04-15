@@ -1,19 +1,19 @@
 import type { AppProps } from "@/types";
 import type { UseRadioProps } from "@chakra-ui/react";
-import * as Chakra from "@chakra-ui/react";
+import { Box, useRadio } from "@chakra-ui/react";
 
 export type RadioCardProps = UseRadioProps & AppProps;
 
 export function RadioCard(props: RadioCardProps) {
-  const { getInputProps, getCheckboxProps } = Chakra.useRadio(props);
+  const { getInputProps, getCheckboxProps } = useRadio(props);
 
   const input = getInputProps();
   const checkbox = getCheckboxProps();
 
   return (
-    <Chakra.Box as="label">
+    <Box as="label">
       <input {...input} />
-      <Chakra.Box
+      <Box
         {...checkbox}
         cursor="pointer"
         userSelect="none"
@@ -29,7 +29,7 @@ export function RadioCard(props: RadioCardProps) {
         p={3}
       >
         {props.children}
-      </Chakra.Box>
-    </Chakra.Box>
+      </Box>
+    </Box>
   );
 }

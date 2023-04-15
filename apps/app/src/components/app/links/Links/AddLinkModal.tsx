@@ -1,6 +1,23 @@
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  VStack,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { Icon } from "components";
@@ -17,13 +34,13 @@ export type AddLinkSchema = z.infer<typeof addLinkSchema>;
 export function AddLinkModal(props: { sectionId: string }) {
   const previewContext = usePreviewContext();
   const { sectionId } = props;
-  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { formState, register, handleSubmit, reset } = useForm<AddLinkSchema>({
     resolver: zodResolver(addLinkSchema),
   });
   const { mutateAsync, isLoading } = api.link.add.useMutation();
   const utils = api.useContext();
-  const toast = Chakra.useToast();
+  const toast = useToast();
 
   const onSubmit = async (values: AddLinkSchema) => {
     try {
@@ -44,8 +61,8 @@ export function AddLinkModal(props: { sectionId: string }) {
   };
 
   return (
-    <Chakra.Box w="full">
-      <Chakra.Button
+    <Box w="full">
+      <Button
         onClick={onOpen}
         w="full"
         colorScheme="purple"
@@ -53,34 +70,34 @@ export function AddLinkModal(props: { sectionId: string }) {
         variant="outline"
       >
         Add new link
-      </Chakra.Button>
-      <Chakra.Modal isOpen={isOpen} onClose={onClose}>
-        <Chakra.ModalOverlay />
-        <Chakra.ModalContent>
-          <Chakra.ModalHeader>Add link</Chakra.ModalHeader>
-          <Chakra.ModalCloseButton />
-          <Chakra.ModalBody>
-            <Chakra.VStack
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add link</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack
               as="form"
               id="add-link-form"
               onSubmit={handleSubmit(onSubmit)}
               w="full"
               spacing={5}
             >
-              <Chakra.FormControl isRequired isInvalid={!!formState.errors.text}>
-                <Chakra.FormLabel>Link text</Chakra.FormLabel>
-                <Chakra.Input {...register("text")} />
-                <Chakra.FormErrorMessage>{formState.errors.text?.message}</Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-              <Chakra.FormControl isRequired isInvalid={!!formState.errors.url}>
-                <Chakra.FormLabel>Link URL</Chakra.FormLabel>
-                <Chakra.Input {...register("url")} />
-                <Chakra.FormErrorMessage>{formState.errors.url?.message}</Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-            </Chakra.VStack>
-          </Chakra.ModalBody>
-          <Chakra.ModalFooter>
-            <Chakra.Button
+              <FormControl isRequired isInvalid={!!formState.errors.text}>
+                <FormLabel>Link text</FormLabel>
+                <Input {...register("text")} />
+                <FormErrorMessage>{formState.errors.text?.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isRequired isInvalid={!!formState.errors.url}>
+                <FormLabel>Link URL</FormLabel>
+                <Input {...register("url")} />
+                <FormErrorMessage>{formState.errors.url?.message}</FormErrorMessage>
+              </FormControl>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <Button
               w="full"
               isLoading={isLoading}
               type="submit"
@@ -89,10 +106,10 @@ export function AddLinkModal(props: { sectionId: string }) {
               leftIcon={<Icon name="Add" />}
             >
               Add
-            </Chakra.Button>
-          </Chakra.ModalFooter>
-        </Chakra.ModalContent>
-      </Chakra.Modal>
-    </Chakra.Box>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
   );
 }

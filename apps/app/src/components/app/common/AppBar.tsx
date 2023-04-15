@@ -1,7 +1,21 @@
 import UpgradeButton from "@/components/common/UpgradeButton";
 import type { AppProps } from "@/types";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Avatar,
+  AvatarBadge,
+  Box,
+  Button,
+  Card,
+  CardBody,
+  HStack,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Show,
+} from "@chakra-ui/react";
 import { Icon, IconNames, TablerIcon } from "components";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -14,7 +28,7 @@ function LinkButton(props: AppProps & { icon: React.ReactElement; to: string }) 
   const router = useRouter();
   const isActive = router.pathname === to;
   return (
-    <Chakra.Button
+    <Button
       as={Link}
       href={to}
       variant="ghost"
@@ -23,7 +37,7 @@ function LinkButton(props: AppProps & { icon: React.ReactElement; to: string }) 
       w={{ base: "full", md: "auto" }}
     >
       {children}
-    </Chakra.Button>
+    </Button>
   );
 }
 
@@ -47,23 +61,23 @@ export default function AppBar() {
   const menuLinks = links.slice(3, links.length);
   const { data: subscription } = api.payment.getSubscription.useQuery();
   return (
-    <Chakra.Box zIndex="sticky" p={3} className="sticky left-0 top-0 h-24">
-      <Chakra.Card bg="white" size="sm" rounded="full" height="full">
-        <Chakra.CardBody className="flex items-center justify-between">
-          <Chakra.HStack spacing={{ base: "2", md: "14" }}>
-            <Chakra.Box>
+    <Box zIndex="sticky" p={3} className="sticky left-0 top-0 h-24">
+      <Card bg="white" size="sm" rounded="full" height="full">
+        <CardBody className="flex items-center justify-between">
+          <HStack spacing={{ base: "2", md: "14" }}>
+            <Box>
               <Logo />
-            </Chakra.Box>
-            <Chakra.Show above="md">
-              <Chakra.HStack>
+            </Box>
+            <Show above="md">
+              <HStack>
                 {visibleLinks.map((link) => (
                   <LinkButton to={link.to} key={link.label} icon={<Icon name={link.icon} />}>
                     {link.label}
                   </LinkButton>
                 ))}
-                <Chakra.Menu isLazy>
-                  <Chakra.MenuButton>
-                    <Chakra.IconButton
+                <Menu isLazy>
+                  <MenuButton>
+                    <IconButton
                       size="sm"
                       as="span"
                       variant="outline"
@@ -71,26 +85,26 @@ export default function AppBar() {
                       icon={<Icon name="Menu" />}
                       aria-label="Menu"
                     />
-                  </Chakra.MenuButton>
-                  <Chakra.MenuList>
+                  </MenuButton>
+                  <MenuList>
                     {menuLinks.map((link) => (
-                      <Chakra.MenuItem
+                      <MenuItem
                         key={link.label}
                         as={Link}
                         href={link.to}
                         icon={<Icon name={link.icon} />}
                       >
                         {link.label}
-                      </Chakra.MenuItem>
+                      </MenuItem>
                     ))}
-                  </Chakra.MenuList>
-                </Chakra.Menu>
-              </Chakra.HStack>
-            </Chakra.Show>
-            <Chakra.Show below="md">
-              <Chakra.Menu isLazy>
-                <Chakra.MenuButton as="div">
-                  <Chakra.IconButton
+                  </MenuList>
+                </Menu>
+              </HStack>
+            </Show>
+            <Show below="md">
+              <Menu isLazy>
+                <MenuButton as="div">
+                  <IconButton
                     size="sm"
                     as="span"
                     variant="outline"
@@ -98,29 +112,29 @@ export default function AppBar() {
                     icon={<Icon name="Menu" />}
                     aria-label="Links"
                   />
-                </Chakra.MenuButton>
-                <Chakra.MenuList>
+                </MenuButton>
+                <MenuList>
                   {links.map((link) => (
-                    <Chakra.MenuItem
+                    <MenuItem
                       href={link.to}
                       as={Link}
                       icon={<Icon name={link.icon} />}
                       key={link.label}
                     >
                       {link.label}
-                    </Chakra.MenuItem>
+                    </MenuItem>
                   ))}
-                </Chakra.MenuList>
-              </Chakra.Menu>
-            </Chakra.Show>
-          </Chakra.HStack>
-          <Chakra.HStack align="center" spacing={5}>
+                </MenuList>
+              </Menu>
+            </Show>
+          </HStack>
+          <HStack align="center" spacing={5}>
             <UpgradeButton />
             <AppMenu />
-          </Chakra.HStack>
-        </Chakra.CardBody>
-      </Chakra.Card>
-    </Chakra.Box>
+          </HStack>
+        </CardBody>
+      </Card>
+    </Box>
   );
 }
 
@@ -128,27 +142,27 @@ export function AppMenu() {
   const { data } = useSession();
   const { data: subscription } = api.payment.getSubscription.useQuery();
   return (
-    <Chakra.Menu>
-      <Chakra.MenuButton>
-        <Chakra.Avatar
+    <Menu>
+      <MenuButton>
+        <Avatar
           src={data?.user?.image as string}
           name={(data?.user?.name || data?.user?.username) as string}
         >
           {subscription?.isPro ? (
-            <Chakra.AvatarBadge boxSize="1rem" placement="top-end" bg="purple.500" />
+            <AvatarBadge boxSize="1rem" placement="top-end" bg="purple.500" />
           ) : null}
-        </Chakra.Avatar>
-      </Chakra.MenuButton>
-      <Chakra.MenuList>
+        </Avatar>
+      </MenuButton>
+      <MenuList>
         {!subscription?.isPro && (
-          <Chakra.MenuItem as={Link} href="/subscribe" icon={<TablerIcon name="IconBolt" />}>
+          <MenuItem as={Link} href="/subscribe" icon={<TablerIcon name="IconBolt" />}>
             Upgrade to pro
-          </Chakra.MenuItem>
+          </MenuItem>
         )}
-        <Chakra.MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>
+        <MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>
           Logout from app
-        </Chakra.MenuItem>
-      </Chakra.MenuList>
-    </Chakra.Menu>
+        </MenuItem>
+      </MenuList>
+    </Menu>
   );
 }

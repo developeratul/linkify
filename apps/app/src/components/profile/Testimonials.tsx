@@ -1,6 +1,6 @@
 import Rating from "@/components/common/Rating";
 import { useProfileContext } from "@/providers/profile";
-import * as Chakra from "@chakra-ui/react";
+import { Avatar, Box, Heading, SimpleGrid, Stack, Text, VStack } from "@chakra-ui/react";
 
 export default function Testimonials() {
   const profile = useProfileContext();
@@ -8,42 +8,38 @@ export default function Testimonials() {
   if (profile === undefined) return <></>;
 
   return (
-    <Chakra.SimpleGrid columns={1} spacing={10}>
+    <SimpleGrid columns={1} spacing={10}>
       {profile.testimonials.length > 0 &&
         profile.testimonials.map((testimonial) => (
-          <Chakra.Box key={testimonial.id}>
-            <Chakra.Stack
+          <Box key={testimonial.id}>
+            <Stack
               spacing={5}
               direction={{ base: "column", md: "row" }}
               align={{ base: "center", md: "start" }}
             >
-              <Chakra.Avatar
+              <Avatar
                 src={testimonial.avatar || ""}
                 size={{ base: "xl", md: "lg" }}
                 name={testimonial.name}
               />
-              <Chakra.VStack align={{ base: "center", md: "start" }}>
-                <Chakra.VStack align={{ base: "center", md: "start" }}>
-                  <Chakra.Heading
+              <VStack align={{ base: "center", md: "start" }}>
+                <VStack align={{ base: "center", md: "start" }}>
+                  <Heading
                     fontFamily={profile.theme.font.style.fontFamily}
                     fontSize={{ base: "md", md: "lg" }}
                     textAlign="center"
                   >
                     {testimonial.name}
-                  </Chakra.Heading>
-                  <Chakra.Text
-                    textAlign="start"
-                    fontSize={{ base: "sm", md: "md" }}
-                    whiteSpace="pre-wrap"
-                  >
+                  </Heading>
+                  <Text textAlign="start" fontSize={{ base: "sm", md: "md" }} whiteSpace="pre-wrap">
                     {testimonial.message}
-                  </Chakra.Text>
-                </Chakra.VStack>
+                  </Text>
+                </VStack>
                 <Rating rating={testimonial.rating} starDimension="20px" starSpacing="2px" />
-              </Chakra.VStack>
-            </Chakra.Stack>
-          </Chakra.Box>
+              </VStack>
+            </Stack>
+          </Box>
         ))}
-    </Chakra.SimpleGrid>
+    </SimpleGrid>
   );
 }

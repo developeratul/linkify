@@ -20,7 +20,7 @@ import { LinkSelections } from "@/server/api/routers/link";
 import { prisma } from "@/server/db";
 import { TestimonialSelections } from "@/services/testimonial";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
-import * as Chakra from "@chakra-ui/react";
+import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import type { Button, Form, Layout, Settings, Theme } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
 
@@ -40,7 +40,7 @@ const ProfilePage: NextPage<ProfileProps> = (
           profile.settings?.seoDescription || `@${profile.username}'s profile on Linkify`
         }
       />
-      <Chakra.Box
+      <Box
         background={
           profile.theme?.bodyBackgroundType === "IMAGE"
             ? `url('${profile.theme.bodyBackgroundImage}')`
@@ -62,20 +62,20 @@ const ProfilePage: NextPage<ProfileProps> = (
             <Conditional
               condition={profile.testimonials.length > 0}
               component={
-                <Chakra.Tabs isLazy isFitted colorScheme="brand" w="full">
-                  <Chakra.TabList>
-                    <Chakra.Tab>Links</Chakra.Tab>
-                    <Chakra.Tab>Testimonials</Chakra.Tab>
-                  </Chakra.TabList>
-                  <Chakra.TabPanels>
-                    <Chakra.TabPanel px={0} py={5}>
+                <Tabs isLazy isFitted colorScheme="brand" w="full">
+                  <TabList>
+                    <Tab>Links</Tab>
+                    <Tab>Testimonials</Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel px={0} py={5}>
                       <Sections />
-                    </Chakra.TabPanel>
-                    <Chakra.TabPanel px={0} py={5}>
+                    </TabPanel>
+                    <TabPanel px={0} py={5}>
                       <Testimonials />
-                    </Chakra.TabPanel>
-                  </Chakra.TabPanels>
-                </Chakra.Tabs>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
               }
               fallback={<Sections />}
             />
@@ -83,7 +83,7 @@ const ProfilePage: NextPage<ProfileProps> = (
           </Wrapper>
           <Footer />
         </Container>
-      </Chakra.Box>
+      </Box>
     </ProfileProvider>
   );
 };

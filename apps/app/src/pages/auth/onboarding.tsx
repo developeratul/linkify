@@ -1,8 +1,16 @@
 import { AuthLayout } from "@/Layouts/auth";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Textarea,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import type { GetServerSideProps, NextPage } from "next";
@@ -41,21 +49,21 @@ const OnBoardingPage: NextPage = () => {
 
   return (
     <AuthLayout title="Setup your account">
-      <Chakra.VStack onSubmit={handleSubmit(onSubmit)} as="form" id="onboarding-form" spacing={3}>
-        <Chakra.FormControl isRequired isInvalid={!!formState.errors?.username}>
-          <Chakra.FormLabel>Username</Chakra.FormLabel>
-          <Chakra.Input {...register("username")} />
-          <Chakra.FormErrorMessage>{formState.errors.username?.message}</Chakra.FormErrorMessage>
-        </Chakra.FormControl>
-        <Chakra.FormControl isRequired isInvalid={!!formState.errors?.bio}>
-          <Chakra.FormLabel>Bio</Chakra.FormLabel>
-          <Chakra.Textarea {...register("bio")} />
-          <Chakra.FormErrorMessage>{formState.errors.bio?.message}</Chakra.FormErrorMessage>
-        </Chakra.FormControl>
-        <Chakra.Button isLoading={isLoading} type="submit" w="full" colorScheme="purple">
+      <VStack onSubmit={handleSubmit(onSubmit)} as="form" id="onboarding-form" spacing={3}>
+        <FormControl isRequired isInvalid={!!formState.errors?.username}>
+          <FormLabel>Username</FormLabel>
+          <Input {...register("username")} />
+          <FormErrorMessage>{formState.errors.username?.message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isRequired isInvalid={!!formState.errors?.bio}>
+          <FormLabel>Bio</FormLabel>
+          <Textarea {...register("bio")} />
+          <FormErrorMessage>{formState.errors.bio?.message}</FormErrorMessage>
+        </FormControl>
+        <Button isLoading={isLoading} type="submit" w="full" colorScheme="purple">
           Finish
-        </Chakra.Button>
-      </Chakra.VStack>
+        </Button>
+      </VStack>
     </AuthLayout>
   );
 };

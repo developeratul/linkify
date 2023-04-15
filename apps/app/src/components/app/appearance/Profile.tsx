@@ -3,8 +3,18 @@ import Loader, { SectionLoader } from "@/components/common/Loader";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Stack,
+  Textarea,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { Icon } from "components";
@@ -70,17 +80,13 @@ export function Profile() {
 
   return (
     <SectionWrapper title="Profile">
-      <Chakra.Stack
+      <Stack
         flexDirection={{ base: "column", sm: "row" }}
         align={{ base: "center", sm: "start" }}
         gap={5}
       >
         <div className="group relative overflow-hidden rounded-full">
-          <Chakra.Avatar
-            size="xl"
-            src={data?.image || ""}
-            name={formState.defaultValues?.profileTitle}
-          />
+          <Avatar size="xl" src={data?.image || ""} name={formState.defaultValues?.profileTitle} />
           <label className="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 duration-100 group-hover:opacity-100">
             <Conditional
               condition={isImageProcessing}
@@ -90,20 +96,18 @@ export function Profile() {
             <input hidden accept="image/*" type="file" onChange={handleFileInputChange} />
           </label>
         </div>
-        <Chakra.VStack w="full" flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
-          <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.profileTitle}>
-            <Chakra.FormLabel>Title</Chakra.FormLabel>
-            <Chakra.Input {...register("profileTitle")} />
-            <Chakra.FormErrorMessage>
-              {formState.errors.profileTitle?.message}
-            </Chakra.FormErrorMessage>
-          </Chakra.FormControl>
-          <Chakra.FormControl isDisabled={isLoading} isInvalid={!!formState.errors.bio}>
-            <Chakra.FormLabel>Bio</Chakra.FormLabel>
-            <Chakra.Textarea {...register("bio")} />
-            <Chakra.FormErrorMessage>{formState.errors.bio?.message}</Chakra.FormErrorMessage>
-          </Chakra.FormControl>
-          <Chakra.Button
+        <VStack w="full" flex={1} as="form" spacing="3" onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isDisabled={isLoading} isInvalid={!!formState.errors.profileTitle}>
+            <FormLabel>Title</FormLabel>
+            <Input {...register("profileTitle")} />
+            <FormErrorMessage>{formState.errors.profileTitle?.message}</FormErrorMessage>
+          </FormControl>
+          <FormControl isDisabled={isLoading} isInvalid={!!formState.errors.bio}>
+            <FormLabel>Bio</FormLabel>
+            <Textarea {...register("bio")} />
+            <FormErrorMessage>{formState.errors.bio?.message}</FormErrorMessage>
+          </FormControl>
+          <Button
             isLoading={isProcessing}
             type="submit"
             leftIcon={<Icon name="Save" />}
@@ -111,9 +115,9 @@ export function Profile() {
             colorScheme="purple"
           >
             Save
-          </Chakra.Button>
-        </Chakra.VStack>
-      </Chakra.Stack>
+          </Button>
+        </VStack>
+      </Stack>
     </SectionWrapper>
   );
 }

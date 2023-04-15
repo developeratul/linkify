@@ -1,7 +1,11 @@
 import { useProfileContext } from "@/providers/profile";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
 import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -9,6 +13,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Textarea,
+  VStack,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -56,56 +62,56 @@ export default function Form() {
   };
 
   return (
-    <Chakra.Box>
-      <Chakra.Button onClick={onOpen} variant="link" colorScheme="brand">
+    <Box>
+      <Button onClick={onOpen} variant="link" colorScheme="brand">
         {form.title || "Contact"}
-      </Chakra.Button>
+      </Button>
       <Modal scrollBehavior="inside" size="lg" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{form.title || "Contact"}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Chakra.VStack
+            <VStack
               onSubmit={handleSubmit(handleFormSubmission)}
               as="form"
               id="profile-form"
               spacing={5}
             >
               {form.nameField && (
-                <Chakra.FormControl isRequired={form.nameFieldRequired}>
-                  <Chakra.FormLabel>{form.nameFieldLabel || "Name"}</Chakra.FormLabel>
-                  <Chakra.Input {...register("name")} />
-                </Chakra.FormControl>
+                <FormControl isRequired={form.nameFieldRequired}>
+                  <FormLabel>{form.nameFieldLabel || "Name"}</FormLabel>
+                  <Input {...register("name")} />
+                </FormControl>
               )}
               {form.phoneField && (
-                <Chakra.FormControl isRequired={form.phoneFieldRequired}>
-                  <Chakra.FormLabel>{form.phoneFieldLabel || "Phone number"}</Chakra.FormLabel>
-                  <Chakra.Input {...register("phone")} />
-                </Chakra.FormControl>
+                <FormControl isRequired={form.phoneFieldRequired}>
+                  <FormLabel>{form.phoneFieldLabel || "Phone number"}</FormLabel>
+                  <Input {...register("phone")} />
+                </FormControl>
               )}
               {form.emailField && (
-                <Chakra.FormControl isRequired={form.emailFieldRequired}>
-                  <Chakra.FormLabel>{form.emailFieldLabel || "Email"}</Chakra.FormLabel>
-                  <Chakra.Input type="email" {...register("email")} />
-                </Chakra.FormControl>
+                <FormControl isRequired={form.emailFieldRequired}>
+                  <FormLabel>{form.emailFieldLabel || "Email"}</FormLabel>
+                  <Input type="email" {...register("email")} />
+                </FormControl>
               )}
               {form.subjectField && (
-                <Chakra.FormControl isRequired={form.subjectFieldRequired}>
-                  <Chakra.FormLabel>{form.subjectFieldLabel || "Subject"}</Chakra.FormLabel>
-                  <Chakra.Input {...register("subject")} />
-                </Chakra.FormControl>
+                <FormControl isRequired={form.subjectFieldRequired}>
+                  <FormLabel>{form.subjectFieldLabel || "Subject"}</FormLabel>
+                  <Input {...register("subject")} />
+                </FormControl>
               )}
               {form.messageField && (
-                <Chakra.FormControl isRequired={form.messageFieldRequired}>
-                  <Chakra.FormLabel>{form.messageFieldLabel || "Message"}</Chakra.FormLabel>
-                  <Chakra.Textarea {...register("message")} />
-                </Chakra.FormControl>
+                <FormControl isRequired={form.messageFieldRequired}>
+                  <FormLabel>{form.messageFieldLabel || "Message"}</FormLabel>
+                  <Textarea {...register("message")} />
+                </FormControl>
               )}
-            </Chakra.VStack>
+            </VStack>
           </ModalBody>
           <ModalFooter>
-            <Chakra.Button
+            <Button
               isLoading={isLoading}
               type="submit"
               form="profile-form"
@@ -114,10 +120,10 @@ export default function Form() {
               w="full"
             >
               {form.submitButtonText || "Submit"}
-            </Chakra.Button>
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Chakra.Box>
+    </Box>
   );
 }

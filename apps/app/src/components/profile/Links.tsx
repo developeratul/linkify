@@ -2,7 +2,7 @@ import { useProfileContext } from "@/providers/profile";
 import type { ProfileLink, ProfileLinks } from "@/types";
 import { api } from "@/utils/api";
 import { getContrastColor } from "@/utils/color";
-import * as Chakra from "@chakra-ui/react";
+import { Box, HStack, Image, SimpleGrid, Text } from "@chakra-ui/react";
 import { buttonImageRoundness, buttonVariantProps } from "../app/appearance/Button";
 
 export default function Links(props: { links: ProfileLinks }) {
@@ -12,15 +12,11 @@ export default function Links(props: { links: ProfileLinks }) {
   if (profile === undefined) return <></>;
 
   return (
-    <Chakra.SimpleGrid
-      columns={{ base: 1, md: profile.layout.linksColumnCount }}
-      spacing="10px"
-      w="full"
-    >
+    <SimpleGrid columns={{ base: 1, md: profile.layout.linksColumnCount }} spacing="10px" w="full">
       {links.map((link) => (
         <Link key={link.id} link={link} />
       ))}
-    </Chakra.SimpleGrid>
+    </SimpleGrid>
   );
 }
 
@@ -47,7 +43,7 @@ function Link(props: { link: ProfileLink }) {
     : getContrastColor(profile.button.buttonBackground || (profile.theme.themeColor as string));
 
   return (
-    <Chakra.Box
+    <Box
       cursor="pointer"
       rounded="md"
       w="full"
@@ -62,9 +58,9 @@ function Link(props: { link: ProfileLink }) {
       }}
       px={2}
     >
-      <Chakra.HStack>
+      <HStack>
         {link.thumbnail && (
-          <Chakra.Image
+          <Image
             alt={link.text}
             objectFit="cover"
             rounded={buttonImageRoundness[profile.button.buttonStyle]}
@@ -72,7 +68,7 @@ function Link(props: { link: ProfileLink }) {
             src={link.thumbnail}
           />
         )}
-        <Chakra.Text
+        <Text
           fontSize={{ base: "sm", sm: "md" }}
           color={buttonTextColor}
           py={4}
@@ -81,8 +77,8 @@ function Link(props: { link: ProfileLink }) {
           fontWeight="medium"
         >
           {link.text}
-        </Chakra.Text>
-      </Chakra.HStack>
-    </Chakra.Box>
+        </Text>
+      </HStack>
+    </Box>
   );
 }

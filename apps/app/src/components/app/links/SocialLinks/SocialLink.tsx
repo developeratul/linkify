@@ -1,5 +1,5 @@
 import type { SocialLink as SocialLinkType } from "@/types";
-import * as Chakra from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Text } from "@chakra-ui/react";
 import { Icon, TablerIcon } from "components";
 import { Draggable } from "react-beautiful-dnd";
 import { DeleteSocialLink } from "./DeleteSocialLink";
@@ -9,7 +9,7 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
   return (
     <Draggable draggableId={socialLink.id} index={index}>
       {(provided) => (
-        <Chakra.HStack
+        <HStack
           ref={provided.innerRef}
           {...provided.draggableProps}
           w="full"
@@ -20,8 +20,8 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
           justify="space-between"
           align="center"
         >
-          <Chakra.Flex gap={1} w="full" overflow="hidden" align="center">
-            <Chakra.IconButton
+          <Flex gap={1} w="full" overflow="hidden" align="center">
+            <IconButton
               {...provided.dragHandleProps}
               size={{ base: "xs", sm: "sm" }}
               icon={<Icon name="Drag" />}
@@ -30,24 +30,19 @@ export function SocialLink(props: { socialLink: SocialLinkType; index: number })
               aria-label="Drag and drop social link"
               flexShrink={0}
             />
-            <Chakra.HStack align="center" overflow="hidden" spacing={5}>
-              <Chakra.Text
-                flex={1}
-                fontSize={{ base: "sm", md: "md" }}
-                noOfLines={2}
-                fontWeight="medium"
-              >
+            <HStack align="center" overflow="hidden" spacing={5}>
+              <Text flex={1} fontSize={{ base: "sm", md: "md" }} noOfLines={2} fontWeight="medium">
                 {socialLink.url}
-              </Chakra.Text>
-              <Chakra.Box color="purple.500">
+              </Text>
+              <Box color="purple.500">
                 <TablerIcon name={socialLink.icon} />
-              </Chakra.Box>
-            </Chakra.HStack>
-          </Chakra.Flex>
-          <Chakra.Flex>
+              </Box>
+            </HStack>
+          </Flex>
+          <Flex>
             <DeleteSocialLink socialLinkId={socialLink.id} />
-          </Chakra.Flex>
-        </Chakra.HStack>
+          </Flex>
+        </HStack>
       )}
     </Draggable>
   );

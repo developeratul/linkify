@@ -3,11 +3,22 @@ import { env } from "@/env/server.mjs";
 import { client } from "@/lib/lemonsqueezy";
 import { requireAuth } from "@/server/auth";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  HStack,
+  Heading,
+  List,
+  ListIcon,
+  ListItem,
+  Text,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import { TablerIcon } from "components";
 import { LemonsqueezyVariant } from "lemonsqueezy.ts/types";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import React from "react";
 import { NextPageWithLayout } from "./_app";
 
@@ -26,13 +37,11 @@ type SubscribePageProps = {
   variants: LemonsqueezyVariant[];
 };
 
-const SubscribePage: NextPageWithLayout<SubscribePageProps> = (
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
-) => {
+const SubscribePage: NextPageWithLayout<SubscribePageProps> = (props) => {
   const { variants } = props;
   const [isBillingMonthly, setBillingMonthly] = React.useState(true);
   const { mutateAsync, isLoading, isSuccess } = api.payment.createCheckout.useMutation();
-  const toast = Chakra.useToast();
+  const toast = useToast();
 
   const yearlyPlan = React.useMemo(() => {
     return variants.find((variant) => variant.attributes.interval === "year");
@@ -61,52 +70,52 @@ const SubscribePage: NextPageWithLayout<SubscribePageProps> = (
 
   return (
     <React.Fragment>
-      <Chakra.VStack w="full" spacing={10}>
-        <Chakra.VStack textAlign="center">
-          <Chakra.Heading color="purple.500" size="lg">
+      <VStack w="full" spacing={10}>
+        <VStack textAlign="center">
+          <Heading color="purple.500" size="lg">
             Upgrade to pro
-          </Chakra.Heading>
-          <Chakra.Text>Become limitless with the pro plan ⚡</Chakra.Text>
-        </Chakra.VStack>
-        <Chakra.ButtonGroup>
-          <Chakra.Button
+          </Heading>
+          <Text>Become limitless with the pro plan ⚡</Text>
+        </VStack>
+        <ButtonGroup>
+          <Button
             onClick={() => setBillingMonthly(true)}
             colorScheme={isBillingMonthly ? "purple" : undefined}
           >
             Monthly
-          </Chakra.Button>
-          <Chakra.Button
+          </Button>
+          <Button
             onClick={() => setBillingMonthly(false)}
             colorScheme={!isBillingMonthly ? "purple" : undefined}
           >
             Yearly
-          </Chakra.Button>
-        </Chakra.ButtonGroup>
-        <Chakra.Box
+          </Button>
+        </ButtonGroup>
+        <Box
           w="full"
           maxW="md"
           p={1}
           rounded="lg"
           bg="linear-gradient(90deg,#44FF9A -.55%,#44B0FF 22.86%,#8B44FF 48.36%,#FF6644 73.33%,#EBFF70 99.34%)"
         >
-          <Chakra.Box bg="white" rounded="md" px={5} py={10}>
-            <Chakra.VStack spacing={10}>
-              <Chakra.HStack align="end" color="gray.600">
-                <Chakra.Text>$</Chakra.Text>
-                <Chakra.Heading color="black">{selectedPlan.attributes.price / 100}</Chakra.Heading>
-                <Chakra.Text>/{selectedPlan.attributes.interval}</Chakra.Text>
-              </Chakra.HStack>
-              <Chakra.List spacing={5}>
+          <Box bg="white" rounded="md" px={5} py={10}>
+            <VStack spacing={10}>
+              <HStack align="end" color="gray.600">
+                <Text>$</Text>
+                <Heading color="black">{selectedPlan.attributes.price / 100}</Heading>
+                <Text>/{selectedPlan.attributes.interval}</Text>
+              </HStack>
+              <List spacing={5}>
                 {premiumFeatures.map((label, index) => (
-                  <Chakra.ListItem key={index}>
-                    <Chakra.ListIcon color="green.500">
+                  <ListItem key={index}>
+                    <ListIcon color="green.500">
                       <TablerIcon name="IconCheck" />
-                    </Chakra.ListIcon>
+                    </ListIcon>
                     {label}
-                  </Chakra.ListItem>
+                  </ListItem>
                 ))}
-              </Chakra.List>
-              <Chakra.Button
+              </List>
+              <Button
                 isLoading={isLoading}
                 disabled={isLoading || isSuccess}
                 onClick={handleClick}
@@ -114,18 +123,18 @@ const SubscribePage: NextPageWithLayout<SubscribePageProps> = (
                 w="full"
               >
                 Upgrade
-              </Chakra.Button>
-            </Chakra.VStack>
-          </Chakra.Box>
-        </Chakra.Box>
-      </Chakra.VStack>
+              </Button>
+            </VStack>
+          </Box>
+        </Box>
+      </VStack>
     </React.Fragment>
   );
 };
 
 SubscribePage.getLayout = (page) => <AppLayout hidePreviewPanel>{page}</AppLayout>;
 export default SubscribePage;
-export const getServerSideProps: GetServerSideProps<SubscribePageProps> = requireAuth(async () => {
+export const getServerSideProps = requireAuth(async () => {
   const variants = (await client.listAllVariants({ productId: env.LEMONS_SQUEEZY_PRODUCT_ID }))
     .data;
   return { props: { variants } };

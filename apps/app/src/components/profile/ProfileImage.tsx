@@ -1,6 +1,6 @@
 import { useProfileContext } from "@/providers/profile";
 import type { AvatarProps } from "@chakra-ui/react";
-import * as Chakra from "@chakra-ui/react";
+import { Avatar } from "@chakra-ui/react";
 
 export default function ProfileImage() {
   const profile = useProfileContext();
@@ -20,10 +20,10 @@ export default function ProfileImage() {
   if (profile.layout.layout === "CARD") {
     return (
       <legend className="mx-auto">
-        <Chakra.Avatar {...defaultProps} />
+        <Avatar {...defaultProps} />
       </legend>
     );
   }
 
-  return <Chakra.Avatar {...defaultProps} />;
+  return <Avatar {...defaultProps} />;
 }

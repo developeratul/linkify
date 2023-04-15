@@ -1,7 +1,7 @@
 import { useProfileContext } from "@/providers/profile";
 import { SocialLink } from "@/types";
 import { getContrastColor } from "@/utils/color";
-import * as Chakra from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import { TablerIcon } from "components";
 import { buttonImageRoundness } from "../app/appearance/Button";
 
@@ -13,18 +13,11 @@ export default function SocialLinks() {
   if (!profile.socialLinks.length) return <></>;
 
   return (
-    <Chakra.Stack
-      wrap="wrap"
-      direction="row"
-      justify="center"
-      align="center"
-      columnGap="5px"
-      rowGap="5px"
-    >
+    <Stack wrap="wrap" direction="row" justify="center" align="center" columnGap="5px" rowGap="5px">
       {profile?.socialLinks.map((socialLink) => (
         <SocialLink key={socialLink.id} link={socialLink} />
       ))}
-    </Chakra.Stack>
+    </Stack>
   );
 }
 
@@ -34,7 +27,7 @@ function SocialLink(props: { link: SocialLink }) {
   if (profile === undefined) return <></>;
   const background = profile.button.buttonBackground || profile.theme.themeColor;
   return (
-    <Chakra.Stack
+    <Stack
       background={background}
       rounded={buttonImageRoundness[profile.button.buttonStyle]}
       color={getContrastColor(background)}
@@ -49,6 +42,6 @@ function SocialLink(props: { link: SocialLink }) {
       referrerPolicy="no-referrer"
     >
       <TablerIcon name={link.icon} />
-    </Chakra.Stack>
+    </Stack>
   );
 }

@@ -1,5 +1,19 @@
 import { formatter } from "@/utils/number-formatter";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Box,
+  IconButton,
+  Input,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  SimpleGrid,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import * as Icons from "@tabler/icons-react";
 import { TablerIcon } from "components";
 import React from "react";
@@ -38,16 +52,16 @@ export default function IconPicker(props: IconPickerProps) {
   };
 
   return (
-    <Chakra.Box>
-      <Chakra.Popover isLazy boundary="scrollParent">
-        <Chakra.PopoverTrigger>{trigger}</Chakra.PopoverTrigger>
-        <Chakra.PopoverContent w={{ base: "sm" }}>
-          <Chakra.PopoverArrow />
-          <Chakra.PopoverCloseButton />
-          <Chakra.PopoverHeader>{title || "Pick an Icon"}</Chakra.PopoverHeader>
-          <Chakra.PopoverBody maxH="md" overflowX="hidden">
-            <Chakra.VStack spacing="5">
-              <Chakra.Input
+    <Box>
+      <Popover isLazy boundary="scrollParent">
+        <PopoverTrigger>{trigger}</PopoverTrigger>
+        <PopoverContent w={{ base: "sm" }}>
+          <PopoverArrow />
+          <PopoverCloseButton />
+          <PopoverHeader>{title || "Pick an Icon"}</PopoverHeader>
+          <PopoverBody maxH="md" overflowX="hidden">
+            <VStack spacing="5">
+              <Input
                 variant="filled"
                 type="search"
                 autoFocus
@@ -60,16 +74,16 @@ export default function IconPicker(props: IconPickerProps) {
               <Conditional
                 condition={currentIcons.length > 0}
                 fallback={
-                  <Chakra.Text py={5} color="GrayText" fontWeight="medium">
+                  <Text py={5} color="GrayText" fontWeight="medium">
                     &quot;{searchTerm}&quot; Not found
-                  </Chakra.Text>
+                  </Text>
                 }
                 component={
-                  <Chakra.SimpleGrid columns={7} spacing={3}>
+                  <SimpleGrid columns={7} spacing={3}>
                     {currentIcons.map((iconName) => {
                       const isSelected = selectedIcon === iconName;
                       return (
-                        <Chakra.IconButton
+                        <IconButton
                           colorScheme={isSelected ? "purple" : "gray"}
                           onClick={() => handleSelect(iconName)}
                           key={iconName}
@@ -78,13 +92,13 @@ export default function IconPicker(props: IconPickerProps) {
                         />
                       );
                     })}
-                  </Chakra.SimpleGrid>
+                  </SimpleGrid>
                 }
               />
-            </Chakra.VStack>
-          </Chakra.PopoverBody>
-        </Chakra.PopoverContent>
-      </Chakra.Popover>
-    </Chakra.Box>
+            </VStack>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+    </Box>
   );
 }

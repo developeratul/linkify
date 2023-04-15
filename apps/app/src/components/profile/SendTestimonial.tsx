@@ -2,7 +2,30 @@ import { useProfileContext } from "@/providers/profile";
 import { api } from "@/utils/api";
 import { getContrastColor } from "@/utils/color";
 import uploadFile from "@/utils/uploadFile";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  IconButton,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Textarea,
+  Tooltip,
+  VStack,
+  useDisclosure,
+  useToast,
+  useToken,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { Icon } from "components";
@@ -23,15 +46,15 @@ type TestimonialSchema = z.infer<typeof testimonialSchema>;
 
 export default function SendTestimonial() {
   const profile = useProfileContext();
-  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [avatarPublicId, setAvatarPublicId] = React.useState("");
-  const [yellow] = Chakra.useToken("colors", ["orange.400"]);
+  const [yellow] = useToken("colors", ["orange.400"]);
   const { register, setValue, watch, reset, handleSubmit, formState } = useForm<TestimonialSchema>({
     resolver: zodResolver(testimonialSchema),
   });
   const { mutateAsync, isLoading } = api.testimonial.add.useMutation();
   const { mutateAsync: deleteImage } = api.cloudinary.destroyImage.useMutation();
-  const toast = Chakra.useToast();
+  const toast = useToast();
 
   const closeModal = () => {
     onClose();
@@ -74,57 +97,43 @@ export default function SendTestimonial() {
   };
 
   return (
-    <Chakra.Box zIndex="sticky" position="fixed" bottom={0} right={0} m={5}>
-      <Chakra.Tooltip
-        label={`Send testimonial to ${profile.profileTitle}`}
-        hasArrow
-        placement="start"
-      >
-        <Chakra.IconButton
+    <Box zIndex="sticky" position="fixed" bottom={0} right={0} m={5}>
+      <Tooltip label={`Send testimonial to ${profile.profileTitle}`} hasArrow placement="start">
+        <IconButton
           onClick={onOpen}
           colorScheme="brand"
           aria-label="Add testimonial"
           icon={<Icon name="Testimonial" />}
           shadow="md"
         />
-      </Chakra.Tooltip>
-      <Chakra.Modal isOpen={isOpen} scrollBehavior="inside" size="xl" onClose={closeModal}>
-        <Chakra.ModalOverlay />
-        <Chakra.ModalContent>
-          <Chakra.ModalHeader>Send testimonial to {profile.profileTitle}</Chakra.ModalHeader>
-          <Chakra.ModalCloseButton />
-          <Chakra.ModalBody color={getContrastColor(profile.theme.cardBackgroundColor)}>
-            <Chakra.VStack
-              as="form"
-              id="testimonial-form"
-              onSubmit={handleSubmit(onSubmit)}
-              spacing={10}
-            >
-              <Chakra.FormControl justifyContent="center" display="grid">
-                <Chakra.Tooltip hasArrow label="Upload avatar">
-                  <Chakra.Box display="block" as="label">
-                    <Chakra.Avatar
-                      name={watch("name")}
-                      src={watch("avatar")}
-                      cursor="pointer"
-                      size="lg"
-                    />
+      </Tooltip>
+      <Modal isOpen={isOpen} scrollBehavior="inside" size="xl" onClose={closeModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Send testimonial to {profile.profileTitle}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody color={getContrastColor(profile.theme.cardBackgroundColor)}>
+            <VStack as="form" id="testimonial-form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
+              <FormControl justifyContent="center" display="grid">
+                <Tooltip hasArrow label="Upload avatar">
+                  <Box display="block" as="label">
+                    <Avatar name={watch("name")} src={watch("avatar")} cursor="pointer" size="lg" />
                     <input onChange={handleAvatarUpload} type="file" hidden accept="image/*" />
-                  </Chakra.Box>
-                </Chakra.Tooltip>
-              </Chakra.FormControl>
-              <Chakra.FormControl isRequired isInvalid={!!formState.errors.name}>
-                <Chakra.FormLabel>Your name</Chakra.FormLabel>
-                <Chakra.Input {...register("name")} />
-                <Chakra.FormErrorMessage>{formState.errors.name?.message}</Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-              <Chakra.FormControl isRequired isInvalid={!!formState.errors.email}>
-                <Chakra.FormLabel>Your email</Chakra.FormLabel>
-                <Chakra.Input type="email" {...register("email")} />
-                <Chakra.FormErrorMessage>{formState.errors.email?.message}</Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-              <Chakra.FormControl isRequired isInvalid={!!formState.errors.rating?.message}>
-                <Chakra.FormLabel>Your rating</Chakra.FormLabel>
+                  </Box>
+                </Tooltip>
+              </FormControl>
+              <FormControl isRequired isInvalid={!!formState.errors.name}>
+                <FormLabel>Your name</FormLabel>
+                <Input {...register("name")} />
+                <FormErrorMessage>{formState.errors.name?.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isRequired isInvalid={!!formState.errors.email}>
+                <FormLabel>Your email</FormLabel>
+                <Input type="email" {...register("email")} />
+                <FormErrorMessage>{formState.errors.email?.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isRequired isInvalid={!!formState.errors.rating?.message}>
+                <FormLabel>Your rating</FormLabel>
                 <Rating
                   changeRating={(newRating) => setValue("rating", newRating)}
                   numberOfStars={5}
@@ -132,27 +141,23 @@ export default function SendTestimonial() {
                   starRatedColor={yellow}
                   starDimension="30px"
                 />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.rating?.message}
-                </Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-              <Chakra.FormControl isRequired isInvalid={!!formState.errors.message}>
-                <Chakra.FormLabel>Your testimonial</Chakra.FormLabel>
-                <Chakra.Textarea {...register("message")} />
-                <Chakra.FormErrorMessage>
-                  {formState.errors.message?.message}
-                </Chakra.FormErrorMessage>
-              </Chakra.FormControl>
-              <Chakra.FormControl isRequired>
-                <Chakra.Checkbox colorScheme="brand">
+                <FormErrorMessage>{formState.errors.rating?.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isRequired isInvalid={!!formState.errors.message}>
+                <FormLabel>Your testimonial</FormLabel>
+                <Textarea {...register("message")} />
+                <FormErrorMessage>{formState.errors.message?.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isRequired>
+                <Checkbox colorScheme="brand">
                   I give permission to use this testimonial across social channels and other
                   marketing efforts
-                </Chakra.Checkbox>
-              </Chakra.FormControl>
-            </Chakra.VStack>
-          </Chakra.ModalBody>
-          <Chakra.ModalFooter>
-            <Chakra.Button
+                </Checkbox>
+              </FormControl>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <Button
               isLoading={isLoading}
               type="submit"
               form="testimonial-form"
@@ -160,10 +165,10 @@ export default function SendTestimonial() {
               colorScheme="brand"
             >
               Send your testimonial
-            </Chakra.Button>
-          </Chakra.ModalFooter>
-        </Chakra.ModalContent>
-      </Chakra.Modal>
-    </Chakra.Box>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
   );
 }

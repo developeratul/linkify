@@ -6,17 +6,17 @@ import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
-import * as Chakra from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import type { GetServerSideProps } from "next";
 
 const AppearancePage: NextPageWithLayout = () => {
   return (
-    <Chakra.VStack w="full" maxW="2xl" spacing={10}>
+    <VStack w="full" maxW="2xl" spacing={10}>
       <Profile />
       <Layout />
       <Theme />
       <Button />
-    </Chakra.VStack>
+    </VStack>
   );
 };
 

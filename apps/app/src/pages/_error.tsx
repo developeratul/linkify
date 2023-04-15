@@ -1,5 +1,14 @@
 import { SEO } from "@/components/common/SEO";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import type { NextPage, NextPageContext } from "next";
 
 interface ErrorProps {
@@ -9,29 +18,29 @@ interface ErrorProps {
 
 const Error: NextPage<ErrorProps> = (error) => {
   return (
-    <Chakra.Center bg="purple.50" w="full" h="100vh">
+    <Center bg="purple.50" w="full" h="100vh">
       <SEO title="Error" />
-      <Chakra.Card w="full" maxW="container.sm" bg="white">
-        <Chakra.CardBody>
-          <Chakra.CardHeader>
-            <Chakra.VStack spacing={3} w="full" align="start">
-              <Chakra.Heading size="lg" color="red.500">
+      <Card w="full" maxW="container.sm" bg="white">
+        <CardBody>
+          <CardHeader>
+            <VStack spacing={3} w="full" align="start">
+              <Heading size="lg" color="red.500">
                 {error.statusCode}
-              </Chakra.Heading>
-              <Chakra.Text>{error.message}</Chakra.Text>
+              </Heading>
+              <Text>{error.message}</Text>
               {error.statusCode && error.statusCode >= 500 && (
-                <Chakra.Text fontSize="sm">
+                <Text fontSize="sm">
                   Please report us that issue through{" "}
-                  <Chakra.Button variant="link" as="a" href="mailto:devr@linkifyapp.com">
+                  <Button variant="link" as="a" href="mailto:devr@linkifyapp.com">
                     email{" "}
-                  </Chakra.Button>
-                </Chakra.Text>
+                  </Button>
+                </Text>
               )}
-            </Chakra.VStack>
-          </Chakra.CardHeader>
-        </Chakra.CardBody>
-      </Chakra.Card>
-    </Chakra.Center>
+            </VStack>
+          </CardHeader>
+        </CardBody>
+      </Card>
+    </Center>
   );
 };
 

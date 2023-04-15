@@ -1,5 +1,5 @@
 import { useProfileContext } from "@/providers/profile";
-import * as Chakra from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import React from "react";
 
 type ContainerProps = {
@@ -13,8 +13,8 @@ export default function Container(props: ContainerProps) {
   if (profile === undefined) return <></>;
 
   return (
-    <Chakra.VStack mx="auto" spacing={50} maxW={profile.layout.containerWidth}>
+    <VStack mx="auto" spacing={50} maxW={profile.layout.containerWidth}>
       {children}
-    </Chakra.VStack>
+    </VStack>
   );
 }

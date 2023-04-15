@@ -9,7 +9,38 @@ import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import type { Testimonial as TestimonialType } from "@/types";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertIcon,
+  AlertTitle,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Heading,
+  HStack,
+  IconButton,
+  Select,
+  SimpleGrid,
+  Stack,
+  Switch,
+  Text,
+  Tooltip,
+  useDisclosure,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import { Icon } from "components";
 import { saveAs } from "file-saver";
@@ -32,21 +63,21 @@ function LimitExceededAlert() {
     : "Your monthly limit to accept testimonials has been exceeded. Please upgrade to pro.";
 
   return (
-    <Chakra.Alert status="warning">
-      <Chakra.AlertIcon />
-      <Chakra.Box flex={1}>
-        <Chakra.AlertTitle>Attention</Chakra.AlertTitle>
-        <Chakra.AlertDescription>{hasExceededMessage}</Chakra.AlertDescription>
-      </Chakra.Box>
+    <Alert status="warning">
+      <AlertIcon />
+      <Box flex={1}>
+        <AlertTitle>Attention</AlertTitle>
+        <AlertDescription>{hasExceededMessage}</AlertDescription>
+      </Box>
       <UpgradeButton variant="outline" colorScheme="orange" />
-    </Chakra.Alert>
+    </Alert>
   );
 }
 
 function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
   const { isAccepting } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleTestimonialAcceptance.useMutation();
-  const toast = Chakra.useToast();
+  const toast = useToast();
   const previewContext = usePreviewContext();
   const utils = api.useContext();
 
@@ -64,22 +95,22 @@ function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
   };
 
   return (
-    <Chakra.Box>
-      <Chakra.Switch
+    <Box>
+      <Switch
         disabled={isLoading}
         onChange={handleToggle}
         colorScheme="purple"
         defaultChecked={isAccepting}
       >
         Accepting
-      </Chakra.Switch>
-    </Chakra.Box>
+      </Switch>
+    </Box>
   );
 }
 
 function ExportAsCSV() {
   const { mutateAsync, isLoading } = api.testimonial.exportAsCSV.useMutation();
-  const toast = Chakra.useToast();
+  const toast = useToast();
 
   const handleClick = async () => {
     try {
@@ -94,25 +125,25 @@ function ExportAsCSV() {
   };
 
   return (
-    <Chakra.Box>
-      <Chakra.Button
+    <Box>
+      <Button
         isLoading={isLoading}
         onClick={handleClick}
         colorScheme="purple"
         leftIcon={<Icon name="Export" />}
       >
         Export
-      </Chakra.Button>
-    </Chakra.Box>
+      </Button>
+    </Box>
   );
 }
 
 function DeleteTestimonial(props: { testimonialId: string }) {
   const { testimonialId } = props;
   const { isLoading, mutateAsync } = api.testimonial.deleteOne.useMutation();
-  const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
-  const toast = Chakra.useToast();
+  const toast = useToast();
   const router = useRouter();
   const previewContext = usePreviewContext();
   const utils = api.useContext();
@@ -133,9 +164,9 @@ function DeleteTestimonial(props: { testimonialId: string }) {
   };
 
   return (
-    <Chakra.Box>
-      <Chakra.Tooltip hasArrow label="Delete testimonial">
-        <Chakra.IconButton
+    <Box>
+      <Tooltip hasArrow label="Delete testimonial">
+        <IconButton
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
@@ -143,38 +174,33 @@ function DeleteTestimonial(props: { testimonialId: string }) {
           icon={<Icon name="Delete" />}
           aria-label="Delete testimonial"
         />
-      </Chakra.Tooltip>
-      <Chakra.AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered
-      >
-        <Chakra.AlertDialogOverlay />
-        <Chakra.AlertDialogContent>
-          <Chakra.AlertDialogHeader>Delete Testimonial?</Chakra.AlertDialogHeader>
-          <Chakra.AlertDialogCloseButton />
-          <Chakra.AlertDialogBody>
+      </Tooltip>
+      <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose} isCentered>
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>Delete Testimonial?</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
             Are you sure? This action will cause permanent data loss.
-          </Chakra.AlertDialogBody>
-          <Chakra.AlertDialogFooter>
-            <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button mr={3} ref={cancelRef} onClick={onClose}>
               No
-            </Chakra.Button>
-            <Chakra.Button isLoading={isLoading} onClick={handleClick} colorScheme="purple">
+            </Button>
+            <Button isLoading={isLoading} onClick={handleClick} colorScheme="purple">
               Yes
-            </Chakra.Button>
-          </Chakra.AlertDialogFooter>
-        </Chakra.AlertDialogContent>
-      </Chakra.AlertDialog>
-    </Chakra.Box>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Box>
   );
 }
 
 function Testimonial(props: { testimonial: TestimonialType }) {
   const { testimonial } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleShow.useMutation();
-  const toast = Chakra.useToast();
+  const toast = useToast();
   const previewContext = usePreviewContext();
   const utils = api.useContext();
 
@@ -191,32 +217,32 @@ function Testimonial(props: { testimonial: TestimonialType }) {
   };
 
   return (
-    <Chakra.Card bg="white">
-      <Chakra.CardHeader>
-        <Chakra.Avatar src={testimonial.avatar || ""} name={testimonial.name} />
-      </Chakra.CardHeader>
-      <Chakra.CardBody>
-        <Chakra.VStack align="start" spacing={3}>
-          <Chakra.VStack align="start" spacing={1}>
-            <Chakra.Heading size="md">{testimonial.name}</Chakra.Heading>
-            <Chakra.Text fontSize="sm">{testimonial.email}</Chakra.Text>
-          </Chakra.VStack>
-          <Chakra.Text whiteSpace="pre-wrap">{testimonial.message}</Chakra.Text>
+    <Card bg="white">
+      <CardHeader>
+        <Avatar src={testimonial.avatar || ""} name={testimonial.name} />
+      </CardHeader>
+      <CardBody>
+        <VStack align="start" spacing={3}>
+          <VStack align="start" spacing={1}>
+            <Heading size="md">{testimonial.name}</Heading>
+            <Text fontSize="sm">{testimonial.email}</Text>
+          </VStack>
+          <Text whiteSpace="pre-wrap">{testimonial.message}</Text>
           <Rating rating={testimonial.rating} starDimension="20px" starSpacing="3px" />
-        </Chakra.VStack>
-      </Chakra.CardBody>
-      <Chakra.CardFooter>
-        <Chakra.HStack w="full" align="center" justify="space-between">
-          <Chakra.Switch
+        </VStack>
+      </CardBody>
+      <CardFooter>
+        <HStack w="full" align="center" justify="space-between">
+          <Switch
             defaultChecked={testimonial.shouldShow}
             disabled={isLoading}
             onChange={handleToggleTestimonialShow}
             colorScheme="purple"
           />
           <DeleteTestimonial testimonialId={testimonial.id} />
-        </Chakra.HStack>
-      </Chakra.CardFooter>
-    </Chakra.Card>
+        </HStack>
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -244,54 +270,50 @@ const TestimonialsPage: NextPageWithLayout = (
     return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
 
   return (
-    <Chakra.Box w="full">
-      <Chakra.VStack align="start" spacing={5}>
+    <Box w="full">
+      <VStack align="start" spacing={5}>
         <LimitExceededAlert />
-        <Chakra.Stack
+        <Stack
           w="full"
           spacing={5}
           flexDir={{ base: "column", sm: "row", md: "column", lg: "row" }}
           justify={{ base: "stretch", sm: "space-between", md: "stretch", lg: "space-between" }}
         >
-          <Chakra.HStack align="center" spacing={3}>
+          <HStack align="center" spacing={3}>
             <ToggleTestimonialAcceptance isAccepting={isAcceptingTestimonials} />
-            <Chakra.Text>({totalTestimonials})</Chakra.Text>
-          </Chakra.HStack>
-          <Chakra.HStack align="center">
-            <Chakra.Select
+            <Text>({totalTestimonials})</Text>
+          </HStack>
+          <HStack align="center">
+            <Select
               value={sortType}
               onChange={(e) => setSortType(e.target.value as SortType)}
               variant="filled"
             >
               <option value="desc">Latest</option>
               <option value="asc">Oldest</option>
-            </Chakra.Select>
+            </Select>
             <ExportAsCSV />
-          </Chakra.HStack>
-        </Chakra.Stack>
-        <Chakra.SimpleGrid
-          w="full"
-          columns={{ base: 1, sm: 2, md: 1, lg: 2, "2xl": 3 }}
-          spacing={5}
-        >
+          </HStack>
+        </Stack>
+        <SimpleGrid w="full" columns={{ base: 1, sm: 2, md: 1, lg: 2, "2xl": 3 }} spacing={5}>
           {testimonials.map((testimonial) => (
             <Testimonial key={testimonial.id} testimonial={testimonial} />
           ))}
-        </Chakra.SimpleGrid>
+        </SimpleGrid>
         {hasNextPage && (
-          <Chakra.Stack justify="center" align="center" w="full">
-            <Chakra.Button
+          <Stack justify="center" align="center" w="full">
+            <Button
               size="sm"
               isLoading={isFetchingNextPage}
               onClick={() => fetchNextPage()}
               colorScheme="purple"
             >
               Load more
-            </Chakra.Button>
-          </Chakra.Stack>
+            </Button>
+          </Stack>
         )}
-      </Chakra.VStack>
-    </Chakra.Box>
+      </VStack>
+    </Box>
   );
 };
 
