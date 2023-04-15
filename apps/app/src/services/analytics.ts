@@ -14,18 +14,21 @@ const days: Record<AnalyticsWithin, number> = {
 const AnalyticsService = {
   async get(event: Events, userId: string, within: AnalyticsWithin) {
     const today = new Date();
+    const isAllTime = within === "ALL_TIME";
 
     const currentCount = await prisma.analytics.count({
       where: {
         AND: [
           { userId },
           { event },
-          {
-            createdAt: {
-              gt: new Date(today.getTime() - days[within] * 24 * 60 * 60 * 1000),
-              lt: new Date(),
-            },
-          },
+          isAllTime
+            ? {}
+            : {
+                createdAt: {
+                  gt: new Date(today.getTime() - days[within] * 24 * 60 * 60 * 1000),
+                  lt: new Date(),
+                },
+              },
         ],
       },
     });
@@ -35,19 +38,23 @@ const AnalyticsService = {
         AND: [
           { userId },
           { event },
-          {
-            createdAt: {
-              gt: new Date(today.getTime() - days[within] * 2 * 24 * 60 * 60 * 1000),
-              lt: new Date(),
-            },
-          },
+          isAllTime
+            ? {}
+            : {
+                createdAt: {
+                  gt: new Date(today.getTime() - days[within] * 2 * 24 * 60 * 60 * 1000),
+                  lt: new Date(),
+                },
+              },
         ],
       },
     });
 
-    const increasePercentage = Math.floor(((currentCount - previousCount) / previousCount) * 100);
+    const increasedPercentage = parseFloat(
+      (((currentCount - previousCount) / previousCount) * 100).toFixed(2)
+    );
 
-    return { currentCount, previousCount, increasePercentage };
+    return { currentCount, previousCount, increasedPercentage };
   },
 };
 

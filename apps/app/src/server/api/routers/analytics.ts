@@ -76,7 +76,7 @@ const analyticsRouter = createTRPCRouter({
         userId,
         within
       );
-      const currentCTR = (currentTotalClicks / currentTotalViews) * 100;
+      const currentCTR = parseFloat(((currentTotalClicks / currentTotalViews) * 100).toFixed(2));
 
       return { currentCTR };
     }),
