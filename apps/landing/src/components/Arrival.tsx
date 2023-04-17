@@ -10,10 +10,9 @@ export default function Arrival() {
           When will it be available?
         </Chakra.Heading>
         <Chakra.Text fontSize="xl" textAlign="center">
-          We aim to launch our app by <b>April</b> having testimonials, forms,
-          and the Developer API feature ready and the Newsletter feature will be
-          launched by the end of <b>May</b>. Please consider supporting us by
-          joining the wait list 🙏
+          We aim to launch our first version of app by <b>June</b> having
+          testimonials, forms, analytics, and the Developer API feature ready.
+          The Newsletter feature will be launched by the end of <b>July</b>.
         </Chakra.Text>
         <JoinWaitListButton />
       </Chakra.VStack>

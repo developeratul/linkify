@@ -15,6 +15,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Avatar,
   Box,
   Button,
   Card,
@@ -30,6 +31,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -221,9 +223,12 @@ function SubmissionDetails(props: {
       >
         {enabledFields.map((field) => (
           <Td maxW={200} key={field.name}>
-            <Text whiteSpace="normal" noOfLines={1} w="full">
-              {submission[field.rawName]}
-            </Text>
+            <Flex align="center" gap={5}>
+              {field.rawName === "name" && <Avatar size="sm" name={submission.name || ""} />}
+              <Text whiteSpace="normal" noOfLines={1} w="full">
+                {submission[field.rawName]}
+              </Text>
+            </Flex>
           </Td>
         ))}
         <Td noOfLines={1}>{formatDate(submission.sentAt)}</Td>
@@ -479,12 +484,12 @@ function ToggleSubmissionAcceptance(props: { isAccepting: boolean }) {
   const { isAccepting } = props;
   const { mutateAsync, isLoading } = api.form.toggleSubmissionAcceptance.useMutation();
   const toast = useToast();
-  const utils = api.useContext();
+  const router = useRouter();
 
   const handleClick = async () => {
     try {
       const message = await mutateAsync();
-      await utils.form.findMany.invalidate();
+      await router.push(router.asPath);
       toast({ status: "info", description: message });
     } catch (err) {
       if (err instanceof TRPCClientError) {
