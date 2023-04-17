@@ -1,8 +1,7 @@
 import { usePreviewContext } from "@/providers/preview";
 import type { Link as LinkType } from "@/types";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import { VStack, useToast } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import type { OnDragEndResponder } from "react-beautiful-dnd";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
@@ -49,12 +48,12 @@ export default function Links(props: LinksProps) {
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="link-droppable">
         {(provided) => (
-          <Chakra.VStack {...provided.droppableProps} ref={provided.innerRef} w="full" spacing={3}>
+          <VStack {...provided.droppableProps} ref={provided.innerRef} w="full" spacing={3}>
             {links.map((link, index) => (
               <Link link={link} key={link.id} index={index} />
             ))}
             {provided.placeholder}
-          </Chakra.VStack>
+          </VStack>
         )}
       </Droppable>
     </DragDropContext>

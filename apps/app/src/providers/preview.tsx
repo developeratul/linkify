@@ -1,7 +1,18 @@
 import Loader from "@/components/common/Loader";
-import { Icon } from "@/Icons";
 import type { AppProps } from "@/types";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Hide,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { Icon } from "components";
 import { useSession } from "next-auth/react";
 import React from "react";
 
@@ -47,7 +58,7 @@ export function PreviewProvider(props: PreviewProviderProps) {
 export const usePreviewContext = () => React.useContext(PreviewContext);
 
 export function PreviewDrawer() {
-  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const previewContext = usePreviewContext();
   if (previewContext === undefined) return <></>;
@@ -55,37 +66,32 @@ export function PreviewDrawer() {
   const { ref, username, isLoading } = previewContext;
 
   return (
-    <Chakra.Hide above="md">
-      <Chakra.Box position="fixed" bottom={5} right={5} zIndex="sticky">
-        <Chakra.Button
-          size="sm"
-          leftIcon={<Icon name="Preview" />}
-          onClick={onOpen}
-          colorScheme="purple"
-        >
+    <Hide above="md">
+      <Box position="fixed" bottom={5} right={5} zIndex="sticky">
+        <Button size="sm" leftIcon={<Icon name="Preview" />} onClick={onOpen} colorScheme="purple">
           Preview
-        </Chakra.Button>
-        <Chakra.Drawer isOpen={isOpen} onClose={onClose} placement="left" size="full">
-          <Chakra.DrawerOverlay />
-          <Chakra.DrawerContent>
-            <Chakra.DrawerCloseButton />
-            <Chakra.DrawerHeader>Preview</Chakra.DrawerHeader>
-            <Chakra.DrawerBody p={0}>
+        </Button>
+        <Drawer isOpen={isOpen} onClose={onClose} placement="left" size="full">
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader>Preview</DrawerHeader>
+            <DrawerBody p={0}>
               {isLoading ? (
                 <Loader />
               ) : (
-                <Chakra.Hide above="md">
+                <Hide above="md">
                   <iframe
                     src={`/${username}`}
                     ref={ref}
                     className="mx-auto h-full w-full max-w-md"
                   />
-                </Chakra.Hide>
+                </Hide>
               )}
-            </Chakra.DrawerBody>
-          </Chakra.DrawerContent>
-        </Chakra.Drawer>
-      </Chakra.Box>
-    </Chakra.Hide>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Box>
+    </Hide>
   );
 }

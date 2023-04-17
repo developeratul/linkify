@@ -1,15 +1,31 @@
 import IconPicker from "@/components/app/common/IconPicker";
-import { Icon, SocialIcon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  HStack,
+  IconButton,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
+import { Icon, TablerIcon } from "components";
 import React from "react";
 import { z } from "zod";
 
 export function AddSocialLinkModal() {
-  const { onOpen, isOpen, onClose } = Chakra.useDisclosure();
+  const { onOpen, isOpen, onClose } = useDisclosure();
   const [iconName, setIconName] = React.useState("");
   const [url, setUrl] = React.useState("");
   const [inputError, setInputError] = React.useState("");
@@ -43,44 +59,44 @@ export function AddSocialLinkModal() {
     }
   };
   return (
-    <Chakra.Box>
-      <Chakra.Button onClick={onOpen} leftIcon={<Icon name="Add" />} colorScheme="purple">
+    <Box>
+      <Button onClick={onOpen} leftIcon={<Icon name="Add" />} colorScheme="purple">
         Add new
-      </Chakra.Button>
-      <Chakra.Modal scrollBehavior="inside" isOpen={isOpen} onClose={closeModal}>
-        <Chakra.ModalOverlay />
-        <Chakra.ModalContent>
-          <Chakra.ModalCloseButton />
-          <Chakra.ModalHeader>Add social link</Chakra.ModalHeader>
-          <Chakra.ModalBody>
-            <Chakra.HStack>
+      </Button>
+      <Modal scrollBehavior="inside" isOpen={isOpen} onClose={closeModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader>Add social link</ModalHeader>
+          <ModalBody>
+            <HStack>
               <IconPicker
                 selectedIcon={iconName}
                 setStateAction={setIconName}
                 trigger={
-                  <Chakra.IconButton
+                  <IconButton
                     title="Pick an icon"
                     colorScheme="purple"
                     aria-label="Pick icon"
-                    icon={iconName ? <SocialIcon name={iconName} /> : <Icon name="Thumbnail" />}
+                    icon={iconName ? <TablerIcon name={iconName} /> : <Icon name="Thumbnail" />}
                   />
                 }
               />
               <form onSubmit={handleSubmit} id="add-social-icon" className="w-full">
-                <Chakra.FormControl isInvalid={!!inputError}>
-                  <Chakra.Input
+                <FormControl isInvalid={!!inputError}>
+                  <Input
                     placeholder="Enter URL"
                     onChange={(e) => setUrl(e.target.value)}
                     value={url}
                     type="url"
                   />
-                  <Chakra.FormErrorMessage>{inputError}</Chakra.FormErrorMessage>
-                </Chakra.FormControl>
+                  <FormErrorMessage>{inputError}</FormErrorMessage>
+                </FormControl>
               </form>
-            </Chakra.HStack>
-          </Chakra.ModalBody>
-          <Chakra.ModalFooter>
-            <Chakra.Button
+            </HStack>
+          </ModalBody>
+          <ModalFooter>
+            <Button
               isLoading={isLoading}
               leftIcon={<Icon name="Add" />}
               w="full"
@@ -89,10 +105,10 @@ export function AddSocialLinkModal() {
               form="add-social-icon"
             >
               Add
-            </Chakra.Button>
-          </Chakra.ModalFooter>
-        </Chakra.ModalContent>
-      </Chakra.Modal>
-    </Chakra.Box>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
   );
 }

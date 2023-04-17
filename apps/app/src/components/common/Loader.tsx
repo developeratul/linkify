@@ -2,7 +2,7 @@ import { Center, Spinner, VStack } from "@chakra-ui/react";
 
 export default function Loader() {
   return (
-    <Center w="full" h="full">
+    <Center py={100} w="full" h="full">
       <Spinner colorScheme="purple" />
     </Center>
   );

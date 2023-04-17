@@ -1,11 +1,20 @@
 import { SectionLoader } from "@/components/common/Loader";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  Input,
+  Select,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "../common/Message";
@@ -67,39 +76,33 @@ export default function Layout() {
 
   return (
     <SectionWrapper title="Layout">
-      <Chakra.VStack as="form" onSubmit={handleSubmit(onSubmit)} spacing={5}>
-        <Chakra.FormControl>
-          <Chakra.FormLabel>Page layout</Chakra.FormLabel>
-          <Chakra.Select {...register("layout")}>
+      <VStack as="form" onSubmit={handleSubmit(onSubmit)} spacing={5}>
+        <FormControl>
+          <FormLabel>Page layout</FormLabel>
+          <Select {...register("layout")}>
             <option value="WIDE">Wide</option>
             <option value="CARD">Card</option>
-          </Chakra.Select>
-        </Chakra.FormControl>
-        <Chakra.FormControl isInvalid={!!formState.errors.containerWidth}>
-          <Chakra.FormLabel>Container width</Chakra.FormLabel>
-          <Chakra.Input type="number" {...register("containerWidth", { valueAsNumber: true })} />
+          </Select>
+        </FormControl>
+        <FormControl isInvalid={!!formState.errors.containerWidth}>
+          <FormLabel>Container width</FormLabel>
+          <Input type="number" {...register("containerWidth", { valueAsNumber: true })} />
           {!!formState.errors.containerWidth ? (
-            <Chakra.FormErrorMessage>
-              {formState.errors.containerWidth.message}
-            </Chakra.FormErrorMessage>
+            <FormErrorMessage>{formState.errors.containerWidth.message}</FormErrorMessage>
           ) : (
-            <Chakra.FormHelperText>We count in pixels</Chakra.FormHelperText>
+            <FormHelperText>We count in pixels</FormHelperText>
           )}
-        </Chakra.FormControl>
-        <Chakra.FormControl isInvalid={!!formState.errors.linksColumnCount}>
-          <Chakra.FormLabel>Link columns</Chakra.FormLabel>
-          <Chakra.Input type="number" {...register("linksColumnCount", { valueAsNumber: true })} />
+        </FormControl>
+        <FormControl isInvalid={!!formState.errors.linksColumnCount}>
+          <FormLabel>Link columns</FormLabel>
+          <Input type="number" {...register("linksColumnCount", { valueAsNumber: true })} />
           {!!formState.errors.linksColumnCount ? (
-            <Chakra.FormErrorMessage>
-              {formState.errors.linksColumnCount.message}
-            </Chakra.FormErrorMessage>
+            <FormErrorMessage>{formState.errors.linksColumnCount.message}</FormErrorMessage>
           ) : (
-            <Chakra.FormHelperText>
-              How many columns do you want to divide your links into?
-            </Chakra.FormHelperText>
+            <FormHelperText>How many columns do you want to divide your links into?</FormHelperText>
           )}
-        </Chakra.FormControl>
-        <Chakra.Button
+        </FormControl>
+        <Button
           isLoading={isProcessing}
           type="submit"
           leftIcon={<Icon name="Save" />}
@@ -107,8 +110,8 @@ export default function Layout() {
           w="full"
         >
           Save changes
-        </Chakra.Button>
-      </Chakra.VStack>
+        </Button>
+      </VStack>
     </SectionWrapper>
   );
 }

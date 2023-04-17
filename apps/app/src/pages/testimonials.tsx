@@ -1,33 +1,158 @@
-import { EmptyMessage } from "@/components/app/common/Message";
-import Rating from "@/components/app/common/Rating";
-import { Icon } from "@/Icons";
+import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
+import Loader from "@/components/common/Loader";
+import Rating from "@/components/common/Rating";
+import UpgradeButton from "@/components/common/UpgradeButton";
 import { AppLayout } from "@/Layouts/app";
+import type { NextPageWithLayout } from "@/pages/_app";
 import { usePreviewContext } from "@/providers/preview";
-import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import type { Testimonial as TestimonialType } from "@/types";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertIcon,
+  AlertTitle,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Heading,
+  HStack,
+  IconButton,
+  Select,
+  SimpleGrid,
+  Stack,
+  Switch,
+  Text,
+  Tooltip,
+  useDisclosure,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { Icon } from "components";
+import { saveAs } from "file-saver";
+import type { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import React from "react";
-import type { NextPageWithLayout } from "../_app";
+
+function LimitExceededAlert() {
+  const { isLoading, data, isError, error } = api.testimonial.hasLimitExceeded.useQuery();
+
+  if (isLoading) return <></>;
+  if (isError) return <ErrorMessage description={error.message} />;
+
+  const { hasExceeded, isPro } = data;
+
+  if (!hasExceeded) return <></>;
+
+  const hasExceededMessage = isPro
+    ? "Your monthly limit to accept testimonials has been exceeded in your pro plan. Please contact the team to request a new plan."
+    : "Your monthly limit to accept testimonials has been exceeded. Please upgrade to pro.";
+
+  return (
+    <Alert status="warning">
+      <AlertIcon />
+      <Box flex={1}>
+        <AlertTitle>Attention</AlertTitle>
+        <AlertDescription>{hasExceededMessage}</AlertDescription>
+      </Box>
+      <UpgradeButton variant="outline" colorScheme="orange" />
+    </Alert>
+  );
+}
+
+function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
+  const { isAccepting } = props;
+  const { mutateAsync, isLoading } = api.testimonial.toggleTestimonialAcceptance.useMutation();
+  const toast = useToast();
+  const previewContext = usePreviewContext();
+  const utils = api.useContext();
+
+  const handleToggle = async () => {
+    try {
+      const message = await mutateAsync();
+      await utils.testimonial.findMany.invalidate();
+      previewContext?.reload();
+      toast({ status: "info", description: message });
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Box>
+      <Switch
+        disabled={isLoading}
+        onChange={handleToggle}
+        colorScheme="purple"
+        defaultChecked={isAccepting}
+      >
+        Accepting
+      </Switch>
+    </Box>
+  );
+}
+
+function ExportAsCSV() {
+  const { mutateAsync, isLoading } = api.testimonial.exportAsCSV.useMutation();
+  const toast = useToast();
+
+  const handleClick = async () => {
+    try {
+      const data = await mutateAsync();
+      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob);
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        toast({ status: "error", description: err.message });
+      }
+    }
+  };
+
+  return (
+    <Box>
+      <Button
+        isLoading={isLoading}
+        onClick={handleClick}
+        colorScheme="purple"
+        leftIcon={<Icon name="Export" />}
+      >
+        Export
+      </Button>
+    </Box>
+  );
+}
 
 function DeleteTestimonial(props: { testimonialId: string }) {
   const { testimonialId } = props;
   const { isLoading, mutateAsync } = api.testimonial.deleteOne.useMutation();
-  const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
   const router = useRouter();
   const previewContext = usePreviewContext();
+  const utils = api.useContext();
 
   const handleClick = async () => {
     try {
       await mutateAsync(testimonialId);
+      await utils.testimonial.findMany.invalidate();
+      await utils.testimonial.hasLimitExceeded.invalidate();
       router.push(router.asPath);
       previewContext?.reload();
       onClose();
@@ -39,9 +164,9 @@ function DeleteTestimonial(props: { testimonialId: string }) {
   };
 
   return (
-    <Chakra.Box>
-      <Chakra.Tooltip hasArrow label="Delete testimonial">
-        <Chakra.IconButton
+    <Box>
+      <Tooltip hasArrow label="Delete testimonial">
+        <IconButton
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
@@ -49,31 +174,26 @@ function DeleteTestimonial(props: { testimonialId: string }) {
           icon={<Icon name="Delete" />}
           aria-label="Delete testimonial"
         />
-      </Chakra.Tooltip>
-      <Chakra.AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered
-      >
-        <Chakra.AlertDialogOverlay />
-        <Chakra.AlertDialogContent>
-          <Chakra.AlertDialogHeader>Delete Testimonial?</Chakra.AlertDialogHeader>
-          <Chakra.AlertDialogCloseButton />
-          <Chakra.AlertDialogBody>
+      </Tooltip>
+      <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose} isCentered>
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>Delete Testimonial?</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
             Are you sure? This action will cause permanent data loss.
-          </Chakra.AlertDialogBody>
-          <Chakra.AlertDialogFooter>
-            <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button mr={3} ref={cancelRef} onClick={onClose}>
               No
-            </Chakra.Button>
-            <Chakra.Button isLoading={isLoading} onClick={handleClick} colorScheme="purple">
+            </Button>
+            <Button isLoading={isLoading} onClick={handleClick} colorScheme="purple">
               Yes
-            </Chakra.Button>
-          </Chakra.AlertDialogFooter>
-        </Chakra.AlertDialogContent>
-      </Chakra.AlertDialog>
-    </Chakra.Box>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Box>
   );
 }
 
@@ -81,13 +201,13 @@ function Testimonial(props: { testimonial: TestimonialType }) {
   const { testimonial } = props;
   const { mutateAsync, isLoading } = api.testimonial.toggleShow.useMutation();
   const toast = useToast();
-  const router = useRouter();
   const previewContext = usePreviewContext();
+  const utils = api.useContext();
 
   const handleToggleTestimonialShow = async () => {
     try {
       await mutateAsync(testimonial.id);
-      router.push(router.asPath);
+      await utils.testimonial.findMany.invalidate();
       previewContext?.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -97,56 +217,103 @@ function Testimonial(props: { testimonial: TestimonialType }) {
   };
 
   return (
-    <Chakra.Card bg="white">
-      <Chakra.CardHeader>
-        <Chakra.Avatar src={testimonial.avatar || ""} name={testimonial.name} />
-      </Chakra.CardHeader>
-      <Chakra.CardBody>
-        <Chakra.VStack align="start" spacing={3}>
-          <Chakra.VStack align="start" spacing={1}>
-            <Chakra.Heading size="md">{testimonial.name}</Chakra.Heading>
-            <Chakra.Text fontSize="sm">{testimonial.email}</Chakra.Text>
-          </Chakra.VStack>
-          <Chakra.Text whiteSpace="pre-wrap">{testimonial.message}</Chakra.Text>
+    <Card bg="white">
+      <CardHeader>
+        <Avatar src={testimonial.avatar || ""} name={testimonial.name} />
+      </CardHeader>
+      <CardBody>
+        <VStack align="start" spacing={3}>
+          <VStack align="start" spacing={1}>
+            <Heading size="md">{testimonial.name}</Heading>
+            <Text fontSize="sm">{testimonial.email}</Text>
+          </VStack>
+          <Text whiteSpace="pre-wrap">{testimonial.message}</Text>
           <Rating rating={testimonial.rating} starDimension="20px" starSpacing="3px" />
-        </Chakra.VStack>
-      </Chakra.CardBody>
-      <Chakra.CardFooter>
-        <Chakra.HStack w="full" align="center" justify="space-between">
-          <Chakra.Switch
+        </VStack>
+      </CardBody>
+      <CardFooter>
+        <HStack w="full" align="center" justify="space-between">
+          <Switch
             defaultChecked={testimonial.shouldShow}
             disabled={isLoading}
             onChange={handleToggleTestimonialShow}
             colorScheme="purple"
           />
           <DeleteTestimonial testimonialId={testimonial.id} />
-        </Chakra.HStack>
-      </Chakra.CardFooter>
-    </Chakra.Card>
+        </HStack>
+      </CardFooter>
+    </Card>
   );
 }
+
+type SortType = "desc" | "asc";
 
 const TestimonialsPage: NextPageWithLayout = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const { testimonials } = props;
+  const { isAcceptingTestimonials, totalTestimonials } = props;
+  const [sortType, setSortType] = React.useState<SortType>("desc");
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    api.testimonial.findMany.useInfiniteQuery(
+      { limit: 12, orderBy: sortType },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    );
+
+  if (isLoading) return <Loader />;
+  if (isError) return <ErrorMessage description={error.message} />;
+
+  const testimonials = data.pages
+    .map((page) => page.testimonials.map((testimonial) => testimonial))
+    .flat();
 
   if (!testimonials.length)
     return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
 
   return (
-    <Chakra.Box w="full">
-      <Chakra.VStack align="start" spacing={5}>
-        <Chakra.Heading size="md" color="purple.500">
-          Testimonials
-        </Chakra.Heading>
-        <Chakra.SimpleGrid w="full" columns={{ base: 1, lg: 2, xl: 3 }} spacing={5}>
-          {testimonials.map((testimonial: TestimonialType) => (
+    <Box w="full">
+      <VStack align="start" spacing={5}>
+        <LimitExceededAlert />
+        <Stack
+          w="full"
+          spacing={5}
+          flexDir={{ base: "column", sm: "row", md: "column", lg: "row" }}
+          justify={{ base: "stretch", sm: "space-between", md: "stretch", lg: "space-between" }}
+        >
+          <HStack align="center" spacing={3}>
+            <ToggleTestimonialAcceptance isAccepting={isAcceptingTestimonials} />
+            <Text>({totalTestimonials})</Text>
+          </HStack>
+          <HStack align="center">
+            <Select
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value as SortType)}
+              variant="filled"
+            >
+              <option value="desc">Latest</option>
+              <option value="asc">Oldest</option>
+            </Select>
+            <ExportAsCSV />
+          </HStack>
+        </Stack>
+        <SimpleGrid w="full" columns={{ base: 1, sm: 2, md: 1, lg: 2, "2xl": 3 }} spacing={5}>
+          {testimonials.map((testimonial) => (
             <Testimonial key={testimonial.id} testimonial={testimonial} />
           ))}
-        </Chakra.SimpleGrid>
-      </Chakra.VStack>
-    </Chakra.Box>
+        </SimpleGrid>
+        {hasNextPage && (
+          <Stack justify="center" align="center" w="full">
+            <Button
+              size="sm"
+              isLoading={isFetchingNextPage}
+              onClick={() => fetchNextPage()}
+              colorScheme="purple"
+            >
+              Load more
+            </Button>
+          </Stack>
+        )}
+      </VStack>
+    </Box>
   );
 };
 
@@ -156,16 +323,12 @@ TestimonialsPage.getLayout = (page) => {
 
 export default TestimonialsPage;
 
-export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) => {
+export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
   const user = await prisma?.user.findUnique({
     where: { id: session?.user?.id },
-    select: {
-      id: true,
-      username: true,
-      bio: true,
-    },
+    include: { _count: { select: { testimonials: true } } },
   });
 
   if (!user?.username || !user?.bio) {
@@ -174,13 +337,10 @@ export const getServerSideProps: GetServerSideProps = requireAuth(async (ctx) =>
     };
   }
 
-  const testimonials = await prisma.testimonial.findMany({
-    where: { userId: user.id },
-    select: TestimonialSelections,
-    orderBy: { createdAt: "desc" },
-  });
-
   return {
-    props: { testimonials },
+    props: {
+      isAcceptingTestimonials: user.isAcceptingTestimonials,
+      totalTestimonials: user._count.testimonials,
+    },
   };
 });

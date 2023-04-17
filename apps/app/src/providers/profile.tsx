@@ -1,5 +1,6 @@
 import { useDefaultProfileTheme } from "@/components/app/appearance/Theme/themes";
-import { defaultFont, DEFAULT_FONT_NAME, fonts } from "@/fonts/profile";
+import { DEFAULT_FONT_NAME, defaultFont, fonts } from "@/fonts/profile";
+import { toastOptions } from "@/lib/theme";
 import type {
   Profile,
   ProfileButton,
@@ -9,6 +10,8 @@ import type {
 } from "@/pages/[slug]";
 import { getColorMode } from "@/utils/color";
 import { ChakraProvider, ColorModeProvider, extendTheme } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import type { NextFont } from "next/dist/compiled/@next/font";
 import { generatePalette } from "palette-by-numbers";
 import React from "react";
@@ -16,17 +19,11 @@ import React from "react";
 type InitialState = Omit<Profile, "theme" | "layout" | "button" | "settings"> & {
   theme: Omit<
     ProfileTheme,
-    | "font"
-    | "bodyBackgroundColor"
-    | "cardBackgroundColor"
-    | "themeColor"
-    | "grayColor"
-    | "foreground"
+    "font" | "bodyBackgroundColor" | "cardBackgroundColor" | "themeColor" | "foreground"
   > & {
     bodyBackgroundColor: string;
     cardBackgroundColor: string;
     themeColor: string;
-    grayColor: string;
     foreground: string;
     font: NextFont;
   };
@@ -63,7 +60,6 @@ export default function ProfileProvider(props: ProfileProviderProps) {
       cardShadow: profile.theme?.cardShadow || defaultTheme.cardShadow,
       font,
       foreground: profile.theme?.foreground || defaultTheme.foreground,
-      grayColor: profile.theme?.grayColor || defaultTheme.grayColor,
       themeColor: profile.theme?.themeColor || defaultTheme.themeColor,
     },
     button: profile.button || {
@@ -81,7 +77,7 @@ export default function ProfileProvider(props: ProfileProviderProps) {
     fonts: { body: font.style.fontFamily, heading: font.style.fontFamily },
     colors: {
       brand: generatePalette(value.theme.themeColor),
-      gray: generatePalette(value.theme.grayColor),
+      gray: generatePalette(value.theme.bodyBackgroundColor),
     },
     styles: {
       global: {
@@ -90,9 +86,15 @@ export default function ProfileProvider(props: ProfileProviderProps) {
     },
   });
 
+  // capture page view
+  useQuery({
+    queryKey: ["capture-page-view", value.id],
+    queryFn: ({ queryKey }) => axios.post("/api/analytics", { userId: queryKey[1] }),
+  });
+
   return (
     <ProfileContext.Provider value={value}>
-      <ChakraProvider resetCSS theme={chakraProfileTheme}>
+      <ChakraProvider toastOptions={toastOptions} resetCSS theme={chakraProfileTheme}>
         <ColorModeProvider value={getColorMode(value.theme.cardBackgroundColor)}>
           {children}
         </ColorModeProvider>

@@ -1,4 +1,4 @@
-import * as Chakra from "@chakra-ui/react";
+import { Card, CardBody, Heading, VStack } from "@chakra-ui/react";
 import React from "react";
 
 type SectionWrapperProps = {
@@ -9,11 +9,11 @@ type SectionWrapperProps = {
 export default function SectionWrapper(props: SectionWrapperProps) {
   const { title, children } = props;
   return (
-    <Chakra.VStack w="full" align="start" spacing="3">
-      <Chakra.Heading size="md">{title}</Chakra.Heading>
-      <Chakra.Card w="full" size={{ base: "md", sm: "lg" }} bg="white">
-        <Chakra.CardBody>{children}</Chakra.CardBody>
-      </Chakra.Card>
-    </Chakra.VStack>
+    <VStack w="full" align="start" spacing="3">
+      <Heading size="md">{title}</Heading>
+      <Card w="full" size={{ base: "md", sm: "lg" }} bg="white">
+        <CardBody>{children}</CardBody>
+      </Card>
+    </VStack>
   );
 }

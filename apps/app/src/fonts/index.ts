@@ -1,11 +1,6 @@
-import { Poppins, Space_Mono } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 
-export const spaceMono = Space_Mono({
-  weight: "400",
-  subsets: ["latin"],
-});
-
-export const poppins = Poppins({
-  weight: "400",
+export const spaceGrotesk = Space_Grotesk({
+  weight: "variable",
   subsets: ["latin"],
 });

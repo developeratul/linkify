@@ -3,8 +3,7 @@ import SectionWrapper from "@/components/app/common/SectionWrapper";
 import { SectionLoader } from "@/components/common/Loader";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import { VStack, useToast } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import type { OnDragEndResponder } from "react-beautiful-dnd";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
@@ -61,17 +60,12 @@ export default function SocialLinks() {
       <SectionWrapper title="Social links" cta={<AddSocialLinkModal />}>
         <Droppable droppableId="social-link-droppable">
           {(provided) => (
-            <Chakra.VStack
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              w="full"
-              spacing="2"
-            >
+            <VStack {...provided.droppableProps} ref={provided.innerRef} w="full" spacing="2">
               {data.map((socialLink, index) => (
                 <SocialLink key={socialLink.id} index={index} socialLink={socialLink} />
               ))}
               {provided.placeholder}
-            </Chakra.VStack>
+            </VStack>
           )}
         </Droppable>
       </SectionWrapper>

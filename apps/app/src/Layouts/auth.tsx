@@ -1,6 +1,6 @@
-import LogoSrc from "@/assets/logo.png";
 import type { AppProps } from "@/types";
-import * as Chakra from "@chakra-ui/react";
+import { Card, CardBody, Heading, VStack } from "@chakra-ui/react";
+import { LogoNav } from "assets";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,16 +11,16 @@ export type AuthLayoutProps = {
 export function AuthLayout(props: AuthLayoutProps) {
   const { children, title } = props;
   return (
-    <Chakra.VStack w="full" h="100vh" overflowX="hidden" justify="center" bg="purple.50" p={2}>
-      <Chakra.VStack spacing={10} w="full" maxW="md">
+    <VStack w="full" h="100vh" overflowX="hidden" justify="center" bg="purple.50" p={2}>
+      <VStack spacing={10} w="full" maxW="md">
         <Link href="/">
-          <Image width={250} src={LogoSrc} alt="Linkify logo" />
+          <Image width={250} src={LogoNav} alt="Linkify logo" />
         </Link>
-        <Chakra.Heading size="lg">{title}</Chakra.Heading>
-        <Chakra.Card size="lg" w="full" bg="white">
-          <Chakra.CardBody>{children}</Chakra.CardBody>
-        </Chakra.Card>
-      </Chakra.VStack>
-    </Chakra.VStack>
+        <Heading size="lg">{title}</Heading>
+        <Card size="lg" w="full" bg="white">
+          <CardBody>{children}</CardBody>
+        </Card>
+      </VStack>
+    </VStack>
   );
 }

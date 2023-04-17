@@ -1,11 +1,13 @@
 import { IconBrandGoogle } from "@tabler/icons-react";
 import {
+  Download,
   Edit,
   Eye,
   Github,
   GripVertical,
   ImageIcon,
   LayoutTemplate,
+  LineChart,
   Link,
   LogOut,
   Menu,
@@ -44,9 +46,13 @@ export const icons = {
   Testimonial: MessageCircle,
   CustomTheme: Wand2,
   Form: Send,
+  Export: Download,
+  Analytics: LineChart,
 };
 
-export function Icon(props: { size?: number; name: keyof typeof icons }) {
+export type IconNames = keyof typeof icons;
+
+export function Icon(props: { size?: number; name: IconNames }) {
   const { size = 16, name } = props;
   const IconElement = icons[name];
   return <IconElement size={size} />;
@@ -54,9 +60,9 @@ export function Icon(props: { size?: number; name: keyof typeof icons }) {
 
 import * as TablerIcons from "@tabler/icons-react";
 
-export function SocialIcon(props: { name: string }) {
-  const { name } = props;
+export function TablerIcon(props: { name: string; size?: number }) {
+  const { name, size = 24 } = props;
   const iconsObj = TablerIcons as { [key: string]: any };
   const IconElement = iconsObj[name];
-  return <IconElement />;
+  return <IconElement stroke={1.5} size={size} />;
 }

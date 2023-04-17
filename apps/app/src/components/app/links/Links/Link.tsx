@@ -1,6 +1,17 @@
-import { Icon } from "@/Icons";
 import type { Link as LinkType } from "@/types";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Heading,
+  IconButton,
+  Image,
+  Text,
+  Tooltip,
+  VStack,
+  useDisclosure,
+  useToken,
+} from "@chakra-ui/react";
+import { Icon } from "components";
 import { Draggable } from "react-beautiful-dnd";
 import { AddThumbnail } from "./AddThumbnail";
 import { EditLinkModal } from "./EditLinkModal";
@@ -12,12 +23,12 @@ export type LinkProps = {
 
 export function Link(props: LinkProps) {
   const { link, index } = props;
-  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
-  const [purple100, purple500] = Chakra.useToken("colors", ["purple.100", "purple.500"]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [purple100, purple500] = useToken("colors", ["purple.100", "purple.500"]);
   return (
     <Draggable index={index} draggableId={link.id}>
       {(provided) => (
-        <Chakra.Box
+        <Box
           ref={provided.innerRef}
           {...provided.draggableProps}
           w="full"
@@ -26,11 +37,11 @@ export function Link(props: LinkProps) {
           boxShadow="base"
           p={{ base: 3, md: 5 }}
         >
-          <Chakra.HStack w="full" spacing={3} justify="space-between" align="center">
-            <Chakra.HStack overflow="hidden" align="center" spacing={3}>
+          <HStack w="full" spacing={3} justify="space-between" align="center">
+            <HStack overflow="hidden" align="center" spacing={3}>
               <AddThumbnail link={link}>
                 {link.thumbnail ? (
-                  <Chakra.Image
+                  <Image
                     alt="Thumbnail"
                     rounded="md"
                     fallbackSrc="https://via.placeholder.com/50"
@@ -40,7 +51,7 @@ export function Link(props: LinkProps) {
                     src={link.thumbnail}
                   />
                 ) : (
-                  <Chakra.Image
+                  <Image
                     alt="No thumbnail"
                     rounded="md"
                     src={`https://via.placeholder.com/50/${purple100.replace(
@@ -53,8 +64,8 @@ export function Link(props: LinkProps) {
                   />
                 )}
               </AddThumbnail>
-              <Chakra.Tooltip label="Edit link">
-                <Chakra.VStack
+              <Tooltip label="Edit link">
+                <VStack
                   overflow="hidden"
                   maxW="md"
                   w="full"
@@ -63,34 +74,24 @@ export function Link(props: LinkProps) {
                   onClick={onOpen}
                   spacing="1"
                 >
-                  <Chakra.Heading
+                  <Heading
                     maxW="full"
                     noOfLines={1}
                     fontSize={{ base: "sm", md: "md" }}
                     fontWeight="medium"
                   >
                     {link.text}
-                  </Chakra.Heading>
-                  <Chakra.Text maxW="full" noOfLines={1} fontSize={{ base: "xs", md: "sm" }}>
+                  </Heading>
+                  <Text maxW="full" noOfLines={1} fontSize={{ base: "xs", md: "sm" }}>
                     {link.url}
-                  </Chakra.Text>
-                </Chakra.VStack>
-              </Chakra.Tooltip>
-            </Chakra.HStack>
+                  </Text>
+                </VStack>
+              </Tooltip>
+            </HStack>
 
-            <Chakra.HStack spacing={3}>
-              <Chakra.Tooltip label="Clicks">
-                <Chakra.HStack
-                  display={{ base: "none", sm: "flex" }}
-                  align="center"
-                  color={link.hidden ? "gray.600" : "purple.600"}
-                >
-                  <Chakra.Text fontWeight="medium">{link.clickCount}</Chakra.Text>
-                  <Icon name="Click" />
-                </Chakra.HStack>
-              </Chakra.Tooltip>
-              <Chakra.Tooltip label="Drag n drop link">
-                <Chakra.IconButton
+            <HStack spacing={3}>
+              <Tooltip label="Drag n drop link">
+                <IconButton
                   size={{ base: "xs" }}
                   variant="ghost"
                   colorScheme="purple"
@@ -98,11 +99,11 @@ export function Link(props: LinkProps) {
                   icon={<Icon name="Drag" />}
                   aria-label="Drag link"
                 />
-              </Chakra.Tooltip>
-            </Chakra.HStack>
-          </Chakra.HStack>
+              </Tooltip>
+            </HStack>
+          </HStack>
           <EditLinkModal link={link} isOpen={isOpen} onClose={onClose} />
-        </Chakra.Box>
+        </Box>
       )}
     </Draggable>
   );

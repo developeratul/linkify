@@ -2,7 +2,7 @@ import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
 import { prisma } from "@/server/db";
-import * as Chakra from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 
@@ -11,10 +11,10 @@ const SocialLinks = dynamic(() => import("@/components/app/links/SocialLinks"));
 
 const AppPage: NextPageWithLayout = () => {
   return (
-    <Chakra.VStack pb={{ base: 55, md: 0 }} w="full" maxW="2xl" spacing={10}>
+    <VStack pb={{ base: 55, md: 0 }} w="full" maxW="2xl" spacing={10}>
       <Sections />
       <SocialLinks />
-    </Chakra.VStack>
+    </VStack>
   );
 };
 

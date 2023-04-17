@@ -50,15 +50,22 @@ model VerificationToken {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    username      String?   @unique
-    bio           String?
-    profileTitle  String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    imagePublicId String?
+    id                      String    @id @default(cuid())
+    name                    String?
+    username                String?   @unique
+    bio                     String?
+    profileTitle            String?
+    email                   String?   @unique
+    emailVerified           DateTime?
+    image                   String?
+    imagePublicId           String?
+    isAcceptingTestimonials Boolean   @default(true)
+
+    // lemonsqueezy
+    customerId       String?   @unique
+    subscriptionId   String?   @unique
+    variantId        Int?      @unique
+    currentPeriodEnd DateTime?
 
     accounts        Account[]
     sessions        Session[]
@@ -67,6 +74,7 @@ model User {
     socialLinks     SocialLink[]
     testimonials    Testimonial[]
     formSubmissions FormSubmission[]
+    analytics       Analytics[]
 
     layout   Layout?
     theme    Theme?
@@ -75,8 +83,30 @@ model User {
     form     Form?
 }
 
+model Analytics {
+    id          String   @id @default(cuid())
+    event       Events
+    fromCountry String?
+    fromBrowser String?
+    user        User     @relation(fields: [userId], references: [id])
+    userId      String
+    linkId      String? /// in case it was a click event for a link
+    Link        Link?    @relation(fields: [linkId], references: [id])
+    createdAt   DateTime @default(now())
+
+    @@index([userId])
+    @@index([linkId])
+}
+
+enum Events {
+    CLICK
+    VIEW
+    UNIQUE_VIEW
+}
+
 model Form {
-    id String @id @default(cuid())
+    id                     String  @id @default(cuid())
+    isAcceptingSubmissions Boolean @default(true)
 
     nameField    Boolean @default(true)
     emailField   Boolean @default(true)
@@ -122,7 +152,7 @@ model Settings {
     id                  String              @id @default(cuid())
     seoTitle            String?
     seoDescription      String?
-    socialIconPlacement SocialIconPlacement @default(TOP)
+    socialIconPlacement SocialIconPlacement @default(BOTTOM)
     user                User                @relation(fields: [userId], references: [id])
     userId              String              @unique
 }
@@ -143,7 +173,6 @@ model Theme {
     bodyBackgroundImagePublicId String?
     cardBackgroundColor         String?
     themeColor                  String?
-    grayColor                   String?
     foreground                  String?
     cardShadow                  CardShadow     @default(none)
     font                        String?
@@ -221,18 +250,18 @@ model Section {
 }
 
 model Link {
-    id                String  @id @default(cuid())
+    id                String      @id @default(cuid())
     index             Int
     text              String
     url               String
     thumbnail         String?
     thumbnailPublicId String?
-    user              User    @relation(fields: [userId], references: [id])
+    user              User        @relation(fields: [userId], references: [id])
     userId            String
-    clickCount        Int     @default(0)
-    hidden            Boolean @default(false)
-    section           Section @relation(fields: [sectionId], references: [id])
+    hidden            Boolean     @default(false)
+    section           Section     @relation(fields: [sectionId], references: [id])
     sectionId         String
+    analytics         Analytics[]
 
     @@index([userId])
     @@index([sectionId])

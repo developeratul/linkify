@@ -1,5 +1,5 @@
 import { useProfileContext } from "@/providers/profile";
-import * as Chakra from "@chakra-ui/react";
+import { StackProps, VStack } from "@chakra-ui/react";
 import React from "react";
 
 type WrapperProps = {
@@ -12,14 +12,14 @@ export default function Wrapper(props: WrapperProps) {
 
   if (profile === undefined) return <></>;
 
-  const defaultProps: Chakra.StackProps = {
-    spacing: "20px",
+  const defaultProps: StackProps = {
+    spacing: "30px",
     w: "full",
   };
 
   if (profile.layout.layout === "CARD") {
     return (
-      <Chakra.VStack
+      <VStack
         mx="auto"
         bg={profile.theme.cardBackgroundColor}
         as="fieldset"
@@ -30,9 +30,9 @@ export default function Wrapper(props: WrapperProps) {
         {...defaultProps}
       >
         {children}
-      </Chakra.VStack>
+      </VStack>
     );
   }
 
-  return <Chakra.VStack {...defaultProps}>{children}</Chakra.VStack>;
+  return <VStack {...defaultProps}>{children}</VStack>;
 }

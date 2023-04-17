@@ -10,17 +10,31 @@ import {
   quicksand,
   robotoMono,
   robotoSlab,
+  spaceGrotesk,
   spaceMono,
 } from "@/fonts/profile";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import { getContrastColor } from "@/utils/color";
 import uploadFile from "@/utils/uploadFile";
-import * as Chakra from "@chakra-ui/react";
-import { useToken } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Image,
+  Input,
+  Radio,
+  Select,
+  SimpleGrid,
+  Text,
+  VStack,
+  useToast,
+  useToken,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import type { ChangeEvent } from "react";
 import React from "react";
 import type { UseFormSetValue } from "react-hook-form";
@@ -30,7 +44,6 @@ import { z } from "zod";
 export const themeSchema = z.object({
   themeColor: z.string().optional(),
   foreground: z.string().optional(),
-  grayColor: z.string().optional(),
   bodyBackgroundType: z.enum(["COLOR", "IMAGE"]),
   bodyBackgroundColor: z.string().optional().nullable(),
   bodyBackgroundImage: z.string().optional().nullable(),
@@ -47,6 +60,7 @@ const shadows = ["sm", "md", "lg", "xl", "none"];
 const fonts = [
   { name: "Roboto Mono", src: robotoMono, fontIndex: "robotoMono" },
   { name: "Space Mono", src: spaceMono, fontIndex: "spaceMono" },
+  { name: "Space Grotesk", src: spaceGrotesk, fontIndex: "spaceGrotesk" },
   { name: "Poppins", src: poppins, fontIndex: "poppins" },
   { name: "Inter", src: inter, fontIndex: "inter" },
   { name: "EB Garamond", src: ebGaramond, fontIndex: "ebGaramond" },
@@ -57,11 +71,14 @@ const fonts = [
 ];
 
 export default function CustomThemeEditor() {
-  const [bodyBackgroundColor, cardBackgroundColor, themeColor, foreground, grayColor] = useToken(
-    "colors",
-    ["purple.50", "purple.100", "purple.500", "gray.600", "gray.300"]
-  );
-  const toast = Chakra.useToast();
+  const [bodyBackgroundColor, cardBackgroundColor, themeColor, foreground] = useToken("colors", [
+    "purple.50",
+    "purple.100",
+    "purple.500",
+    "gray.600",
+    "gray.300",
+  ]);
+  const toast = useToast();
 
   const { register, watch, setValue, handleSubmit } = useForm<ThemeSchema>({
     resolver: zodResolver(themeSchema),
@@ -72,7 +89,6 @@ export default function CustomThemeEditor() {
       bodyBackgroundColor,
       bodyBackgroundImage: null,
       cardBackgroundColor,
-      grayColor,
     },
   });
 
@@ -88,7 +104,6 @@ export default function CustomThemeEditor() {
             "bodyBackgroundImage",
             "bodyBackgroundImagePublicId",
             "cardBackgroundColor",
-            "grayColor",
             "font"
           ]
         ).map((key) => {
@@ -122,14 +137,14 @@ export default function CustomThemeEditor() {
   if (isLoading) return <Loader />;
 
   return (
-    <Chakra.VStack align="start" as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
-      <Chakra.FormControl>
-        <Chakra.FormLabel>Background type</Chakra.FormLabel>
-        <Chakra.Select {...register("bodyBackgroundType")}>
+    <VStack align="start" as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
+      <FormControl>
+        <FormLabel>Background type</FormLabel>
+        <Select {...register("bodyBackgroundType")}>
           <option value="COLOR">Solid color</option>
           <option value="IMAGE">Image</option>
-        </Chakra.Select>
-      </Chakra.FormControl>
+        </Select>
+      </FormControl>
       {watch("bodyBackgroundType") === "COLOR" ? (
         <ColorInput
           label="Body background color"
@@ -150,13 +165,13 @@ export default function CustomThemeEditor() {
             value={watch("cardBackgroundColor") || ""}
             onChange={(newColor) => setValue("cardBackgroundColor", newColor.hex)}
           />
-          <Chakra.FormControl>
-            <Chakra.FormLabel>Card shadow</Chakra.FormLabel>
-            <Chakra.SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} w="full" spacing={5}>
+          <FormControl>
+            <FormLabel>Card shadow</FormLabel>
+            <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} w="full" spacing={5}>
               {shadows.map((shadow) => {
                 const isSelected = watch("cardShadow") === shadow;
                 return (
-                  <Chakra.Box
+                  <Box
                     {...(isSelected ? { borderWidth: 2, borderColor: "blue.300" } : {})}
                     key={shadow}
                     cursor="pointer"
@@ -171,22 +186,17 @@ export default function CustomThemeEditor() {
                     color={getContrastColor(watch("cardBackgroundColor") as string)}
                   >
                     {isSelected ? (
-                      <Chakra.Radio
-                        spacing={5}
-                        isChecked={isSelected}
-                        readOnly
-                        colorScheme="purple"
-                      >
+                      <Radio spacing={5} isChecked={isSelected} readOnly colorScheme="purple">
                         {shadow}
-                      </Chakra.Radio>
+                      </Radio>
                     ) : (
                       shadow
                     )}
-                  </Chakra.Box>
+                  </Box>
                 );
               })}
-            </Chakra.SimpleGrid>
-          </Chakra.FormControl>
+            </SimpleGrid>
+          </FormControl>
         </>
       )}
       <ColorInput
@@ -201,19 +211,13 @@ export default function CustomThemeEditor() {
         value={watch("foreground") || ""}
         onChange={(newColor) => setValue("foreground", newColor.hex)}
       />
-      <ColorInput
-        label="Low contrast text color"
-        helperText="Color of the texts that will have low priority"
-        value={watch("grayColor") || ""}
-        onChange={(newColor) => setValue("grayColor", newColor.hex)}
-      />
-      <Chakra.FormControl>
-        <Chakra.FormLabel>Font</Chakra.FormLabel>
-        <Chakra.SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={5}>
+      <FormControl>
+        <FormLabel>Font</FormLabel>
+        <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={5}>
           {fonts.map((font) => {
             const isSelected = (watch("font") ?? DEFAULT_FONT_NAME) === font.fontIndex;
             return (
-              <Chakra.Box
+              <Box
                 cursor="pointer"
                 onClick={() => setValue("font", font.fontIndex)}
                 {...(isSelected ? { boxShadow: "outline" } : {})}
@@ -224,13 +228,13 @@ export default function CustomThemeEditor() {
                 rounded="md"
                 py={3}
               >
-                <Chakra.Text fontFamily={font.src.style.fontFamily}>{font.name}</Chakra.Text>
-              </Chakra.Box>
+                <Text fontFamily={font.src.style.fontFamily}>{font.name}</Text>
+              </Box>
             );
           })}
-        </Chakra.SimpleGrid>
-      </Chakra.FormControl>
-      <Chakra.Button
+        </SimpleGrid>
+      </FormControl>
+      <Button
         isLoading={isProcessing}
         type="submit"
         leftIcon={<Icon name="Save" />}
@@ -238,9 +242,9 @@ export default function CustomThemeEditor() {
         w="full"
       >
         Save changes
-      </Chakra.Button>
+      </Button>
       <ToggleCustomThemeButton />
-    </Chakra.VStack>
+    </VStack>
   );
 }
 
@@ -285,29 +289,24 @@ function AddBackgroundImage(props: {
   };
 
   return (
-    <Chakra.FormControl>
-      <Chakra.FormLabel>Image</Chakra.FormLabel>
+    <FormControl>
+      <FormLabel>Image</FormLabel>
       {bodyBackgroundImage ? (
-        <Chakra.VStack>
-          <Chakra.Image src={bodyBackgroundImage} alt="Background image" w="full" rounded="md" />
-          <Chakra.Button
-            isLoading={isLoading}
-            onClick={handleRemoveImage}
-            w="full"
-            colorScheme="red"
-          >
+        <VStack>
+          <Image src={bodyBackgroundImage} alt="Background image" w="full" rounded="md" />
+          <Button isLoading={isLoading} onClick={handleRemoveImage} w="full" colorScheme="red">
             Remove
-          </Chakra.Button>
-        </Chakra.VStack>
+          </Button>
+        </VStack>
       ) : (
-        <Chakra.Input
+        <Input
           disabled={isImageUploading}
           onChange={handleImageInputChange}
           accept="image/*"
           type="file"
         />
       )}
-    </Chakra.FormControl>
+    </FormControl>
   );
 }
 
@@ -323,8 +322,8 @@ function ToggleCustomThemeButton() {
   };
 
   return (
-    <Chakra.Button variant="link" isLoading={isLoading} onClick={handleClick}>
+    <Button variant="link" isLoading={isLoading} onClick={handleClick}>
       Use a pre-made theme instead
-    </Chakra.Button>
+    </Button>
   );
 }

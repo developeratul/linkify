@@ -1,7 +1,7 @@
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
+import { Icon } from "components";
 
 export default function CreateSectionModal() {
   const previewContext = usePreviewContext();
@@ -14,8 +14,13 @@ export default function CreateSectionModal() {
     previewContext?.reload();
   };
   return (
-    <Chakra.Button isLoading={isLoading} onClick={handleClick} colorScheme="purple" leftIcon={<Icon name="Create" />}>
+    <Button
+      isLoading={isLoading}
+      onClick={handleClick}
+      colorScheme="purple"
+      leftIcon={<Icon name="Create" />}
+    >
       Create new
-    </Chakra.Button>
+    </Button>
   );
 }

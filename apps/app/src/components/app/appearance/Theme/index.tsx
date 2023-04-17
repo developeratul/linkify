@@ -1,9 +1,9 @@
 import { Conditional } from "@/components/common/Conditional";
 import { SectionLoader } from "@/components/common/Loader";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import { Button, Center, Heading, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { Icon } from "components";
 import React from "react";
 import { ErrorMessage } from "../../common/Message";
 import SectionWrapper from "../common/SectionWrapper";
@@ -49,7 +49,7 @@ export default function Theme() {
         condition={!!theme?.isCustomTheme}
         component={<CustomThemeEditor />}
         fallback={
-          <Chakra.SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={5}>
+          <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={5}>
             <ThemePreview
               onSelect={() => {
                 setCurrentTheme("");
@@ -76,13 +76,13 @@ export default function Theme() {
                 />
               );
             })}
-            <Chakra.Center p={5} rounded="md" borderWidth={2}>
-              <Chakra.VStack w="full" spacing={3}>
-                <Chakra.Heading color="purple.500">
+            <Center p={5} rounded="md" borderWidth={2}>
+              <VStack w="full" spacing={3}>
+                <Heading color="purple.500">
                   <Icon name="CustomTheme" size={30} />
-                </Chakra.Heading>
-                <Chakra.Text>Custom</Chakra.Text>
-                <Chakra.Button
+                </Heading>
+                <Text>Make it your own</Text>
+                <Button
                   onClick={async () => {
                     await toggleCustomTheme();
                     await utils.appearance.getTheme.invalidate();
@@ -91,11 +91,11 @@ export default function Theme() {
                   colorScheme="purple"
                   w="full"
                 >
-                  Create
-                </Chakra.Button>
-              </Chakra.VStack>
-            </Chakra.Center>
-          </Chakra.SimpleGrid>
+                  Customize
+                </Button>
+              </VStack>
+            </Center>
+          </SimpleGrid>
         }
       />
     </SectionWrapper>

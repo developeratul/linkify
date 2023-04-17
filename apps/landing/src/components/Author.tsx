@@ -1,6 +1,6 @@
 import Ratul from "@/assets/ratul.jpg";
 import * as Chakra from "@chakra-ui/react";
-import { SocialIcon } from "components";
+import { TablerIcon } from "components";
 import Image from "next/image";
 import JoinWaitListButton from "./common/JoinWaitList";
 import SectionWrapper from "./common/SectionWrapper";
@@ -63,7 +63,7 @@ export default function Author() {
                 target="_blank"
                 aria-label="Minhazur Rahaman Ratul Twitter"
                 colorScheme="twitter"
-                icon={<SocialIcon name="IconBrandTwitter" />}
+                icon={<TablerIcon name="IconBrandTwitter" />}
               />
               <Chakra.IconButton
                 href="https://www.linkedin.com/in/minhazur-rahman-ratul-407352211"
@@ -71,7 +71,7 @@ export default function Author() {
                 target="_blank"
                 aria-label="Minhazur Rahaman Ratul LinkedIn"
                 colorScheme="linkedin"
-                icon={<SocialIcon name="IconBrandLinkedin" />}
+                icon={<TablerIcon name="IconBrandLinkedin" />}
               />
               <Chakra.IconButton
                 href="http://github.com/developeratul"
@@ -79,7 +79,7 @@ export default function Author() {
                 target="_blank"
                 aria-label="Minhazur Rahaman Ratul Github"
                 colorScheme="blackAlpha"
-                icon={<SocialIcon name="IconBrandGithub" />}
+                icon={<TablerIcon name="IconBrandGithub" />}
               />
             </Chakra.HStack>
           </Chakra.VStack>

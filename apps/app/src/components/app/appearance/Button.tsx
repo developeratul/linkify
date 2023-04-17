@@ -1,13 +1,21 @@
 import ColorInput from "@/components/app/common/ColorInput";
 import { SectionLoader } from "@/components/common/Loader";
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
 import type { BoxProps } from "@chakra-ui/react";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button as Button_1,
+  FormControl,
+  FormLabel,
+  SimpleGrid,
+  Text,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "../common/Message";
@@ -107,14 +115,14 @@ export default function Button() {
 
   return (
     <SectionWrapper title="Buttons">
-      <Chakra.VStack as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
-        <Chakra.FormControl>
-          <Chakra.FormLabel>Button style</Chakra.FormLabel>
-          <Chakra.SimpleGrid spacing={5} columns={{ base: 1, sm: 2, lg: 3 }}>
+      <VStack as="form" onSubmit={handleSubmit(onSubmit)} spacing={10}>
+        <FormControl>
+          <FormLabel>Button style</FormLabel>
+          <SimpleGrid spacing={5} columns={{ base: 1, sm: 2, lg: 3 }}>
             {buttonVariants.map((buttonVariantName) => {
               const isSelected = watch("buttonStyle") === buttonVariantName;
               return (
-                <Chakra.Box
+                <Box
                   onClick={() =>
                     setValue("buttonStyle", buttonVariantName as ButtonSchema["buttonStyle"])
                   }
@@ -129,22 +137,22 @@ export default function Button() {
                 />
               );
             })}
-          </Chakra.SimpleGrid>
-        </Chakra.FormControl>
-        <Chakra.VStack spacing={3} align="start" w="full">
+          </SimpleGrid>
+        </FormControl>
+        <VStack spacing={3} align="start" w="full">
           <ColorInput
             label="Button background"
             value={watch("buttonBackground") || theme?.themeColor || ""}
             onChange={(color) => setValue("buttonBackground", color.hex)}
           />
-          <Chakra.Text>
+          <Text>
             Don&apos;t want a different button background?{" "}
-            <Chakra.Button onClick={() => setValue("buttonBackground", null)} variant="link">
+            <Button_1 onClick={() => setValue("buttonBackground", null)} variant="link">
               Sync with your theme
-            </Chakra.Button>
-          </Chakra.Text>
-        </Chakra.VStack>
-        <Chakra.Button
+            </Button_1>
+          </Text>
+        </VStack>
+        <Button_1
           leftIcon={<Icon name="Save" />}
           isLoading={isProcessing}
           w="full"
@@ -152,8 +160,8 @@ export default function Button() {
           colorScheme="purple"
         >
           Save changes
-        </Chakra.Button>
-      </Chakra.VStack>
+        </Button_1>
+      </VStack>
     </SectionWrapper>
   );
 }

@@ -3,8 +3,27 @@ import { usePreviewContext } from "@/providers/preview";
 import type { Link } from "@/types";
 import { api } from "@/utils/api";
 import uploadFile from "@/utils/uploadFile";
-import * as Chakra from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  HStack,
+  Image,
+  Input,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
+  Text,
+  VStack,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import { AxiosError } from "axios";
 import type { ChangeEvent } from "react";
@@ -28,7 +47,7 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
   const [isEditingThumbnail, setEditingThumbnail] = React.useState(!!!thumbnail);
   const [file, setFile] = React.useState<Blob | null>();
   const [url, setUrl] = React.useState<string>("");
-  const { isOpen, onClose, onOpen } = Chakra.useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const toast = useToast();
   const utils = api.useContext();
 
@@ -102,52 +121,52 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
   }, [thumbnail]);
 
   return (
-    <Chakra.Popover onOpen={onOpen} isOpen={isOpen} onClose={closePopover}>
-      <Chakra.PopoverTrigger>{children}</Chakra.PopoverTrigger>
-      <Chakra.PopoverContent>
-        <Chakra.PopoverArrow />
-        <Chakra.PopoverCloseButton />
-        <Chakra.PopoverHeader>Thumbnail</Chakra.PopoverHeader>
-        <Chakra.PopoverBody>
+    <Popover onOpen={onOpen} isOpen={isOpen} onClose={closePopover}>
+      <PopoverTrigger>{children}</PopoverTrigger>
+      <PopoverContent>
+        <PopoverArrow />
+        <PopoverCloseButton />
+        <PopoverHeader>Thumbnail</PopoverHeader>
+        <PopoverBody>
           {isEditingThumbnail ? (
-            <Chakra.VStack>
-              <Chakra.FormControl>
-                <Chakra.FormLabel>Enter public URL</Chakra.FormLabel>
-                <Chakra.Input size="sm" onChange={handleUrlInputChange} name="url" value={url} />
-              </Chakra.FormControl>
-              <Chakra.Text py={1} fontWeight="medium">
+            <VStack>
+              <FormControl>
+                <FormLabel>Enter public URL</FormLabel>
+                <Input size="sm" onChange={handleUrlInputChange} name="url" value={url} />
+              </FormControl>
+              <Text py={1} fontWeight="medium">
                 or
-              </Chakra.Text>
-              <Chakra.FormControl>
-                <Chakra.FormLabel>Upload File</Chakra.FormLabel>
-                <Chakra.Input
+              </Text>
+              <FormControl>
+                <FormLabel>Upload File</FormLabel>
+                <Input
                   onChange={handleFileInputChange}
                   name="file"
                   size="sm"
                   type="file"
                   accept="image/jpeg, image/png, image/gif, image/svg+xml"
                 />
-              </Chakra.FormControl>
-            </Chakra.VStack>
+              </FormControl>
+            </VStack>
           ) : (
-            <Chakra.Box>
+            <Box>
               <Conditional
                 condition={!!thumbnail}
-                component={<Chakra.Image src={thumbnail as string} alt={thumbnail as string} />}
+                component={<Image src={thumbnail as string} alt={thumbnail as string} />}
                 fallback={
-                  <Chakra.Text textAlign="center" py={5} color="GrayText" fontWeight="medium">
+                  <Text textAlign="center" py={5} color="GrayText" fontWeight="medium">
                     No thumbnail
-                  </Chakra.Text>
+                  </Text>
                 }
               />
-            </Chakra.Box>
+            </Box>
           )}
-        </Chakra.PopoverBody>
-        <Chakra.PopoverFooter>
+        </PopoverBody>
+        <PopoverFooter>
           <Conditional
             condition={isEditingThumbnail}
             component={
-              <Chakra.Button
+              <Button
                 w="full"
                 size="sm"
                 colorScheme="purple"
@@ -155,23 +174,19 @@ export function AddThumbnail(props: { link: Link; children: React.ReactNode }) {
                 isLoading={isLoading}
               >
                 Save
-              </Chakra.Button>
+              </Button>
             }
             fallback={
-              <Chakra.HStack>
-                <Chakra.Button
-                  onClick={() => setEditingThumbnail(true)}
-                  size="sm"
-                  colorScheme="purple"
-                >
+              <HStack>
+                <Button onClick={() => setEditingThumbnail(true)} size="sm" colorScheme="purple">
                   Edit
-                </Chakra.Button>
+                </Button>
                 <RemoveThumbnail linkId={linkId} />
-              </Chakra.HStack>
+              </HStack>
             }
           />
-        </Chakra.PopoverFooter>
-      </Chakra.PopoverContent>
-    </Chakra.Popover>
+        </PopoverFooter>
+      </PopoverContent>
+    </Popover>
   );
 }

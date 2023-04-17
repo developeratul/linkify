@@ -61,6 +61,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
+import { getSubscription } from "@/lib/subscription";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { getServerAuthSession } from "../auth";
@@ -110,6 +111,25 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+// Middleware which checks if the user is subscribed or not
+const requirePayment = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+  const { isPro, isCanceled } = await getSubscription(ctx.session.user.id);
+
+  if (!isPro) throw new TRPCError({ code: "FORBIDDEN" });
+  if (isPro && isCanceled) throw new TRPCError({ code: "FORBIDDEN" });
+
+  return next({
+    ctx: {
+      session: {
+        ...ctx.session,
+        user: ctx.session.user,
+      },
+    },
+  });
+});
+
 /**
  * Protected (authed) procedure
  *
@@ -120,3 +140,5 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const premiumProcedure = t.procedure.use(requirePayment);

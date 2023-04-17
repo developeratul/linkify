@@ -1,11 +1,11 @@
 import { Conditional } from "@/components/common/Conditional";
 import { SEO } from "@/components/common/SEO";
-import AddTestimonialModal from "@/components/profile/AddTestimonial";
 import Container from "@/components/profile/Container";
 import Footer from "@/components/profile/Footer";
 import ProfileImage from "@/components/profile/ProfileImage";
 import ProfileIntro from "@/components/profile/ProfileIntro";
 import Sections from "@/components/profile/Sections";
+import SendTestimonial from "@/components/profile/SendTestimonial";
 import SocialLinks from "@/components/profile/SocialLinks";
 import Testimonials from "@/components/profile/Testimonials";
 import Wrapper from "@/components/profile/Wrapper";
@@ -17,20 +17,12 @@ import {
   ProfileThemeSelections,
 } from "@/server/api/routers/appearance";
 import { LinkSelections } from "@/server/api/routers/link";
-import { TestimonialSelections } from "@/server/api/routers/testimonial";
 import { prisma } from "@/server/db";
+import { TestimonialSelections } from "@/services/testimonial";
 import type { ProfileSection, SocialLink, Testimonial } from "@/types";
-import type { UseTabsProps } from "@chakra-ui/react";
-import * as Chakra from "@chakra-ui/react";
+import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import type { Button, Form, Layout, Settings, Theme } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
-import { useQueryState } from "next-usequerystate";
-import { useRouter } from "next/router";
-
-const tabs = {
-  links: 0,
-  testimonials: 1,
-};
 
 type ProfileProps = {
   profile: Profile;
@@ -40,19 +32,6 @@ const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { profile } = props;
-  const router = useRouter();
-  const { tab }: { tab?: "links" | "testimonials" } = router.query;
-  const [, setCurrentTab] = useQueryState("tab");
-  const defaultTabIndex = tab ? tabs[tab] || 0 : 0;
-
-  const handleTabsChange: UseTabsProps["onChange"] = (index) => {
-    for (const prop in tabs) {
-      if (tabs.hasOwnProperty(prop) && tabs[prop as keyof typeof tabs] === index) {
-        setCurrentTab(prop);
-      }
-    }
-  };
-
   return (
     <ProfileProvider profile={profile}>
       <SEO
@@ -61,7 +40,7 @@ const ProfilePage: NextPage<ProfileProps> = (
           profile.settings?.seoDescription || `@${profile.username}'s profile on Linkify`
         }
       />
-      <Chakra.Box
+      <Box
         background={
           profile.theme?.bodyBackgroundType === "IMAGE"
             ? `url('${profile.theme.bodyBackgroundImage}')`
@@ -74,7 +53,7 @@ const ProfilePage: NextPage<ProfileProps> = (
         py={50}
         px={{ base: 3, md: 5 }}
       >
-        <AddTestimonialModal />
+        {profile.isAcceptingTestimonials && <SendTestimonial />}
         <Container>
           <Wrapper>
             <ProfileImage />
@@ -83,27 +62,20 @@ const ProfilePage: NextPage<ProfileProps> = (
             <Conditional
               condition={profile.testimonials.length > 0}
               component={
-                <Chakra.Tabs
-                  onChange={handleTabsChange}
-                  defaultIndex={defaultTabIndex}
-                  isLazy
-                  isFitted
-                  colorScheme="brand"
-                  w="full"
-                >
-                  <Chakra.TabList>
-                    <Chakra.Tab>Links</Chakra.Tab>
-                    <Chakra.Tab>Testimonials</Chakra.Tab>
-                  </Chakra.TabList>
-                  <Chakra.TabPanels>
-                    <Chakra.TabPanel px={0} py={5}>
+                <Tabs isLazy isFitted colorScheme="brand" w="full">
+                  <TabList>
+                    <Tab>Links</Tab>
+                    <Tab>Testimonials</Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel px={0} py={5}>
                       <Sections />
-                    </Chakra.TabPanel>
-                    <Chakra.TabPanel px={0} py={5}>
+                    </TabPanel>
+                    <TabPanel px={0} py={5}>
                       <Testimonials />
-                    </Chakra.TabPanel>
-                  </Chakra.TabPanels>
-                </Chakra.Tabs>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
               }
               fallback={<Sections />}
             />
@@ -111,7 +83,7 @@ const ProfilePage: NextPage<ProfileProps> = (
           </Wrapper>
           <Footer />
         </Container>
-      </Chakra.Box>
+      </Box>
     </ProfileProvider>
   );
 };
@@ -136,6 +108,7 @@ export type Profile = {
   bio: string | null;
   image?: string | null;
   profileTitle?: string | null;
+  isAcceptingTestimonials: boolean;
   layout?: ProfileLayout | null;
   theme?: ProfileTheme | null;
   button?: ProfileButton | null;
@@ -158,6 +131,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
       bio: true,
       image: true,
       profileTitle: true,
+      isAcceptingTestimonials: true,
       layout: { select: ProfileLayoutSelections },
       theme: { select: ProfileThemeSelections },
       settings: { select: ProfileSettingsSelections },
@@ -169,47 +143,25 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
           name: true,
           links: {
             where: { hidden: false },
-            select: {
-              ...LinkSelections,
-              hidden: false,
-              clickCount: false,
-            },
-            orderBy: {
-              index: "asc",
-            },
+            select: { ...LinkSelections, hidden: false },
+            orderBy: { index: "asc" },
           },
         },
-        orderBy: {
-          index: "asc",
-        },
+        orderBy: { index: "asc" },
       },
       socialLinks: {
-        select: {
-          id: true,
-          icon: true,
-          url: true,
-        },
-        orderBy: {
-          index: "asc",
-        },
+        select: { id: true, icon: true, url: true },
+        orderBy: { index: "asc" },
       },
       testimonials: {
-        where: {
-          shouldShow: true,
-        },
+        where: { shouldShow: true },
         select: TestimonialSelections,
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: { createdAt: "desc" },
       },
     },
   });
 
-  if (!user || !user.username || !user.bio) {
-    return {
-      notFound: true,
-    };
-  }
+  if (!user || !user.username || !user.bio) return { notFound: true };
 
   return {
     props: { profile: user satisfies Profile },

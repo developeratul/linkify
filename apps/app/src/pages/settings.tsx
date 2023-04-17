@@ -1,10 +1,19 @@
-import { Icon } from "@/Icons";
 import { AppLayout } from "@/Layouts/app";
+import type { NextPageWithLayout } from "@/pages/_app";
 import { getServerAuthSession, requireAuth } from "@/server/auth";
-import * as Chakra from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  VStack,
+} from "@chakra-ui/react";
+import { Icon } from "components";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useForm } from "react-hook-form";
-import type { NextPageWithLayout } from "../_app";
 
 const settingsSchema = z.object({
   seoTitle: z.string().optional(),
@@ -53,26 +62,26 @@ const SettingsPage: NextPageWithLayout<{ settings: Settings }> = (
     }
   };
   return (
-    <Chakra.VStack maxW="2xl" w="full" align="start">
-      <Chakra.Card w="full" bg="white" size="lg">
-        <Chakra.CardBody>
-          <Chakra.VStack spacing="5" as="form" onSubmit={handleSubmit(onSubmit)}>
-            <Chakra.FormControl>
-              <Chakra.FormLabel>SEO Title</Chakra.FormLabel>
-              <Chakra.Input {...register("seoTitle")} />
-            </Chakra.FormControl>
-            <Chakra.FormControl>
-              <Chakra.FormLabel>SEO Description</Chakra.FormLabel>
-              <Chakra.Input {...register("seoDescription")} />
-            </Chakra.FormControl>
-            <Chakra.FormControl>
-              <Chakra.FormLabel>Social links position</Chakra.FormLabel>
-              <Chakra.Select {...register("socialIconPlacement")}>
+    <VStack maxW="2xl" w="full" align="start">
+      <Card w="full" bg="white" size="lg">
+        <CardBody>
+          <VStack spacing="5" as="form" onSubmit={handleSubmit(onSubmit)}>
+            <FormControl>
+              <FormLabel>SEO Title</FormLabel>
+              <Input {...register("seoTitle")} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>SEO Description</FormLabel>
+              <Input {...register("seoDescription")} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Social links position</FormLabel>
+              <Select {...register("socialIconPlacement")}>
                 <option value="TOP">Top</option>
                 <option value="BOTTOM">Bottom</option>
-              </Chakra.Select>
-            </Chakra.FormControl>
-            <Chakra.Button
+              </Select>
+            </FormControl>
+            <Button
               type="submit"
               isLoading={isProcessing}
               colorScheme="purple"
@@ -80,11 +89,11 @@ const SettingsPage: NextPageWithLayout<{ settings: Settings }> = (
               w="full"
             >
               Save changes
-            </Chakra.Button>
-          </Chakra.VStack>
-        </Chakra.CardBody>
-      </Chakra.Card>
-    </Chakra.VStack>
+            </Button>
+          </VStack>
+        </CardBody>
+      </Card>
+    </VStack>
   );
 };
 

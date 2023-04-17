@@ -1,17 +1,31 @@
-import { Icon } from "@/Icons";
 import { usePreviewContext } from "@/providers/preview";
 import { api } from "@/utils/api";
-import * as Chakra from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Box,
+  Button,
+  IconButton,
+  Tooltip,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
+import { Icon } from "components";
 import React from "react";
 
 export default function DeleteSection(props: { sectionId: string }) {
   const previewContext = usePreviewContext();
   const { sectionId } = props;
   const { mutateAsync, isLoading } = api.section.delete.useMutation();
-  const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
-  const toast = Chakra.useToast();
+  const toast = useToast();
   const utils = api.useContext();
 
   const handleClick = async () => {
@@ -28,9 +42,9 @@ export default function DeleteSection(props: { sectionId: string }) {
   };
 
   return (
-    <Chakra.Box>
-      <Chakra.Tooltip hasArrow label="Delete section">
-        <Chakra.IconButton
+    <Box>
+      <Tooltip hasArrow label="Delete section">
+        <IconButton
           isLoading={isLoading}
           onClick={onOpen}
           colorScheme="red"
@@ -38,31 +52,26 @@ export default function DeleteSection(props: { sectionId: string }) {
           icon={<Icon name="Delete" />}
           aria-label="Delete section"
         />
-      </Chakra.Tooltip>
-      <Chakra.AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered
-      >
-        <Chakra.AlertDialogOverlay />
-        <Chakra.AlertDialogContent>
-          <Chakra.AlertDialogHeader>Delete Section?</Chakra.AlertDialogHeader>
-          <Chakra.AlertDialogCloseButton />
-          <Chakra.AlertDialogBody>
+      </Tooltip>
+      <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose} isCentered>
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>Delete Section?</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
             Are you sure? This action will cause permanent data loss. All the links inside this
             section will also get deleted.
-          </Chakra.AlertDialogBody>
-          <Chakra.AlertDialogFooter>
-            <Chakra.Button mr={3} ref={cancelRef} onClick={onClose}>
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button mr={3} ref={cancelRef} onClick={onClose}>
               No
-            </Chakra.Button>
-            <Chakra.Button isLoading={isLoading} onClick={handleClick} colorScheme="purple">
+            </Button>
+            <Button isLoading={isLoading} onClick={handleClick} colorScheme="purple">
               Yes
-            </Chakra.Button>
-          </Chakra.AlertDialogFooter>
-        </Chakra.AlertDialogContent>
-      </Chakra.AlertDialog>
-    </Chakra.Box>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Box>
   );
 }
