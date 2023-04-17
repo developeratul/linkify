@@ -21,7 +21,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import type { NextPageWithLayout } from "./_app";
 
 function StatWrapper(
@@ -33,7 +32,7 @@ function StatWrapper(
 ) {
   const { children, isLoading, isError, errorMessage } = props;
   return (
-    <Flex direction="column" justify="center" borderWidth={1} rounded="md" bg="white" p={5}>
+    <Flex direction="column" justify="center" borderWidth={1} rounded="lg" bg="white" p={5}>
       <Conditional
         condition={!isLoading}
         fallback={<Spinner mx="auto" my="35px" />}
@@ -171,16 +170,7 @@ const data = [
 ];
 
 function DataChart() {
-  return (
-    <LineChart width={1000} height={400} data={data}>
-      <Line type="monotone" dataKey="clicks" stroke="#FF0000" />
-      <Line type="monotone" dataKey="visitors" stroke="#8000ff" />
-      <Line type="monotone" dataKey="pageViews" stroke="#ff7b00" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip useTranslate3d />
-    </LineChart>
-  );
+  return <Flex placeItems="center" bg="white" w="full" p={10} rounded="lg"></Flex>;
 }
 
 const AnalyticsPage: NextPageWithLayout = () => {
@@ -191,7 +181,7 @@ const AnalyticsPage: NextPageWithLayout = () => {
   };
   return (
     <Container maxW="container.xl">
-      <VStack spacing={36} w="full">
+      <VStack spacing={5} w="full">
         <VStack spacing={5} w="full">
           <HStack w="full" justify="space-between" align="center">
             <Box>
@@ -202,7 +192,7 @@ const AnalyticsPage: NextPageWithLayout = () => {
               </Select>
             </Box>
           </HStack>
-          <SimpleGrid w="full" spacing={5} columns={4}>
+          <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
             <VisitorStat within={analyticsWithin} />
             <PageViewStat within={analyticsWithin} />
             <LinkClickStat within={analyticsWithin} />
