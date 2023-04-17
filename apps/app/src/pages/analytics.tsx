@@ -21,6 +21,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
+import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import type { NextPageWithLayout } from "./_app";
 
 function StatWrapper(
@@ -63,14 +64,18 @@ function VisitorStat(props: { within: AnalyticsWithin }) {
     <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>Visitors</StatLabel>
       <StatNumber>{data?.currentCount}</StatNumber>
-      {(data?.increasedPercentage as number) !== 0 && (
-        <StatHelpText>
-          <StatArrow
-            type={isPositiveNumber(data?.increasedPercentage as number) ? "increase" : "decrease"}
-          />
-          {data?.increasedPercentage}%
-        </StatHelpText>
-      )}
+      <Conditional
+        condition={(data?.increasedPercentage as number) !== 0}
+        fallback="--"
+        component={
+          <StatHelpText>
+            <StatArrow
+              type={isPositiveNumber(data?.increasedPercentage as number) ? "increase" : "decrease"}
+            />
+            {data?.increasedPercentage}%
+          </StatHelpText>
+        }
+      />
     </StatWrapper>
   );
 }
@@ -86,14 +91,18 @@ function PageViewStat(props: { within: AnalyticsWithin }) {
     <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>Page views</StatLabel>
       <StatNumber>{data?.currentCount}</StatNumber>
-      {(data?.increasedPercentage as number) !== 0 && (
-        <StatHelpText>
-          <StatArrow
-            type={isPositiveNumber(data?.increasedPercentage as number) ? "increase" : "decrease"}
-          />
-          {data?.increasedPercentage}%
-        </StatHelpText>
-      )}
+      <Conditional
+        condition={(data?.increasedPercentage as number) !== 0}
+        fallback="--"
+        component={
+          <StatHelpText>
+            <StatArrow
+              type={isPositiveNumber(data?.increasedPercentage as number) ? "increase" : "decrease"}
+            />
+            {data?.increasedPercentage}%
+          </StatHelpText>
+        }
+      />
     </StatWrapper>
   );
 }
@@ -108,6 +117,18 @@ function CTRStat(props: { within: AnalyticsWithin }) {
     <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>CTR</StatLabel>
       <StatNumber>{data?.currentCTR}%</StatNumber>
+      <Conditional
+        condition={(data?.increasedPercentage as number) !== 0}
+        fallback="--"
+        component={
+          <StatHelpText>
+            <StatArrow
+              type={isPositiveNumber(data?.increasedPercentage as number) ? "increase" : "decrease"}
+            />
+            {data?.increasedPercentage}%
+          </StatHelpText>
+        }
+      />
     </StatWrapper>
   );
 }
@@ -123,15 +144,42 @@ function LinkClickStat(props: { within: AnalyticsWithin }) {
     <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>Link clicks</StatLabel>
       <StatNumber>{data?.currentCount}</StatNumber>
-      {(data?.increasedPercentage as number) !== 0 && (
-        <StatHelpText>
-          <StatArrow
-            type={isPositiveNumber(data?.increasedPercentage as number) ? "increase" : "decrease"}
-          />
-          {data?.increasedPercentage}%
-        </StatHelpText>
-      )}
+      <Conditional
+        condition={(data?.increasedPercentage as number) !== 0}
+        fallback="--"
+        component={
+          <StatHelpText>
+            <StatArrow
+              type={isPositiveNumber(data?.increasedPercentage as number) ? "increase" : "decrease"}
+            />
+            {data?.increasedPercentage}%
+          </StatHelpText>
+        }
+      />
     </StatWrapper>
+  );
+}
+
+const data = [
+  { name: "Yesterday", visitors: 1000, pageViews: 5600, clicks: 340 },
+  { name: "12 July", visitors: 600, pageViews: 1200, clicks: 500 },
+  { name: "11 July", visitors: 700, pageViews: 7000, clicks: 120 },
+  { name: "10 July", visitors: 560, pageViews: 8000, clicks: 904 },
+  { name: "9 July", visitors: 1200, pageViews: 5560, clicks: 493 },
+  { name: "8 July", visitors: 600, pageViews: 5560, clicks: 858 },
+  { name: "7 July", visitors: 809, pageViews: 9059, clicks: 430 },
+];
+
+function DataChart() {
+  return (
+    <LineChart width={1000} height={400} data={data}>
+      <Line type="monotone" dataKey="clicks" stroke="#FF0000" />
+      <Line type="monotone" dataKey="visitors" stroke="#8000ff" />
+      <Line type="monotone" dataKey="pageViews" stroke="#ff7b00" />
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip useTranslate3d />
+    </LineChart>
   );
 }
 
@@ -143,22 +191,25 @@ const AnalyticsPage: NextPageWithLayout = () => {
   };
   return (
     <Container maxW="container.xl">
-      <VStack spacing={5}>
-        <HStack w="full" justify="space-between" align="center">
-          <Box>
-            <Select variant="filled" value={analyticsWithin} onChange={handleSelectInputChange}>
-              <option value="WEEK">Last 7 days</option>
-              <option value="MONTH">Last 30 days</option>
-              <option value="ALL_TIME">All time</option>
-            </Select>
-          </Box>
-        </HStack>
-        <SimpleGrid w="full" spacing={5} columns={4}>
-          <VisitorStat within={analyticsWithin} />
-          <PageViewStat within={analyticsWithin} />
-          <LinkClickStat within={analyticsWithin} />
-          <CTRStat within={analyticsWithin} />
-        </SimpleGrid>
+      <VStack spacing={36} w="full">
+        <VStack spacing={5} w="full">
+          <HStack w="full" justify="space-between" align="center">
+            <Box>
+              <Select variant="filled" value={analyticsWithin} onChange={handleSelectInputChange}>
+                <option value="WEEK">Last 7 days</option>
+                <option value="MONTH">Last 30 days</option>
+                <option value="ALL_TIME">All time</option>
+              </Select>
+            </Box>
+          </HStack>
+          <SimpleGrid w="full" spacing={5} columns={4}>
+            <VisitorStat within={analyticsWithin} />
+            <PageViewStat within={analyticsWithin} />
+            <LinkClickStat within={analyticsWithin} />
+            <CTRStat within={analyticsWithin} />
+          </SimpleGrid>
+        </VStack>
+        <DataChart />
       </VStack>
     </Container>
   );

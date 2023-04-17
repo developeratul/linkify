@@ -66,19 +66,19 @@ const analyticsRouter = createTRPCRouter({
 
       if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
-      const { currentCount: currentTotalClicks } = await AnalyticsService.get(
-        "CLICK",
-        userId,
-        within
-      );
-      const { currentCount: currentTotalViews } = await AnalyticsService.get(
-        "VIEW",
-        userId,
-        within
-      );
-      const currentCTR = parseFloat(((currentTotalClicks / currentTotalViews) * 100).toFixed(2));
+      const { currentCount: currentTotalClicks, previousCount: previousTotalClicks } =
+        await AnalyticsService.get("CLICK", userId, within);
+      const { currentCount: currentTotalViews, previousCount: previousTotalViews } =
+        await AnalyticsService.get("VIEW", userId, within);
 
-      return { currentCTR };
+      const currentCTR = parseFloat(((currentTotalClicks / currentTotalViews) * 100).toFixed(2));
+      const previousCTR = parseFloat(((previousTotalClicks / previousTotalViews) * 100).toFixed(2));
+
+      const increasedPercentage = parseFloat(
+        (((currentCTR - previousCTR) / previousCTR) * 100).toFixed(2)
+      );
+
+      return { currentCTR, increasedPercentage, previousCTR };
     }),
 });
 

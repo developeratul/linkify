@@ -51,6 +51,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.41.5",
     "react-star-ratings": "^2.3.0",
+    "recharts": "^2.5.0",
     "superjson": "1.9.1",
     "theme": "*",
     "tsconfig": "*",
