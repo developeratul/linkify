@@ -353,7 +353,6 @@ function FormSettingsModal(props: { form: Form }) {
   const router = useRouter();
 
   const handleSaveChanges = async (values: FormSchema) => {
-    console.log({ values });
     try {
       const message = await mutateAsync(values);
       router.push(router.asPath);
@@ -465,11 +464,13 @@ function useEnableFormToggle() {
   const { mutateAsync, isLoading } = api.form.enableFormToggle.useMutation();
   const toast = useToast();
   const utils = api.useContext();
+  const router = useRouter();
 
   const handleClick = async () => {
     try {
       await mutateAsync();
       await utils.form.findMany.invalidate();
+      await router.reload();
     } catch (err) {
       if (err instanceof TRPCClientError) {
         toast({ status: "error", description: err.message });
@@ -594,6 +595,8 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   if (!user?.username || !user?.bio) {
     return { redirect: { destination: "/auth/onboarding", permanent: false } };
   }
+
+  console.log({ form: user?.form });
 
   return { props: { form: user.form } };
 });

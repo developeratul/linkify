@@ -55,7 +55,7 @@ const formRouter = createTRPCRouter({
     } else {
       await ctx.prisma.user.update({
         where: { id: userId },
-        data: { form: { create: {} } },
+        data: { form: { create: { isAcceptingSubmissions: true } } },
       });
     }
 
