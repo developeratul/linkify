@@ -14,6 +14,9 @@ const config = {
     defaultLocale: "en",
   },
   transpilePackages: ["components"],
+  images: {
+    remotePatterns: [{ hostname: "placehold.co" }],
+  },
 };
 
 import { withSuperjson } from "next-superjson";

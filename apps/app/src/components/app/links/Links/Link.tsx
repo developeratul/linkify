@@ -44,7 +44,7 @@ export function Link(props: LinkProps) {
                   <Image
                     alt="Thumbnail"
                     rounded="md"
-                    fallbackSrc="https://via.placeholder.com/50"
+                    fallbackSrc="https://placehold.co/50x50"
                     fit="cover"
                     boxSize={50}
                     cursor="pointer"
@@ -54,7 +54,7 @@ export function Link(props: LinkProps) {
                   <Image
                     alt="No thumbnail"
                     rounded="md"
-                    src={`https://via.placeholder.com/50/${purple100.replace(
+                    src={`https://placehold.co/50x50/${purple100.replace(
                       "#",
                       ""
                     )}/${purple500.replace("#", "")}`}
