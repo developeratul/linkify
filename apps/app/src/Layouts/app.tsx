@@ -1,4 +1,5 @@
 import AppBar from "@/components/app/common/AppBar";
+import ShareProfile from "@/components/app/common/ShareProfile";
 import { Conditional } from "@/components/common/Conditional";
 import Loader from "@/components/common/Loader";
 import { SEO } from "@/components/common/SEO";
@@ -53,6 +54,7 @@ export function AppLayout(props: AppLayoutProps) {
     <Box bg="purple.50" className="h-[100vh] w-full overflow-x-hidden">
       <SEO title="App" description="The Linkify editor where your page is customized" />
       <AppBar />
+      <ShareProfile />
       <PreviewProvider>
         <HStack spacing={0} w="full" align="start">
           <Stack w="full" p={3} align="center">

@@ -82,7 +82,7 @@ export function PreviewDrawer() {
               ) : (
                 <Hide above="md">
                   <iframe
-                    src={`/${username}`}
+                    src={`/${username}?type=preview`}
                     ref={ref}
                     className="mx-auto h-full w-full max-w-md"
                   />
