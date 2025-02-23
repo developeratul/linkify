@@ -32,7 +32,7 @@ export function PreviewPanel() {
           <Center w="full" h="full" p={10}>
             <iframe
               className="mx-auto h-full w-full max-w-sm rounded-3xl border-8 border-gray-900"
-              src={`/${username}`}
+              src={`/${username}?type=preview`}
               ref={ref}
             />
           </Center>

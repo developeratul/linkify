@@ -50,9 +50,12 @@ const AnalyticsService = {
       },
     });
 
-    const increasedPercentage = parseFloat(
-      (((currentCount - previousCount) / previousCount) * 100).toFixed(2)
-    );
+    const increasedPercentage =
+      // No Growth
+      currentCount - previousCount === 0
+        ? 0
+        : // Growth or downfall percentage
+          parseFloat((((currentCount - previousCount) / previousCount) * 100).toFixed(2));
 
     return { currentCount, previousCount, increasedPercentage };
   },

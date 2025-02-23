@@ -9,6 +9,7 @@ import {
   Container,
   Flex,
   HStack,
+  Image,
   Select,
   SimpleGrid,
   Spinner,
@@ -159,6 +160,53 @@ function LinkClickStat(props: { within: AnalyticsWithin }) {
   );
 }
 
+function CountryAnalytics() {
+  const [dateRange, setDateRange] = React.useState({
+    startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+    endDate: new Date(),
+  });
+
+  const { data, isLoading, isError, error } = api.analytics.getCountryAnalytics.useQuery({
+    startDate: dateRange.startDate,
+    endDate: dateRange.endDate,
+  });
+
+  return (
+    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+      <StatLabel fontSize="lg" fontWeight="bold" mb={4}>
+        Top Countries
+      </StatLabel>
+      <VStack w="full" align="stretch" spacing={2} bg="white" p={4} rounded="lg">
+        {data?.slice(0, 5).map((item, index) => (
+          <HStack
+            key={item.country}
+            justify="space-between"
+            p={2}
+            bg={index % 2 === 0 ? "gray.50" : "white"}
+            rounded="md"
+          >
+            <HStack spacing={3}>
+              <Text color="gray.500" fontSize="sm">
+                {index + 1}.
+              </Text>
+              <Image
+                alt={`${item.country} flag`}
+                width={6}
+                height={4}
+                src={`https://flagcdn.com/w20/${item.country?.toLowerCase()}.png`}
+              />
+              <Text fontWeight="medium">{item.country}</Text>
+            </HStack>
+            <Text fontSize="sm" color="gray.600" fontWeight="medium">
+              {item.count} visits
+            </Text>
+          </HStack>
+        ))}
+      </VStack>
+    </StatWrapper>
+  );
+}
+
 const data = [
   { name: "Yesterday", visitors: 1000, pageViews: 5600, clicks: 340 },
   { name: "12 July", visitors: 600, pageViews: 1200, clicks: 500 },
@@ -197,6 +245,9 @@ const AnalyticsPage: NextPageWithLayout = () => {
             <PageViewStat within={analyticsWithin} />
             <LinkClickStat within={analyticsWithin} />
             <CTRStat within={analyticsWithin} />
+          </SimpleGrid>
+          <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2 }}>
+            <CountryAnalytics />
           </SimpleGrid>
         </VStack>
         <DataChart />

@@ -8,10 +8,14 @@ import { parseCookies, setCookie } from "nookies";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const parsedCookies = parseCookies({ req });
-    const { userId } = req.body;
+    const { userId, type } = req.body;
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "`userId` must be provided" });
+    }
+
+    if (type === "preview") {
+      return res.json({});
     }
 
     const country = detectCountry();

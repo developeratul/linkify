@@ -74,11 +74,48 @@ const analyticsRouter = createTRPCRouter({
       const currentCTR = parseFloat(((currentTotalClicks / currentTotalViews) * 100).toFixed(2));
       const previousCTR = parseFloat(((previousTotalClicks / previousTotalViews) * 100).toFixed(2));
 
-      const increasedPercentage = parseFloat(
-        (((currentCTR - previousCTR) / previousCTR) * 100).toFixed(2)
-      );
+      const increasedPercentage =
+        currentCTR - previousCTR === 0
+          ? 0
+          : parseFloat((((currentCTR - previousCTR) / previousCTR) * 100).toFixed(2));
 
       return { currentCTR, increasedPercentage, previousCTR };
+    }),
+
+  getCountryAnalytics: protectedProcedure
+    .input(
+      z.object({
+        startDate: z.date(),
+        endDate: z.date(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const analytics = await ctx.prisma.analytics.groupBy({
+        by: ["fromCountry"],
+        where: {
+          userId: ctx.session.user.id,
+          createdAt: {
+            gte: input.startDate,
+            lte: input.endDate,
+          },
+          fromCountry: {
+            not: null,
+          },
+        },
+        _count: {
+          fromCountry: true,
+        },
+        orderBy: {
+          _count: {
+            fromCountry: "desc",
+          },
+        },
+      });
+
+      return analytics.map((item) => ({
+        country: item.fromCountry,
+        count: item._count.fromCountry,
+      }));
     }),
 });
 

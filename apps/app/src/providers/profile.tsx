@@ -13,6 +13,7 @@ import { ChakraProvider, ColorModeProvider, extendTheme } from "@chakra-ui/react
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import type { NextFont } from "next/dist/compiled/@next/font";
+import { useRouter } from "next/router";
 import { generatePalette } from "palette-by-numbers";
 import React from "react";
 
@@ -43,6 +44,8 @@ export default function ProfileProvider(props: ProfileProviderProps) {
   const { children, profile } = props;
   const defaultTheme = useDefaultProfileTheme();
   const font = fonts[profile.theme?.font || DEFAULT_FONT_NAME] || defaultFont;
+  const router = useRouter();
+  const { query } = router;
 
   const value: InitialState = {
     ...profile,
@@ -89,7 +92,8 @@ export default function ProfileProvider(props: ProfileProviderProps) {
   // capture page view
   useQuery({
     queryKey: ["capture-page-view", value.id],
-    queryFn: ({ queryKey }) => axios.post("/api/analytics", { userId: queryKey[1] }),
+    queryFn: ({ queryKey }) =>
+      axios.post("/api/analytics", { userId: queryKey[1], type: query.type }),
   });
 
   return (
