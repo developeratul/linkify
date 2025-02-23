@@ -1,4 +1,4 @@
-import AnalyticsService, { analyticsWithin } from "@/services/analytics";
+import AnalyticsService, { analyticsWithin, days } from "@/services/analytics";
 import { detectCountry } from "@/utils/country-detector";
 import deviceDetector from "@/utils/device-detector";
 import { TRPCError } from "@trpc/server";
@@ -85,19 +85,24 @@ const analyticsRouter = createTRPCRouter({
   getCountryAnalytics: protectedProcedure
     .input(
       z.object({
-        startDate: z.date(),
-        endDate: z.date(),
+        within: analyticsWithin,
       })
     )
     .query(async ({ ctx, input }) => {
+      const today = new Date();
+      const { within } = input;
+      const isAllTime = within === "ALL_TIME";
+
       const analytics = await ctx.prisma.analytics.groupBy({
         by: ["fromCountry"],
         where: {
           userId: ctx.session.user.id,
-          createdAt: {
-            gte: input.startDate,
-            lte: input.endDate,
-          },
+          createdAt: isAllTime
+            ? {}
+            : {
+                gt: new Date(today.getTime() - days[within] * 24 * 60 * 60 * 1000),
+                lt: new Date(),
+              },
           fromCountry: {
             not: null,
           },

@@ -5,7 +5,7 @@ import z from "zod";
 export const analyticsWithin = z.enum(["WEEK", "MONTH", "ALL_TIME"]);
 export type AnalyticsWithin = z.infer<typeof analyticsWithin>;
 
-const days: Record<AnalyticsWithin, number> = {
+export const days: Record<AnalyticsWithin, number> = {
   WEEK: 7,
   MONTH: 30,
   ALL_TIME: 0,

@@ -160,15 +160,10 @@ function LinkClickStat(props: { within: AnalyticsWithin }) {
   );
 }
 
-function CountryAnalytics() {
-  const [dateRange, setDateRange] = React.useState({
-    startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
-    endDate: new Date(),
-  });
-
+function CountryAnalytics(props: { within: AnalyticsWithin }) {
+  const { within } = props;
   const { data, isLoading, isError, error } = api.analytics.getCountryAnalytics.useQuery({
-    startDate: dateRange.startDate,
-    endDate: dateRange.endDate,
+    within,
   });
 
   return (
@@ -198,7 +193,7 @@ function CountryAnalytics() {
               <Text fontWeight="medium">{item.country}</Text>
             </HStack>
             <Text fontSize="sm" color="gray.600" fontWeight="medium">
-              {item.count} visits
+              {item.count} views
             </Text>
           </HStack>
         ))}
@@ -206,16 +201,6 @@ function CountryAnalytics() {
     </StatWrapper>
   );
 }
-
-const data = [
-  { name: "Yesterday", visitors: 1000, pageViews: 5600, clicks: 340 },
-  { name: "12 July", visitors: 600, pageViews: 1200, clicks: 500 },
-  { name: "11 July", visitors: 700, pageViews: 7000, clicks: 120 },
-  { name: "10 July", visitors: 560, pageViews: 8000, clicks: 904 },
-  { name: "9 July", visitors: 1200, pageViews: 5560, clicks: 493 },
-  { name: "8 July", visitors: 600, pageViews: 5560, clicks: 858 },
-  { name: "7 July", visitors: 809, pageViews: 9059, clicks: 430 },
-];
 
 function DataChart() {
   return <Flex placeItems="center" bg="white" w="full" p={10} rounded="lg"></Flex>;
@@ -247,7 +232,7 @@ const AnalyticsPage: NextPageWithLayout = () => {
             <CTRStat within={analyticsWithin} />
           </SimpleGrid>
           <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2 }}>
-            <CountryAnalytics />
+            <CountryAnalytics within={analyticsWithin} />
           </SimpleGrid>
         </VStack>
         <DataChart />
