@@ -68,6 +68,7 @@ const analyticsRouter = createTRPCRouter({
 
       const { currentCount: currentTotalClicks, previousCount: previousTotalClicks } =
         await AnalyticsService.get("CLICK", userId, within);
+
       const { currentCount: currentTotalViews, previousCount: previousTotalViews } =
         await AnalyticsService.get("VIEW", userId, within);
 
@@ -106,6 +107,9 @@ const analyticsRouter = createTRPCRouter({
           fromCountry: {
             not: null,
           },
+          event: {
+            not: "CLICK",
+          },
         },
         _count: {
           fromCountry: true,
@@ -121,6 +125,96 @@ const analyticsRouter = createTRPCRouter({
         country: item.fromCountry,
         count: item._count.fromCountry,
       }));
+    }),
+
+  getFromBrowserAnalytics: protectedProcedure
+    .input(
+      z.object({
+        within: analyticsWithin,
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { within } = input;
+      const today = new Date();
+      const isAllTime = within === "ALL_TIME";
+
+      const analytics = await ctx.prisma.analytics.groupBy({
+        by: ["fromBrowser"],
+        where: {
+          userId: ctx.session.user.id,
+          createdAt: isAllTime
+            ? {}
+            : {
+                gt: new Date(today.getTime() - days[within] * 24 * 60 * 60 * 1000),
+                lt: new Date(),
+              },
+          fromBrowser: {
+            not: null,
+          },
+          event: {
+            not: "CLICK",
+          },
+        },
+        _count: {
+          fromBrowser: true,
+        },
+        orderBy: {
+          _count: {
+            fromBrowser: "desc",
+          },
+        },
+      });
+
+      return analytics.map((item) => ({
+        browser: item.fromBrowser,
+        count: item._count.fromBrowser,
+      }));
+    }),
+
+  getTopLinksAnalytics: protectedProcedure
+    .input(
+      z.object({
+        within: analyticsWithin,
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { within } = input;
+      const today = new Date();
+      const isAllTime = within === "ALL_TIME";
+
+      const analytics = await ctx.prisma.analytics.groupBy({
+        by: ["linkId"],
+        where: {
+          userId: ctx.session.user.id,
+          createdAt: isAllTime
+            ? {}
+            : {
+                gt: new Date(today.getTime() - days[within] * 24 * 60 * 60 * 1000),
+                lt: new Date(),
+              },
+          event: "CLICK",
+        },
+        _count: { linkId: true },
+        orderBy: { _count: { linkId: "desc" } },
+      });
+
+      const linksWithAnalytics = await ctx.prisma.link.findMany({
+        where: { id: { in: analytics.map((a) => a.linkId).filter((linkId) => linkId !== null) } },
+        select: { id: true, url: true, text: true },
+      });
+
+      const result = analytics.map((item) => {
+        const link = linksWithAnalytics.find((l) => l.id === item.linkId);
+        if (!link) return null;
+        return {
+          linkId: item.linkId,
+          count: item._count.linkId,
+          url: link.url,
+          text: link.text,
+        };
+      });
+
+      return result.filter((item) => item !== null);
     }),
 });
 

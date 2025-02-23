@@ -6,6 +6,7 @@ import { api } from "@/utils/api";
 import { isPositiveNumber } from "@/utils/number";
 import {
   Box,
+  Link as ChakraLink,
   Container,
   Flex,
   HStack,
@@ -21,6 +22,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import React from "react";
 import type { NextPageWithLayout } from "./_app";
 
@@ -168,10 +170,10 @@ function CountryAnalytics(props: { within: AnalyticsWithin }) {
 
   return (
     <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
-      <StatLabel fontSize="lg" fontWeight="bold" mb={4}>
+      <StatLabel fontSize="md" fontWeight="bold" mb={4}>
         Top Countries
       </StatLabel>
-      <VStack w="full" align="stretch" spacing={2} bg="white" p={4} rounded="lg">
+      <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
         {data?.slice(0, 5).map((item, index) => (
           <HStack
             key={item.country}
@@ -190,10 +192,90 @@ function CountryAnalytics(props: { within: AnalyticsWithin }) {
                 height={4}
                 src={`https://flagcdn.com/w20/${item.country?.toLowerCase()}.png`}
               />
-              <Text fontWeight="medium">{item.country}</Text>
+              <Text fontWeight="medium" fontSize="sm">
+                {item.country}
+              </Text>
             </HStack>
             <Text fontSize="sm" color="gray.600" fontWeight="medium">
               {item.count} views
+            </Text>
+          </HStack>
+        ))}
+      </VStack>
+    </StatWrapper>
+  );
+}
+
+function FromBrowserAnalytics(props: { within: AnalyticsWithin }) {
+  const { within } = props;
+  const { data, isLoading, isError, error } = api.analytics.getFromBrowserAnalytics.useQuery({
+    within,
+  });
+
+  return (
+    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+      <StatLabel fontSize="md" fontWeight="bold" mb={4}>
+        Top Browsers
+      </StatLabel>
+      <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
+        {data?.slice(0, 5).map((item, index) => (
+          <HStack
+            key={item.browser}
+            justify="space-between"
+            p={2}
+            bg={index % 2 === 0 ? "gray.50" : "white"}
+            rounded="md"
+          >
+            <HStack spacing={3}>
+              <Text color="gray.500" fontSize="sm">
+                {index + 1}.
+              </Text>
+              <Text fontWeight="medium" fontSize="sm">
+                {item.browser}
+              </Text>
+            </HStack>
+            <Text fontSize="sm" color="gray.600" fontWeight="medium">
+              {item.count} views
+            </Text>
+          </HStack>
+        ))}
+      </VStack>
+    </StatWrapper>
+  );
+}
+
+function TopLinksAnalytics(props: { within: AnalyticsWithin }) {
+  const { within } = props;
+  const { data, isLoading, isError, error } = api.analytics.getTopLinksAnalytics.useQuery({
+    within,
+  });
+
+  return (
+    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+      <StatLabel fontSize="md" fontWeight="bold" mb={4}>
+        Top Links
+      </StatLabel>
+      <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
+        {data?.slice(0, 5).map((item, index) => (
+          <HStack
+            key={item.linkId}
+            justify="space-between"
+            p={2}
+            bg={index % 2 === 0 ? "gray.50" : "white"}
+            rounded="md"
+          >
+            <HStack spacing={3}>
+              <Text color="gray.500" fontSize="sm">
+                {index + 1}.
+              </Text>
+              <Text fontWeight="medium" fontSize="sm">
+                <ChakraLink href={item.url} target="_blank" referrerPolicy="no-referrer" as={Link}>
+                  {item.text}
+                </ChakraLink>
+              </Text>
+            </HStack>
+            <Text fontSize="sm" color="gray.600" fontWeight="medium">
+              {item.count} click{item.count > 1 ? "s" : ""}
             </Text>
           </HStack>
         ))}
@@ -231,8 +313,10 @@ const AnalyticsPage: NextPageWithLayout = () => {
             <LinkClickStat within={analyticsWithin} />
             <CTRStat within={analyticsWithin} />
           </SimpleGrid>
-          <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2 }}>
+          <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, md: 3 }}>
             <CountryAnalytics within={analyticsWithin} />
+            <FromBrowserAnalytics within={analyticsWithin} />
+            <TopLinksAnalytics within={analyticsWithin} />
           </SimpleGrid>
         </VStack>
         <DataChart />

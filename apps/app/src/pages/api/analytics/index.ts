@@ -19,13 +19,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const country = detectCountry();
-    const device = deviceDetector(req.headers["user-agent"]);
+    const browser = deviceDetector(req.headers["user-agent"]);
     const event: Events = parsedCookies["viewed-at"] ? "VIEW" : "UNIQUE_VIEW";
 
     await prisma.user.update({
       where: { id: userId },
       data: {
-        analytics: { create: { event, fromBrowser: device && device.name, fromCountry: country } },
+        analytics: {
+          create: { event, fromBrowser: browser && browser.name, fromCountry: country },
+        },
       },
     });
 
