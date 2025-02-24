@@ -216,6 +216,74 @@ const analyticsRouter = createTRPCRouter({
 
       return result.filter((item) => item !== null);
     }),
+
+  getChartDataAnalytics: protectedProcedure
+    .input(
+      z.object({
+        within: analyticsWithin,
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { within } = input;
+      const today = new Date();
+      const isAllTime = within === "ALL_TIME";
+      const userId = ctx.session.user.id;
+
+      const daysToFetch = isAllTime ? 30 : days[within]; // Default to 30 days for all time
+      const startDate = new Date(today.getTime() - daysToFetch * 24 * 60 * 60 * 1000);
+
+      const analytics = await ctx.prisma.analytics.findMany({
+        where: {
+          userId,
+          event: { in: ["VIEW", "CLICK"] },
+          createdAt: {
+            gte: startDate,
+            lte: today,
+          },
+        },
+        select: {
+          event: true,
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      // Create a map of dates to store views and clicks
+      const dateMap = new Map<string, { pageViews: number; clicks: number }>();
+      
+      // Initialize all dates in the range
+      for (let i = 0; i < daysToFetch; i++) {
+        const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+        const dateKey = `${date.getMonth() + 1}/${date.getDate()}`;
+        dateMap.set(dateKey, { pageViews: 0, clicks: 0 });
+      }
+
+      // Count views and clicks for each date
+      analytics.forEach((entry) => {
+        const date = entry.createdAt;
+        const dateKey = `${date.getMonth() + 1}/${date.getDate()}`;
+        const data = dateMap.get(dateKey) || { pageViews: 0, clicks: 0 };
+        
+        if (entry.event === "VIEW") {
+          data.pageViews++;
+        } else if (entry.event === "CLICK") {
+          data.clicks++;
+        }
+        
+        dateMap.set(dateKey, data);
+      });
+
+      // Convert map to array and sort by date
+      const result = Array.from(dateMap.entries()).map(([date, data]) => ({
+        date,
+        pageViews: data.pageViews,
+        clicks: data.clicks,
+      }));
+
+      return result.reverse(); // Return most recent dates first
+    }),
 });
 
 export default analyticsRouter;

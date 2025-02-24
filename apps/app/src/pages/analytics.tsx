@@ -1,4 +1,5 @@
 import { AppLayout } from "@/Layouts/app";
+import AnalyticsChart from "@/components/analytics/Chart";
 import { Conditional } from "@/components/common/Conditional";
 import { AnalyticsWithin } from "@/services/analytics";
 import { AppProps } from "@/types";
@@ -26,7 +27,7 @@ import Link from "next/link";
 import React from "react";
 import type { NextPageWithLayout } from "./_app";
 
-function StatWrapper(
+export function AnalyticsStartWrapper(
   props: AppProps & {
     isLoading: boolean;
     isError: boolean;
@@ -63,7 +64,7 @@ function VisitorStat(props: { within: AnalyticsWithin }) {
   });
 
   return (
-    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+    <AnalyticsStartWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>Visitors</StatLabel>
       <StatNumber>{data?.currentCount}</StatNumber>
       <Conditional
@@ -78,7 +79,7 @@ function VisitorStat(props: { within: AnalyticsWithin }) {
           </StatHelpText>
         }
       />
-    </StatWrapper>
+    </AnalyticsStartWrapper>
   );
 }
 
@@ -90,7 +91,7 @@ function PageViewStat(props: { within: AnalyticsWithin }) {
   });
 
   return (
-    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+    <AnalyticsStartWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>Page views</StatLabel>
       <StatNumber>{data?.currentCount}</StatNumber>
       <Conditional
@@ -105,7 +106,7 @@ function PageViewStat(props: { within: AnalyticsWithin }) {
           </StatHelpText>
         }
       />
-    </StatWrapper>
+    </AnalyticsStartWrapper>
   );
 }
 
@@ -116,7 +117,7 @@ function CTRStat(props: { within: AnalyticsWithin }) {
   });
 
   return (
-    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+    <AnalyticsStartWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>CTR</StatLabel>
       <StatNumber>{data?.currentCTR}%</StatNumber>
       <Conditional
@@ -131,7 +132,7 @@ function CTRStat(props: { within: AnalyticsWithin }) {
           </StatHelpText>
         }
       />
-    </StatWrapper>
+    </AnalyticsStartWrapper>
   );
 }
 
@@ -143,7 +144,7 @@ function LinkClickStat(props: { within: AnalyticsWithin }) {
   });
 
   return (
-    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+    <AnalyticsStartWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel>Link clicks</StatLabel>
       <StatNumber>{data?.currentCount}</StatNumber>
       <Conditional
@@ -158,7 +159,7 @@ function LinkClickStat(props: { within: AnalyticsWithin }) {
           </StatHelpText>
         }
       />
-    </StatWrapper>
+    </AnalyticsStartWrapper>
   );
 }
 
@@ -169,7 +170,7 @@ function CountryAnalytics(props: { within: AnalyticsWithin }) {
   });
 
   return (
-    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+    <AnalyticsStartWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel fontSize="md" fontWeight="bold" mb={4}>
         Top Countries
       </StatLabel>
@@ -202,7 +203,7 @@ function CountryAnalytics(props: { within: AnalyticsWithin }) {
           </HStack>
         ))}
       </VStack>
-    </StatWrapper>
+    </AnalyticsStartWrapper>
   );
 }
 
@@ -213,7 +214,7 @@ function FromBrowserAnalytics(props: { within: AnalyticsWithin }) {
   });
 
   return (
-    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+    <AnalyticsStartWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel fontSize="md" fontWeight="bold" mb={4}>
         Top Browsers
       </StatLabel>
@@ -240,7 +241,7 @@ function FromBrowserAnalytics(props: { within: AnalyticsWithin }) {
           </HStack>
         ))}
       </VStack>
-    </StatWrapper>
+    </AnalyticsStartWrapper>
   );
 }
 
@@ -251,7 +252,7 @@ function TopLinksAnalytics(props: { within: AnalyticsWithin }) {
   });
 
   return (
-    <StatWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
+    <AnalyticsStartWrapper isLoading={isLoading} isError={isError} errorMessage={error?.message}>
       <StatLabel fontSize="md" fontWeight="bold" mb={4}>
         Top Links
       </StatLabel>
@@ -280,12 +281,8 @@ function TopLinksAnalytics(props: { within: AnalyticsWithin }) {
           </HStack>
         ))}
       </VStack>
-    </StatWrapper>
+    </AnalyticsStartWrapper>
   );
-}
-
-function DataChart() {
-  return <Flex placeItems="center" bg="white" w="full" p={10} rounded="lg"></Flex>;
 }
 
 const AnalyticsPage: NextPageWithLayout = () => {
@@ -297,29 +294,29 @@ const AnalyticsPage: NextPageWithLayout = () => {
   return (
     <Container maxW="container.xl">
       <VStack spacing={5} w="full">
-        <VStack spacing={5} w="full">
-          <HStack w="full" justify="space-between" align="center">
-            <Box>
-              <Select variant="filled" value={analyticsWithin} onChange={handleSelectInputChange}>
-                <option value="WEEK">Last 7 days</option>
-                <option value="MONTH">Last 30 days</option>
-                <option value="ALL_TIME">All time</option>
-              </Select>
-            </Box>
-          </HStack>
-          <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
-            <VisitorStat within={analyticsWithin} />
-            <PageViewStat within={analyticsWithin} />
-            <LinkClickStat within={analyticsWithin} />
-            <CTRStat within={analyticsWithin} />
-          </SimpleGrid>
-          <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, md: 3 }}>
-            <CountryAnalytics within={analyticsWithin} />
-            <FromBrowserAnalytics within={analyticsWithin} />
-            <TopLinksAnalytics within={analyticsWithin} />
-          </SimpleGrid>
-        </VStack>
-        <DataChart />
+        <HStack w="full" justify="space-between" align="center">
+          <Box>
+            <Select variant="filled" value={analyticsWithin} onChange={handleSelectInputChange}>
+              <option value="WEEK">Last 7 days</option>
+              <option value="MONTH">Last 30 days</option>
+              <option value="ALL_TIME">All time</option>
+            </Select>
+          </Box>
+        </HStack>
+        <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
+          <VisitorStat within={analyticsWithin} />
+          <PageViewStat within={analyticsWithin} />
+          <LinkClickStat within={analyticsWithin} />
+          <CTRStat within={analyticsWithin} />
+        </SimpleGrid>
+        <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, md: 3 }}>
+          <CountryAnalytics within={analyticsWithin} />
+          <FromBrowserAnalytics within={analyticsWithin} />
+          <TopLinksAnalytics within={analyticsWithin} />
+        </SimpleGrid>
+        <SimpleGrid columns={1} w="100%">
+          <AnalyticsChart within={analyticsWithin} />
+        </SimpleGrid>
       </VStack>
     </Container>
   );

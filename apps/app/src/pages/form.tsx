@@ -596,7 +596,5 @@ export const getServerSideProps = requireAuth(async (ctx) => {
     return { redirect: { destination: "/auth/onboarding", permanent: false } };
   }
 
-  console.log({ form: user?.form });
-
   return { props: { form: user.form } };
 });
