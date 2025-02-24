@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import Logo from "../../common/Logo";
+import ShareProfile from "./ShareProfile";
 
 function LinkButton(props: AppProps & { icon: React.ReactElement; to: string }) {
   const { children, icon, to } = props;
@@ -51,7 +52,7 @@ const links: AppBarLink[] = [
   { label: "Links", to: "/", icon: "Link" },
   { label: "Appearance", to: "/appearance", icon: "Appearance" },
   { label: "Analytics", to: "/analytics", icon: "Analytics" },
-  { label: "Settings", to: "/settings", icon: "Settings" },
+  // { label: "Settings", to: "/settings", icon: "Settings" },
   { label: "Testimonials", to: "/testimonials", icon: "Testimonial" },
   { label: "Form", to: "/form", icon: "Form" },
 ];
@@ -59,16 +60,15 @@ const links: AppBarLink[] = [
 export default function AppBar() {
   const visibleLinks = links.slice(0, 3);
   const menuLinks = links.slice(3, links.length);
-  const { data: subscription } = api.payment.getSubscription.useQuery();
   return (
     <Box zIndex="sticky" p={3} className="sticky left-0 top-0 h-24">
       <Card bg="white" size="sm" rounded="full" height="full">
         <CardBody className="flex items-center justify-between">
           <HStack spacing={{ base: "2", md: "14" }}>
-            <Box>
+            <Box flexShrink={0}>
               <Logo />
             </Box>
-            <Show above="md">
+            <Show above="lg">
               <HStack>
                 {visibleLinks.map((link) => (
                   <LinkButton to={link.to} key={link.label} icon={<Icon name={link.icon} />}>
@@ -101,7 +101,7 @@ export default function AppBar() {
                 </Menu>
               </HStack>
             </Show>
-            <Show below="md">
+            <Show below="lg">
               <Menu isLazy>
                 <MenuButton as="div">
                   <IconButton
@@ -129,6 +129,7 @@ export default function AppBar() {
             </Show>
           </HStack>
           <HStack align="center" spacing={5}>
+            <ShareProfile />
             <UpgradeButton />
             <AppMenu />
           </HStack>
@@ -154,6 +155,9 @@ export function AppMenu() {
         </Avatar>
       </MenuButton>
       <MenuList>
+        <MenuItem as={Link} href="/settings" icon={<Icon name="Settings" />}>
+          Page Settings
+        </MenuItem>
         {!subscription?.isPro && (
           <MenuItem as={Link} href="/subscribe" icon={<TablerIcon name="IconBolt" />}>
             Upgrade to pro

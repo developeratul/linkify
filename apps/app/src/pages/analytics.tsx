@@ -309,7 +309,7 @@ const AnalyticsPage: NextPageWithLayout = () => {
           <LinkClickStat within={analyticsWithin} />
           <CTRStat within={analyticsWithin} />
         </SimpleGrid>
-        <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, md: 3 }}>
+        <SimpleGrid w="full" spacing={5} columns={{ base: 1, sm: 2, xl: 3 }}>
           <CountryAnalytics within={analyticsWithin} />
           <FromBrowserAnalytics within={analyticsWithin} />
           <TopLinksAnalytics within={analyticsWithin} />

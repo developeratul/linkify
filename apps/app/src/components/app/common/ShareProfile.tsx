@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useSession } from "next-auth/react";
 
@@ -6,17 +6,12 @@ export default function ShareProfile() {
   const { data, status } = useSession();
 
   return (
-    <Button
-      position="fixed"
-      bottom="4"
-      left="4"
-      zIndex="overlay"
+    <IconButton
       borderRadius="full"
-      boxShadow="lg"
       colorScheme="purple"
       variant="ghost"
       isLoading={status === "loading"}
-      leftIcon={<Icon name="Share" />}
+      aria-label="Share profile"
       onClick={() => {
         if (navigator.share) {
           navigator
@@ -27,7 +22,7 @@ export default function ShareProfile() {
         }
       }}
     >
-      Share
-    </Button>
+      <Icon name="Share" />
+    </IconButton>
   );
 }

@@ -66,9 +66,20 @@ export function PreviewDrawer() {
   const { ref, username, isLoading } = previewContext;
 
   return (
-    <Hide above="md">
+    <Hide above="lg">
       <Box position="fixed" bottom={5} right={5} zIndex="sticky">
-        <Button size="sm" leftIcon={<Icon name="Preview" />} onClick={onOpen} colorScheme="purple">
+        <Button
+          size="sm"
+          variant="ghost"
+          bg="white"
+          zIndex="overlay"
+          borderWidth={1}
+          boxShadow="lg"
+          rounded="full"
+          leftIcon={<Icon name="Preview" />}
+          onClick={onOpen}
+          colorScheme="purple"
+        >
           Preview
         </Button>
         <Drawer isOpen={isOpen} onClose={onClose} placement="left" size="full">
@@ -80,7 +91,7 @@ export function PreviewDrawer() {
               {isLoading ? (
                 <Loader />
               ) : (
-                <Hide above="md">
+                <Hide above="lg">
                   <iframe
                     src={`/${username}?type=preview`}
                     ref={ref}
