@@ -63,7 +63,7 @@ import Linkify from "linkify-react";
 import type { InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -278,7 +278,22 @@ function FormSubmissionsTable(props: { form: Form; sortType: SortType }) {
     .flat();
 
   if (!submissions.length)
-    return <EmptyMessage title="Empty" description="No form submissions yet" />;
+    return (
+      <EmptyMessage
+        title="Empty"
+        description="No form submissions yet"
+        action={
+          <FormSettingsModal
+            form={form}
+            trigger={
+              <Button colorScheme="purple" size="sm">
+                Customize Form
+              </Button>
+            }
+          />
+        }
+      />
+    );
 
   return (
     <TableContainer w="full">
@@ -342,8 +357,8 @@ export const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-function FormSettingsModal(props: { form: Form }) {
-  const { form } = props;
+function FormSettingsModal(props: { form: Form; trigger: ReactNode }) {
+  const { form, trigger } = props;
   const { register, handleSubmit } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
   });
@@ -367,12 +382,7 @@ function FormSettingsModal(props: { form: Form }) {
 
   return (
     <Box>
-      <IconButton
-        onClick={onOpen}
-        aria-label="Form Settings"
-        icon={<Icon name="Settings" />}
-        colorScheme="purple"
-      />
+      <div onClick={onOpen}>{trigger}</div>
       <Drawer placement="right" size="sm" isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -527,7 +537,7 @@ function GetStarted() {
               <Text>Collect form submissions from your visitors and manage them in one place.</Text>
             </VStack>
             <Button isLoading={isLoading} onClick={toggle} colorScheme="purple" w="full">
-              Get started
+              Start Accepting Submissions
             </Button>
           </VStack>
         </CardBody>
@@ -567,7 +577,16 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
           </HStack>
           <HStack align="center" spacing={3}>
             <ToggleSubmissionAcceptance isAccepting={form.isAcceptingSubmissions} />
-            <FormSettingsModal form={form} />
+            <FormSettingsModal
+              form={form}
+              trigger={
+                <IconButton
+                  aria-label="Form Settings"
+                  icon={<Icon name="Settings" />}
+                  colorScheme="purple"
+                />
+              }
+            />
           </HStack>
         </HStack>
         <FormSubmissionsTable sortType={sortType} form={form} />

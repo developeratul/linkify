@@ -1,5 +1,5 @@
 import { Box, Center, Heading, Text, VStack } from "@chakra-ui/react";
-import React from "react";
+import React, { ReactNode } from "react";
 
 export function EmptySectionMessage(props: {
   title: string;
@@ -20,15 +20,18 @@ export function EmptySectionMessage(props: {
   );
 }
 
-export function EmptyMessage(props: { title: string; description: string }) {
-  const { title, description } = props;
+export function EmptyMessage(props: { title: string; description: string; action?: ReactNode }) {
+  const { title, description, action } = props;
   return (
     <Center h="full" w="full" py={10} px={5}>
-      <VStack margin="auto" textAlign="center" w="full" maxW="md" spacing={3}>
-        <Heading size="lg" color="gray.600">
-          {title}
-        </Heading>
-        <Text color="GrayText">{description}</Text>
+      <VStack margin="auto" textAlign="center" maxW="md" w="full" spacing={5}>
+        <VStack textAlign="center" w="full" spacing={3}>
+          <Heading size="lg" color="gray.600">
+            {title}
+          </Heading>
+          <Text color="GrayText">{description}</Text>
+        </VStack>
+        {action}
       </VStack>
     </Center>
   );

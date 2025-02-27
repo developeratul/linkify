@@ -163,6 +163,14 @@ function LinkClickStat(props: { within: AnalyticsWithin }) {
   );
 }
 
+function EmptyData() {
+  return (
+    <VStack py="12">
+      <Text color="GrayText">Not Data to Show</Text>
+    </VStack>
+  );
+}
+
 function CountryAnalytics(props: { within: AnalyticsWithin }) {
   const { within } = props;
   const { data, isLoading, isError, error } = api.analytics.getCountryAnalytics.useQuery({
@@ -174,35 +182,39 @@ function CountryAnalytics(props: { within: AnalyticsWithin }) {
       <StatLabel fontSize="md" fontWeight="bold" mb={4}>
         Top Countries
       </StatLabel>
-      <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
-        {data?.slice(0, 5).map((item, index) => (
-          <HStack
-            key={item.country}
-            justify="space-between"
-            p={2}
-            bg={index % 2 === 0 ? "gray.50" : "white"}
-            rounded="md"
-          >
-            <HStack spacing={3}>
-              <Text color="gray.500" fontSize="sm">
-                {index + 1}.
-              </Text>
-              <Image
-                alt={`${item.country} flag`}
-                width={6}
-                height={4}
-                src={`https://flagcdn.com/w20/${item.country?.toLowerCase()}.png`}
-              />
-              <Text fontWeight="medium" fontSize="sm">
-                {item.country}
+      {data?.length === 0 ? (
+        <EmptyData />
+      ) : (
+        <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
+          {data?.slice(0, 5).map((item, index) => (
+            <HStack
+              key={item.country}
+              justify="space-between"
+              p={2}
+              bg={index % 2 === 0 ? "gray.50" : "white"}
+              rounded="md"
+            >
+              <HStack spacing={3}>
+                <Text color="gray.500" fontSize="sm">
+                  {index + 1}.
+                </Text>
+                <Image
+                  alt={`${item.country} flag`}
+                  width={6}
+                  height={4}
+                  src={`https://flagcdn.com/w20/${item.country?.toLowerCase()}.png`}
+                />
+                <Text fontWeight="medium" fontSize="sm">
+                  {item.country}
+                </Text>
+              </HStack>
+              <Text fontSize="sm" color="gray.600" fontWeight="medium">
+                {item.count} views
               </Text>
             </HStack>
-            <Text fontSize="sm" color="gray.600" fontWeight="medium">
-              {item.count} views
-            </Text>
-          </HStack>
-        ))}
-      </VStack>
+          ))}
+        </VStack>
+      )}
     </AnalyticsStartWrapper>
   );
 }
@@ -218,29 +230,33 @@ function FromBrowserAnalytics(props: { within: AnalyticsWithin }) {
       <StatLabel fontSize="md" fontWeight="bold" mb={4}>
         Top Browsers
       </StatLabel>
-      <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
-        {data?.slice(0, 5).map((item, index) => (
-          <HStack
-            key={item.browser}
-            justify="space-between"
-            p={2}
-            bg={index % 2 === 0 ? "gray.50" : "white"}
-            rounded="md"
-          >
-            <HStack spacing={3}>
-              <Text color="gray.500" fontSize="sm">
-                {index + 1}.
-              </Text>
-              <Text fontWeight="medium" fontSize="sm">
-                {item.browser}
+      {data?.length === 0 ? (
+        <EmptyData />
+      ) : (
+        <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
+          {data?.slice(0, 5).map((item, index) => (
+            <HStack
+              key={item.browser}
+              justify="space-between"
+              p={2}
+              bg={index % 2 === 0 ? "gray.50" : "white"}
+              rounded="md"
+            >
+              <HStack spacing={3}>
+                <Text color="gray.500" fontSize="sm">
+                  {index + 1}.
+                </Text>
+                <Text fontWeight="medium" fontSize="sm">
+                  {item.browser}
+                </Text>
+              </HStack>
+              <Text fontSize="sm" color="gray.600" fontWeight="medium">
+                {item.count} views
               </Text>
             </HStack>
-            <Text fontSize="sm" color="gray.600" fontWeight="medium">
-              {item.count} views
-            </Text>
-          </HStack>
-        ))}
-      </VStack>
+          ))}
+        </VStack>
+      )}
     </AnalyticsStartWrapper>
   );
 }
@@ -256,31 +272,40 @@ function TopLinksAnalytics(props: { within: AnalyticsWithin }) {
       <StatLabel fontSize="md" fontWeight="bold" mb={4}>
         Top Links
       </StatLabel>
-      <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
-        {data?.slice(0, 5).map((item, index) => (
-          <HStack
-            key={item.linkId}
-            justify="space-between"
-            p={2}
-            bg={index % 2 === 0 ? "gray.50" : "white"}
-            rounded="md"
-          >
-            <HStack spacing={3}>
-              <Text color="gray.500" fontSize="sm">
-                {index + 1}.
-              </Text>
-              <Text fontWeight="medium" fontSize="sm">
-                <ChakraLink href={item.url} target="_blank" referrerPolicy="no-referrer" as={Link}>
-                  {item.text}
-                </ChakraLink>
+      {data?.length === 0 ? (
+        <EmptyData />
+      ) : (
+        <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
+          {data?.slice(0, 5).map((item, index) => (
+            <HStack
+              key={item.linkId}
+              justify="space-between"
+              p={2}
+              bg={index % 2 === 0 ? "gray.50" : "white"}
+              rounded="md"
+            >
+              <HStack spacing={3}>
+                <Text color="gray.500" fontSize="sm">
+                  {index + 1}.
+                </Text>
+                <Text fontWeight="medium" fontSize="sm">
+                  <ChakraLink
+                    href={item.url}
+                    target="_blank"
+                    referrerPolicy="no-referrer"
+                    as={Link}
+                  >
+                    {item.text}
+                  </ChakraLink>
+                </Text>
+              </HStack>
+              <Text fontSize="sm" color="gray.600" fontWeight="medium">
+                {item.count} click{item.count > 1 ? "s" : ""}
               </Text>
             </HStack>
-            <Text fontSize="sm" color="gray.600" fontWeight="medium">
-              {item.count} click{item.count > 1 ? "s" : ""}
-            </Text>
-          </HStack>
-        ))}
-      </VStack>
+          ))}
+        </VStack>
+      )}
     </AnalyticsStartWrapper>
   );
 }

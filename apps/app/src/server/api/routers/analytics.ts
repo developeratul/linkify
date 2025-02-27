@@ -72,8 +72,10 @@ const analyticsRouter = createTRPCRouter({
       const { currentCount: currentTotalViews, previousCount: previousTotalViews } =
         await AnalyticsService.get("VIEW", userId, within);
 
-      const currentCTR = parseFloat(((currentTotalClicks / currentTotalViews) * 100).toFixed(2));
-      const previousCTR = parseFloat(((previousTotalClicks / previousTotalViews) * 100).toFixed(2));
+      const currentCTR =
+        parseFloat(((currentTotalClicks / currentTotalViews) * 100).toFixed(2)) || 0;
+      const previousCTR =
+        parseFloat(((previousTotalClicks / previousTotalViews) * 100).toFixed(2)) || 0;
 
       const increasedPercentage =
         currentCTR - previousCTR === 0
@@ -252,7 +254,7 @@ const analyticsRouter = createTRPCRouter({
 
       // Create a map of dates to store views and clicks
       const dateMap = new Map<string, { pageViews: number; clicks: number }>();
-      
+
       // Initialize all dates in the range
       for (let i = 0; i < daysToFetch; i++) {
         const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
@@ -265,13 +267,13 @@ const analyticsRouter = createTRPCRouter({
         const date = entry.createdAt;
         const dateKey = `${date.getMonth() + 1}/${date.getDate()}`;
         const data = dateMap.get(dateKey) || { pageViews: 0, clicks: 0 };
-        
+
         if (entry.event === "VIEW") {
           data.pageViews++;
         } else if (entry.event === "CLICK") {
           data.clicks++;
         }
-        
+
         dateMap.set(dateKey, data);
       });
 
