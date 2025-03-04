@@ -21,7 +21,7 @@ const AuthPage: NextPage = () => {
           w="full"
           colorScheme="purple"
         >
-          Sign in with Github
+          Continue with Github
         </Button>
         <Button
           leftIcon={<Icon name="Google" />}
@@ -29,7 +29,7 @@ const AuthPage: NextPage = () => {
           colorScheme="purple"
           onClick={() => handleSignIn("google")}
         >
-          Sign in with Google
+          Continue with Google
         </Button>
       </VStack>
     </AuthLayout>

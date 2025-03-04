@@ -6,6 +6,7 @@ import {
   Github,
   GripVertical,
   ImageIcon,
+  InfoIcon,
   LayoutTemplate,
   LineChart,
   Link,
@@ -48,6 +49,7 @@ export const icons = {
   Form: Send,
   Export: Download,
   Analytics: LineChart,
+  Info: InfoIcon,
 };
 
 export type IconNames = keyof typeof icons;

@@ -15,7 +15,12 @@ const config = {
   },
   transpilePackages: ["components"],
   images: {
-    remotePatterns: [{ hostname: "placehold.co" }, { hostname: "cdn.simpleicons.org" }],
+    remotePatterns: [
+      { hostname: "placehold.co" },
+      { hostname: "cdn.simpleicons.org" },
+      { hostname: "api.producthunt.com" },
+      { hostname: "producthunt.com" },
+    ],
   },
 };
 
