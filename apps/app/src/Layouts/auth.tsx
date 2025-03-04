@@ -59,9 +59,9 @@ export function AuthLayout(props: AuthLayoutProps) {
               key={feature.name}
               className="flex flex-1 items-center justify-center gap-1 text-center"
             >
-              <div className="shrink-0">
+              <Text color="purple.500" className="shrink-0">
                 <Icon size={12} name={feature.icon as any} />
-              </div>
+              </Text>
               <Text fontSize="xs">{feature.name}</Text>
             </div>
           ))}
