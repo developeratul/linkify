@@ -13,14 +13,15 @@ export function SectionLoader() {
     <VStack
       w="full"
       borderWidth={1}
-      borderColor="purple.300"
-      py={10}
+      bg="purple.100"
+      borderColor="purple.200"
+      py={24}
       px={5}
       justify="center"
       align="center"
       rounded="md"
     >
-      <Spinner colorScheme="purple" />
+      <Spinner colorScheme="purple" color="purple.500" />
     </VStack>
   );
 }

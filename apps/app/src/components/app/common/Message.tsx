@@ -8,12 +8,24 @@ export function EmptySectionMessage(props: {
 }) {
   const { title, description, createButton } = props;
   return (
-    <Box w="full" borderWidth={1} borderColor="purple.300" py={10} px={5} rounded="md">
-      <VStack margin="auto" textAlign="center" w="full" maxW="md" spacing={3}>
-        <Heading size="lg" color="purple.500">
-          {title}
-        </Heading>
-        <Text color="gray.600">{description}</Text>
+    <Box
+      w="full"
+      borderWidth={0.1}
+      bg="purple.100"
+      borderColor="purple.200"
+      py={10}
+      px={5}
+      rounded="md"
+    >
+      <VStack margin="auto" textAlign="center" w="full" maxW="xs" spacing={6}>
+        <VStack spacing={3}>
+          <Heading fontSize="2xl" color="purple.500">
+            {title}
+          </Heading>
+          <Text color="GrayText" fontSize="md">
+            {description}
+          </Text>
+        </VStack>
         {createButton && createButton}
       </VStack>
     </Box>

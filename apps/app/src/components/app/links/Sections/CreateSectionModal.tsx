@@ -18,6 +18,7 @@ export default function CreateSectionModal() {
       isLoading={isLoading}
       onClick={handleClick}
       colorScheme="purple"
+      size="md"
       leftIcon={<Icon name="Create" />}
     >
       Create new
