@@ -13,10 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { NextPageWithLayout } from "../_app";
 
 export const onboardingSchema = z.object({
   username: z.string().regex(/^[a-zA-Z0-9_]+$/g, "Invalid username"),
@@ -25,7 +26,7 @@ export const onboardingSchema = z.object({
 
 export type OnboardingSchema = z.infer<typeof onboardingSchema>;
 
-const OnBoardingPage: NextPage = () => {
+const OnBoardingPage: NextPageWithLayout<{}> = () => {
   const { register, formState, handleSubmit, setError } = useForm<OnboardingSchema>({
     resolver: zodResolver(onboardingSchema),
   });
