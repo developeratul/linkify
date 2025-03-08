@@ -69,7 +69,7 @@ export function AuthLayout(props: AuthLayoutProps) {
         <iframe
           style={{ border: "none" }}
           src="https://cards.producthunt.com/cards/reviews/595589?v=1"
-          height="315"
+          height="405"
           className="w-full"
         ></iframe>
         <Alert status="info" colorScheme="purple" variant="left-accent">
