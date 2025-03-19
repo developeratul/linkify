@@ -24,13 +24,10 @@ import { NextPageWithLayout } from "./_app";
 
 const premiumFeatures = [
   "Unlimited links",
-  "Unlock all themes",
-  "Advanced analytics",
-  "Collect 50 testimonials per month",
-  "Showcase 30 testimonials on your profile",
-  "400 form submissions per month",
-  "Developer API (200 requests per day)",
-  "Newsletter (Coming soon...)",
+  "Full Access to Analytics",
+  "Unlimited Testimonials",
+  "Unlimited form submissions",
+  "Own your page",
 ];
 
 type SubscribePageProps = {
@@ -79,6 +76,7 @@ const SubscribePage: NextPageWithLayout<SubscribePageProps> = (props) => {
         </VStack>
         <ButtonGroup>
           <Button
+            variant="outline"
             onClick={() => setBillingMonthly(true)}
             colorScheme={isBillingMonthly ? "purple" : undefined}
           >
@@ -87,6 +85,7 @@ const SubscribePage: NextPageWithLayout<SubscribePageProps> = (props) => {
           <Button
             onClick={() => setBillingMonthly(false)}
             colorScheme={!isBillingMonthly ? "purple" : undefined}
+            variant="outline"
           >
             Yearly
           </Button>
@@ -121,8 +120,9 @@ const SubscribePage: NextPageWithLayout<SubscribePageProps> = (props) => {
                 onClick={handleClick}
                 colorScheme="purple"
                 w="full"
+                leftIcon={<TablerIcon size={20} name="IconBolt" />}
               >
-                Upgrade
+                Become Limitless
               </Button>
             </VStack>
           </Box>

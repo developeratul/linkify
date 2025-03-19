@@ -23,10 +23,10 @@ const paymentRouter = createTRPCRouter({
 
       const user = await ctx.prisma.user.findUnique({
         where: { id: userId },
-        select: { email: true, id: true },
+        select: { email: true, id: true, username: true },
       });
 
-      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!user || !user.email || !user.username) throw new TRPCError({ code: "NOT_FOUND" });
 
       const { isPro } = await getSubscription(user.id);
 
