@@ -17,7 +17,7 @@ import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { NextPageWithLayout } from "../_app";
+import type { NextPageWithLayout } from "../_app";
 
 export const onboardingSchema = z.object({
   username: z.string().regex(/^[a-zA-Z0-9_]+$/g, "Invalid username"),
@@ -26,7 +26,7 @@ export const onboardingSchema = z.object({
 
 export type OnboardingSchema = z.infer<typeof onboardingSchema>;
 
-const OnBoardingPage: NextPageWithLayout<{}> = () => {
+const OnBoardingPage: NextPageWithLayout<Record<string, never>> = () => {
   const { register, formState, handleSubmit, setError } = useForm<OnboardingSchema>({
     resolver: zodResolver(onboardingSchema),
   });

@@ -276,34 +276,37 @@ function TopLinksAnalytics(props: { within: AnalyticsWithin }) {
         <EmptyData />
       ) : (
         <VStack w="full" align="stretch" spacing={2} bg="white" rounded="lg">
-          {data?.slice(0, 5).map((item, index) => (
-            <HStack
-              key={item.linkId}
-              justify="space-between"
-              p={2}
-              bg={index % 2 === 0 ? "gray.50" : "white"}
-              rounded="md"
-            >
-              <HStack spacing={3}>
-                <Text color="gray.500" fontSize="sm">
-                  {index + 1}.
-                </Text>
-                <Text fontWeight="medium" fontSize="sm">
-                  <ChakraLink
-                    href={item.url}
-                    target="_blank"
-                    referrerPolicy="no-referrer"
-                    as={Link}
-                  >
-                    {item.text}
-                  </ChakraLink>
-                </Text>
-              </HStack>
-              <Text fontSize="sm" color="gray.600" fontWeight="medium">
-                {item.count} click{item.count > 1 ? "s" : ""}
-              </Text>
-            </HStack>
-          ))}
+          {data?.slice(0, 5).map(
+            (item, index) =>
+              !!item && (
+                <HStack
+                  key={item.linkId}
+                  justify="space-between"
+                  p={2}
+                  bg={index % 2 === 0 ? "gray.50" : "white"}
+                  rounded="md"
+                >
+                  <HStack spacing={3}>
+                    <Text color="gray.500" fontSize="sm">
+                      {index + 1}.
+                    </Text>
+                    <Text fontWeight="medium" fontSize="sm">
+                      <ChakraLink
+                        href={item.url}
+                        target="_blank"
+                        referrerPolicy="no-referrer"
+                        as={Link}
+                      >
+                        {item.text}
+                      </ChakraLink>
+                    </Text>
+                  </HStack>
+                  <Text fontSize="sm" color="gray.600" fontWeight="medium">
+                    {item.count} click{item.count > 1 ? "s" : ""}
+                  </Text>
+                </HStack>
+              )
+          )}
         </VStack>
       )}
     </AnalyticsStartWrapper>

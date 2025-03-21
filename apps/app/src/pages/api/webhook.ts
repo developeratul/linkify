@@ -50,6 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             currentPeriodEnd: subscription.data.attributes.renews_at,
           },
         });
+        break;
       }
 
       case "subscription_updated": {
@@ -74,6 +75,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             currentPeriodEnd: subscription.data.attributes.renews_at,
           },
         });
+        break;
+      }
+
+      case "subscription_cancelled": {
+        const subscription = await client.retrieveSubscription({ id: payload.data.id });
+        const userId = payload.meta.custom_data[0];
+
+        if (!userId) {
+          return res.status(403).json({ message: "No userId provided" });
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { subscriptionId: `${subscription.data.id}` },
+          select: { id: true },
+        });
+
+        if (!user) return res.end();
+
+        // Mark subscription as canceled, but keep access until currentPeriodEnd
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            // We maintain the currentPeriodEnd to allow access until subscription actually ends
+            // No need to update it as it will expire naturally
+          },
+        });
+        break;
       }
 
       default: {

@@ -24,23 +24,23 @@ const TestimonialService = {
   },
 
   /**
-   * Returns the number of testimonials the user has received in the current month
+   * Returns the total number of testimonials the user has received (all time)
    */
-  async getTestimonialCountThisMonth(userId: string) {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; // get current month (1-12)
-    const currentYear = currentDate.getFullYear(); // get current year
+  async getTotalTestimonialCount(userId: string) {
+    const count = await prisma.testimonial.count({
+      where: { userId: userId },
+    });
 
-    const startDate = new Date(Date.UTC(currentYear, currentMonth - 1, 1));
-    const endDate = new Date(Date.UTC(currentYear, currentMonth, 1));
+    return count;
+  },
 
+  /**
+   * Returns the total number of testimonials the user has shown (all time)
+   */
+  async getTotalShownTestimonialCount(userId: string) {
     const count = await prisma.testimonial.count({
       where: {
-        AND: [
-          { userId: userId },
-          { createdAt: { gte: startDate } },
-          { createdAt: { lt: endDate } },
-        ],
+        AND: [{ userId: userId }, { shouldShow: true }],
       },
     });
 
@@ -48,34 +48,30 @@ const TestimonialService = {
   },
 
   /**
-   * Checks if the user has exceeded the limit of receiving testimonials per month in his free plan
+   * Checks if the user has exceeded the limit of testimonials in free plan
    */
   async checkIfLimitExceededInFreePlan(userId: string) {
-    const totalTestimonialsReceivedThisMonth = await this.getTestimonialCountThisMonth(userId);
-
-    const hasExceeded = totalTestimonialsReceivedThisMonth >= 10;
-
+    const totalTestimonials = await this.getTotalTestimonialCount(userId);
+    const hasExceeded = totalTestimonials >= 10;
     return hasExceeded;
   },
 
   /**
-   * Checks if the user has exceeded the limit of receiving testimonials per month in his Pro plan
+   * Checks if the user has exceeded the limit of testimonials in Pro plan
    */
   async checkIfLimitExceededInProPlan(userId: string) {
-    const totalTestimonialsReceivedThisMonth = await this.getTestimonialCountThisMonth(userId);
-
-    const hasExceeded = totalTestimonialsReceivedThisMonth >= 50;
-
+    const totalTestimonials = await this.getTotalTestimonialCount(userId);
+    const hasExceeded = totalTestimonials >= 50;
     return hasExceeded;
   },
 
   async checkIfLimitExceeded(userId: string) {
     const hasExceededInFreePlan = await this.checkIfLimitExceededInFreePlan(userId);
-    const hasExceededInProPlan = await this.checkIfLimitExceededInProPlan(userId);
+    // const hasExceededInProPlan = await this.checkIfLimitExceededInProPlan(userId);
 
     const { isPro } = await getSubscription(userId);
 
-    const hasExceeded = isPro ? hasExceededInProPlan : hasExceededInFreePlan;
+    const hasExceeded = isPro ? false : hasExceededInFreePlan;
 
     return hasExceeded;
   },

@@ -12,7 +12,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { LogoSm } from "assets";
-import { Icon } from "components";
+import { Icon, IconNames } from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -21,7 +21,7 @@ export type AuthLayoutProps = {
   title: string;
 } & AppProps;
 
-const features = [
+const features: Array<{ name: string; icon: IconNames }> = [
   { name: "Themes", icon: "Appearance" },
   { name: "Analytics", icon: "Analytics" },
   { name: "Testimonials", icon: "Testimonial" },
@@ -75,7 +75,7 @@ export function AuthLayout(props: AuthLayoutProps) {
                 className="flex flex-1 items-center justify-center gap-1 text-center"
               >
                 <Text color="purple.500" className="shrink-0">
-                  <Icon size={12} name={feature.icon as any} />
+                  <Icon size={12} name={feature.icon} />
                 </Text>
                 <Text fontSize="xs">{feature.name}</Text>
               </div>
@@ -93,7 +93,7 @@ export function AuthLayout(props: AuthLayoutProps) {
         {isLanding && (
           <Alert status="info" colorScheme="purple" variant="left-accent">
             <AlertIcon />
-            <AlertTitle>It's free to get started!</AlertTitle>
+            <AlertTitle>It&apos;s free to get started!</AlertTitle>
           </Alert>
         )}
         <Card size="lg" w="full" bg="white">

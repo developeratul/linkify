@@ -1,7 +1,6 @@
 import { EmptyMessage, ErrorMessage } from "@/components/app/common/Message";
 import Loader from "@/components/common/Loader";
 import Rating from "@/components/common/Rating";
-import UpgradeButton from "@/components/common/UpgradeButton";
 import { AppLayout } from "@/Layouts/app";
 import type { NextPageWithLayout } from "@/pages/_app";
 import { usePreviewContext } from "@/providers/preview";
@@ -10,8 +9,6 @@ import { prisma } from "@/server/db";
 import type { Testimonial as TestimonialType } from "@/types";
 import { api } from "@/utils/api";
 import {
-  Alert,
-  AlertDescription,
   AlertDialog,
   AlertDialogBody,
   AlertDialogCloseButton,
@@ -19,8 +16,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  AlertIcon,
-  AlertTitle,
   Avatar,
   Box,
   Button,
@@ -47,32 +42,6 @@ import { saveAs } from "file-saver";
 import type { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import React from "react";
-
-function LimitExceededAlert() {
-  const { isLoading, data, isError, error } = api.testimonial.hasLimitExceeded.useQuery();
-
-  if (isLoading) return <></>;
-  if (isError) return <ErrorMessage description={error.message} />;
-
-  const { hasExceeded, isPro } = data;
-
-  if (!hasExceeded) return <></>;
-
-  const hasExceededMessage = isPro
-    ? "Your monthly limit to accept testimonials has been exceeded in your pro plan. Please contact the team to request a new plan."
-    : "Your monthly limit to accept testimonials has been exceeded. Please upgrade to pro.";
-
-  return (
-    <Alert status="warning">
-      <AlertIcon />
-      <Box flex={1}>
-        <AlertTitle>Attention</AlertTitle>
-        <AlertDescription>{hasExceededMessage}</AlertDescription>
-      </Box>
-      <UpgradeButton variant="outline" colorScheme="orange" />
-    </Alert>
-  );
-}
 
 function ToggleTestimonialAcceptance(props: { isAccepting: boolean }) {
   const { isAccepting } = props;
@@ -152,7 +121,6 @@ function DeleteTestimonial(props: { testimonialId: string }) {
     try {
       await mutateAsync(testimonialId);
       await utils.testimonial.findMany.invalidate();
-      await utils.testimonial.hasLimitExceeded.invalidate();
       router.push(router.asPath);
       previewContext?.reload();
       onClose();
@@ -267,12 +235,13 @@ const TestimonialsPage: NextPageWithLayout = (
     .flat();
 
   if (!testimonials.length)
-    return <EmptyMessage title="Empty" description="No testimonials to show yet" />;
+    return (
+      <EmptyMessage title="Empty" description="You haven't been left with a testimonial yet :)" />
+    );
 
   return (
     <Box w="full">
       <VStack align="start" spacing={5}>
-        <LimitExceededAlert />
         <Stack
           w="full"
           spacing={5}

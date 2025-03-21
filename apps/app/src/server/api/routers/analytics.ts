@@ -201,7 +201,13 @@ const analyticsRouter = createTRPCRouter({
       });
 
       const linksWithAnalytics = await ctx.prisma.link.findMany({
-        where: { id: { in: analytics.map((a) => a.linkId).filter((linkId) => linkId !== null) } },
+        where: { 
+          id: { 
+            in: analytics
+              .map((a) => a.linkId)
+              .filter((linkId): linkId is string => linkId !== null) 
+          } 
+        },
         select: { id: true, url: true, text: true },
       });
 
