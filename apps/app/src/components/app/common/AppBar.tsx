@@ -15,12 +15,15 @@ import {
   MenuItem,
   MenuList,
   Show,
+  Spinner,
+  ToastId,
+  useToast,
 } from "@chakra-ui/react";
-import { Icon, IconNames, TablerIcon } from "components";
+import { Icon, IconNames } from "components";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import Logo from "../../common/Logo";
 import ShareProfile from "./ShareProfile";
 
@@ -60,6 +63,8 @@ const links: AppBarLink[] = [
 export default function AppBar() {
   const visibleLinks = links.slice(0, 3);
   const menuLinks = links.slice(3, links.length);
+  const { data: subscription, isLoading } = api.payment.getSubscription.useQuery();
+
   return (
     <Box zIndex="sticky" p={3} className="sticky left-0 top-0 h-24">
       <Card bg="white" size="sm" rounded="full" height="full">
@@ -128,11 +133,17 @@ export default function AppBar() {
               </Menu>
             </Show>
           </HStack>
-          <HStack align="center" spacing={5}>
-            <ShareProfile />
-            <UpgradeButton />
-            <AppMenu />
-          </HStack>
+          {isLoading ? (
+            <div className="flex w-12 items-center justify-center">
+              <Spinner size="sm" colorScheme="purple" color="purple.500" />
+            </div>
+          ) : (
+            <HStack align="center" spacing={5}>
+              <ShareProfile />
+              <UpgradeButton />
+              <AppMenu />
+            </HStack>
+          )}
         </CardBody>
       </Card>
     </Box>
@@ -141,26 +152,54 @@ export default function AppBar() {
 
 export function AppMenu() {
   const { data } = useSession();
-  const { data: subscription } = api.payment.getSubscription.useQuery();
+  const { data: subscription, isLoading } = api.payment.getSubscription.useQuery();
+  const { mutateAsync: createCustomerPortal } = api.payment.createCustomerPortal.useMutation();
+  const toast = useToast();
+  const [toastId, setToastId] = useState<ToastId | undefined>(undefined);
+
   return (
     <Menu>
       <MenuButton>
-        <Avatar
-          src={data?.user?.image as string}
-          name={(data?.user?.name || data?.user?.username) as string}
-        >
-          {subscription?.isPro ? (
-            <AvatarBadge boxSize="1rem" placement="top-end" bg="purple.500" />
-          ) : null}
-        </Avatar>
+        {isLoading ? (
+          <div className="flex w-12 items-center justify-center">
+            <Spinner size="sm" colorScheme="purple" color="purple.500" />
+          </div>
+        ) : (
+          <Avatar
+            src={data?.user?.image as string}
+            name={(data?.user?.name || data?.user?.username) as string}
+          >
+            {subscription?.isPro ? (
+              <AvatarBadge boxSize="1rem" placement="top-end" bg="purple.500" />
+            ) : null}
+          </Avatar>
+        )}
       </MenuButton>
       <MenuList>
         <MenuItem as={Link} href="/settings" icon={<Icon name="Settings" />}>
           Page Settings
         </MenuItem>
         {!subscription?.isPro && (
-          <MenuItem as={Link} href="/subscribe" icon={<TablerIcon name="IconBolt" />}>
+          <MenuItem as={Link} href="/subscribe" icon={<Icon name="Subscribe" />}>
             Upgrade to pro
+          </MenuItem>
+        )}
+        {subscription?.isPro && (
+          <MenuItem
+            onClick={async () => {
+              const id = toast({
+                status: "loading",
+                description: "Redirecting to Customer Portal...",
+              });
+              setToastId(id);
+              const url = await createCustomerPortal();
+              window.open(url, "_blank");
+              toast.update(id, { status: "success", description: "Redirected to Customer Portal" });
+              setToastId(undefined);
+            }}
+            icon={<Icon name="Billing" />}
+          >
+            Manage subscription
           </MenuItem>
         )}
         <MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>

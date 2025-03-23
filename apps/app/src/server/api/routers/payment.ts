@@ -1,4 +1,5 @@
 import { env } from "@/env/server.mjs";
+import { client } from "@/lib/lemonsqueezy";
 import { getSubscription } from "@/lib/subscription";
 import { TRPCError } from "@trpc/server";
 import axios from "axios";
@@ -51,6 +52,19 @@ const paymentRouter = createTRPCRouter({
 
       return checkout;
     }),
+
+  createCustomerPortal: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const { isPro, subscriptionId } = await getSubscription(userId);
+
+    if (!isPro || !subscriptionId)
+      throw new TRPCError({ code: "FORBIDDEN", message: "You are not a pro!" });
+
+    const { data } = await client.retrieveSubscription({ id: subscriptionId });
+
+    return (data.attributes.urls as any).customer_portal as string;
+  }),
 });
 
 export default paymentRouter;

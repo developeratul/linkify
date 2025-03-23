@@ -1,5 +1,6 @@
 import { IconBrandGoogle } from "@tabler/icons-react";
 import {
+  CreditCard,
   Download,
   Edit,
   Eye,
@@ -23,6 +24,7 @@ import {
   Trash,
   UserPlus,
   Wand2,
+  Zap,
 } from "lucide-react";
 
 export const icons = {
@@ -50,6 +52,8 @@ export const icons = {
   Export: Download,
   Analytics: LineChart,
   Info: InfoIcon,
+  Billing: CreditCard,
+  Subscribe: Zap,
 };
 
 export type IconNames = keyof typeof icons;

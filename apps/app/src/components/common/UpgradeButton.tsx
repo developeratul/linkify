@@ -1,6 +1,6 @@
 import { api } from "@/utils/api";
 import { Button, ButtonProps } from "@chakra-ui/react";
-import { TablerIcon } from "components";
+import { Icon } from "components";
 import Link from "next/link";
 
 export default function UpgradeButton(props: ButtonProps) {
@@ -13,7 +13,7 @@ export default function UpgradeButton(props: ButtonProps) {
       as={Link}
       href="/subscribe"
       colorScheme={colorScheme || "purple"}
-      leftIcon={<TablerIcon size={20} name="IconBolt" />}
+      leftIcon={<Icon name="Subscribe" />}
       rounded="full"
       size={size || "sm"}
     >
