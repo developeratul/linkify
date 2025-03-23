@@ -25,9 +25,9 @@ const FormSubmissionService = {
    * Checks if the user has exceeded the limit of receiving form-submissions per month in his free plan
    */
   async checkIfLimitExceededInFreePlan(userId: string) {
-    const totalTestimonialsReceivedThisMonth = await this.getSubmissionCountThisMonth(userId);
+    const totalSubmissionsThisMonth = await this.getSubmissionCountThisMonth(userId);
 
-    const hasExceeded = totalTestimonialsReceivedThisMonth >= 10;
+    const hasExceeded = totalSubmissionsThisMonth >= 2;
 
     return hasExceeded;
   },
@@ -36,11 +36,9 @@ const FormSubmissionService = {
    * Checks if the user has exceeded the limit of receiving testimonials per month in his Pro plan
    */
   async checkIfLimitExceededInProPlan(userId: string) {
-    const totalTestimonialsReceivedThisMonth = await this.getSubmissionCountThisMonth(userId);
+    // const totalSubmissionsThisMonth = await this.getSubmissionCountThisMonth(userId);
 
-    const hasExceeded = totalTestimonialsReceivedThisMonth >= 50;
-
-    return hasExceeded;
+    return false;
   },
 };
 

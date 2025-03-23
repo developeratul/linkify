@@ -1,4 +1,3 @@
-import { getSubscription } from "@/lib/subscription";
 import { prisma } from "@/server/db";
 import type { Prisma } from "@prisma/client";
 
@@ -53,26 +52,6 @@ const TestimonialService = {
   async checkIfLimitExceededInFreePlan(userId: string) {
     const totalTestimonials = await this.getTotalTestimonialCount(userId);
     const hasExceeded = totalTestimonials >= 10;
-    return hasExceeded;
-  },
-
-  /**
-   * Checks if the user has exceeded the limit of testimonials in Pro plan
-   */
-  async checkIfLimitExceededInProPlan(userId: string) {
-    const totalTestimonials = await this.getTotalTestimonialCount(userId);
-    const hasExceeded = totalTestimonials >= 50;
-    return hasExceeded;
-  },
-
-  async checkIfLimitExceeded(userId: string) {
-    const hasExceededInFreePlan = await this.checkIfLimitExceededInFreePlan(userId);
-    // const hasExceededInProPlan = await this.checkIfLimitExceededInProPlan(userId);
-
-    const { isPro } = await getSubscription(userId);
-
-    const hasExceeded = isPro ? false : hasExceededInFreePlan;
-
     return hasExceeded;
   },
 };

@@ -1,5 +1,7 @@
 import { formSubmissionSchema } from "@/components/profile/Form";
+import { getSubscription } from "@/lib/subscription";
 import { formSchema } from "@/pages/form";
+import FormSubmissionService from "@/services/form-submission";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -108,6 +110,7 @@ const formRouter = createTRPCRouter({
     .input(formSubmissionSchema.extend({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { userId, ...data } = input;
+      const subscription = await getSubscription(userId);
 
       const user = await ctx.prisma.user.findUnique({
         where: { id: userId },
@@ -116,6 +119,17 @@ const formRouter = createTRPCRouter({
 
       if (!user || !user.form) throw new TRPCError({ code: "NOT_FOUND" });
       if (!user.form.isAcceptingSubmissions) throw new TRPCError({ code: "FORBIDDEN" });
+
+      const hasExceeded = subscription.isPro
+        ? await FormSubmissionService.checkIfLimitExceededInProPlan(userId)
+        : await FormSubmissionService.checkIfLimitExceededInFreePlan(userId);
+
+      if (hasExceeded) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "This user is not accepting any submissions right now.",
+        });
+      }
 
       await ctx.prisma.user.update({
         where: { id: userId },
