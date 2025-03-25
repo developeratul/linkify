@@ -138,27 +138,6 @@ const formRouter = createTRPCRouter({
 
       return user.form.submissionSuccessMessage || "Your response was successfully submitted";
     }),
-
-  deleteSubmission: protectedProcedure
-    .input(z.object({ submissionId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { submissionId } = input;
-      const userId = ctx.session.user.id;
-
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: userId },
-        select: { form: true },
-      });
-
-      if (!user || !user.form) throw new TRPCError({ code: "NOT_FOUND" });
-
-      await ctx.prisma.user.update({
-        where: { id: userId },
-        data: { formSubmissions: { delete: { id: submissionId } } },
-      });
-
-      return "Deleted successfully";
-    }),
 });
 
 export default formRouter;

@@ -8,13 +8,6 @@ import { prisma } from "@/server/db";
 import { api } from "@/utils/api";
 import { formatDate } from "@/utils/date";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Avatar,
   Box,
   Button,
@@ -129,54 +122,6 @@ const fields: Field[] = [
   },
 ];
 
-function DeleteSubmission(props: { submissionId: string }) {
-  const { submissionId } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { mutateAsync, isLoading } = api.form.deleteSubmission.useMutation();
-  const utils = api.useContext();
-  const cancelRef = React.useRef<HTMLButtonElement | null>(null);
-  const toast = useToast();
-
-  const handleDeleteSubmission = async () => {
-    try {
-      const message = await mutateAsync({ submissionId });
-      await utils.form.findMany.invalidate();
-      onClose();
-      toast({ status: "success", description: message });
-    } catch (err) {
-      if (err instanceof TRPCClientError) {
-        toast({ status: "error", description: err.message });
-      }
-    }
-  };
-
-  return (
-    <Box>
-      <Button onClick={onOpen} leftIcon={<Icon name="Delete" />} colorScheme="red">
-        Delete
-      </Button>
-      <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose} isCentered>
-        <AlertDialogOverlay />
-        <AlertDialogContent>
-          <AlertDialogHeader>Delete submission?</AlertDialogHeader>
-          <AlertDialogCloseButton />
-          <AlertDialogBody>
-            Are you sure? This action will cause permanent data loss.
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button mr={3} ref={cancelRef} onClick={onClose}>
-              No
-            </Button>
-            <Button isLoading={isLoading} onClick={handleDeleteSubmission} colorScheme="purple">
-              Yes
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </Box>
-  );
-}
-
 function SubmissionDetails(props: {
   submission: FormSubmission;
   enabledFields: Field[];
@@ -247,7 +192,6 @@ function SubmissionDetails(props: {
                 <KeyValuePairDisplay keyName="Subject" value={submission.subject} />
                 <KeyValuePairDisplay keyName="Message" value={submission.message} />
               </VStack>
-              <DeleteSubmission submissionId={submission.id} />
             </VStack>
           </DrawerBody>
           <DrawerFooter />
