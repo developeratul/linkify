@@ -36,7 +36,16 @@ export function AnalyticsStartWrapper(
 ) {
   const { children, isLoading, isError, errorMessage } = props;
   return (
-    <Flex direction="column" justify="center" borderWidth={1} rounded="lg" bg="white" p={5}>
+    <Flex
+      direction="column"
+      position="relative"
+      isolation="isolate"
+      justify="center"
+      borderWidth={1}
+      rounded="lg"
+      bg="white"
+      p={5}
+    >
       <Conditional
         condition={!isLoading}
         fallback={<Spinner mx="auto" my="35px" />}

@@ -155,7 +155,8 @@ export function AppMenu() {
   const { data: subscription, isLoading } = api.payment.getSubscription.useQuery();
   const { mutateAsync: createCustomerPortal } = api.payment.createCustomerPortal.useMutation();
   const toast = useToast();
-  const [toastId, setToastId] = useState<ToastId | undefined>(undefined);
+  const [, setToastId] = useState<ToastId | undefined>(undefined);
+  const router = useRouter();
 
   return (
     <Menu>
@@ -202,7 +203,13 @@ export function AppMenu() {
             Manage subscription
           </MenuItem>
         )}
-        <MenuItem icon={<Icon name="Logout" />} onClick={() => signOut()}>
+        <MenuItem
+          icon={<Icon name="Logout" />}
+          onClick={async () => {
+            await signOut();
+            router.push("/auth");
+          }}
+        >
           Logout from app
         </MenuItem>
       </MenuList>

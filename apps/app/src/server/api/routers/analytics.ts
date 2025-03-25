@@ -1,3 +1,4 @@
+import { getSubscription } from "@/lib/subscription";
 import AnalyticsService, { analyticsWithin, days } from "@/services/analytics";
 import { detectCountry } from "@/utils/country-detector";
 import deviceDetector from "@/utils/device-detector";
@@ -201,12 +202,12 @@ const analyticsRouter = createTRPCRouter({
       });
 
       const linksWithAnalytics = await ctx.prisma.link.findMany({
-        where: { 
-          id: { 
+        where: {
+          id: {
             in: analytics
               .map((a) => a.linkId)
-              .filter((linkId): linkId is string => linkId !== null) 
-          } 
+              .filter((linkId): linkId is string => linkId !== null),
+          },
         },
         select: { id: true, url: true, text: true },
       });
@@ -236,6 +237,12 @@ const analyticsRouter = createTRPCRouter({
       const today = new Date();
       const isAllTime = within === "ALL_TIME";
       const userId = ctx.session.user.id;
+
+      const { isPro } = await getSubscription(userId);
+
+      if (!isPro) {
+        return [];
+      }
 
       const daysToFetch = isAllTime ? 30 : days[within]; // Default to 30 days for all time
       const startDate = new Date(today.getTime() - daysToFetch * 24 * 60 * 60 * 1000);

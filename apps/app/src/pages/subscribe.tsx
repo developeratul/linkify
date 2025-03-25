@@ -23,9 +23,7 @@ import React from "react";
 import { NextPageWithLayout } from "./_app";
 
 const premiumFeatures = [
-  "Unlimited links",
-  "Full Access to Analytics",
-  "Unlimited Testimonials",
+  "Complete access to Analytics",
   "Unlimited form submissions",
   "Own your page",
 ];
