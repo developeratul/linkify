@@ -9,6 +9,7 @@ import SendTestimonial from "@/components/profile/SendTestimonial";
 import SocialLinks from "@/components/profile/SocialLinks";
 import Testimonials from "@/components/profile/Testimonials";
 import Wrapper from "@/components/profile/Wrapper";
+import { getSubscription } from "@/lib/subscription";
 import ProfileProvider from "@/providers/profile";
 import {
   ProfileButtonSelections,
@@ -26,12 +27,13 @@ import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "
 
 type ProfileProps = {
   profile: Profile;
+  isPro: boolean;
 };
 
 const ProfilePage: NextPage<ProfileProps> = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const { profile } = props;
+  const { profile, isPro } = props;
   return (
     <ProfileProvider profile={profile}>
       <SEO
@@ -81,7 +83,7 @@ const ProfilePage: NextPage<ProfileProps> = (
             />
             {(profile.settings?.socialIconPlacement || "TOP") === "BOTTOM" && <SocialLinks />}
           </Wrapper>
-          <Footer />
+          <Footer isPro={isPro} />
         </Container>
       </Box>
     </ProfileProvider>
@@ -163,7 +165,9 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
 
   if (!user || !user.username || !user.bio) return { notFound: true };
 
+  const { isPro } = await getSubscription(user.id);
+
   return {
-    props: { profile: user satisfies Profile },
+    props: { profile: user satisfies Profile, isPro },
   };
 };

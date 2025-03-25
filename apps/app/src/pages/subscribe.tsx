@@ -25,7 +25,7 @@ import { NextPageWithLayout } from "./_app";
 const premiumFeatures = [
   "Complete access to Analytics",
   "Unlimited form submissions",
-  "Own your page",
+  "Own your page (No Linkify branding)",
 ];
 
 type SubscribePageProps = {
