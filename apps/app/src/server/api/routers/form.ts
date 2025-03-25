@@ -1,7 +1,7 @@
 import { formSubmissionSchema } from "@/components/profile/Form";
 import { getSubscription } from "@/lib/subscription";
 import { formSchema } from "@/pages/form";
-import FormSubmissionService from "@/services/form-submission";
+import FormSubmissionService, { MAX_FORM_SUBMISSIONS } from "@/services/form-submission";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -104,6 +104,18 @@ const formRouter = createTRPCRouter({
     });
 
     return "Successfully updated";
+  }),
+
+  getRemainingFormSubmissionsInFreePlan: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const { isPro } = await getSubscription(userId);
+
+    const countThisMonth = await FormSubmissionService.getSubmissionCountThisMonth(userId);
+
+    const remainingThisMonth = MAX_FORM_SUBMISSIONS - countThisMonth;
+
+    return remainingThisMonth;
   }),
 
   submit: publicProcedure

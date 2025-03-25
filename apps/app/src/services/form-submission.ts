@@ -1,5 +1,7 @@
 import { prisma } from "@/server/db";
 
+export const MAX_FORM_SUBMISSIONS = 25;
+
 const FormSubmissionService = {
   /**
    * Returns the number of form-submission the user has received in the current month
@@ -27,7 +29,7 @@ const FormSubmissionService = {
   async checkIfLimitExceededInFreePlan(userId: string) {
     const totalSubmissionsThisMonth = await this.getSubmissionCountThisMonth(userId);
 
-    const hasExceeded = totalSubmissionsThisMonth >= 2;
+    const hasExceeded = totalSubmissionsThisMonth >= 25;
 
     return hasExceeded;
   },

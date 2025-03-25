@@ -9,6 +9,7 @@ import { api } from "@/utils/api";
 import { formatDate } from "@/utils/date";
 import {
   Avatar,
+  Badge,
   Box,
   Button,
   Card,
@@ -456,6 +457,7 @@ function ToggleSubmissionAcceptance(props: { isAccepting: boolean }) {
   return (
     <Button
       colorScheme={isAccepting ? "red" : "purple"}
+      variant="outline"
       isLoading={isLoading}
       onClick={handleClick}
     >
@@ -502,8 +504,21 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
 ) => {
   const { form } = props;
   const [sortType, setSortType] = React.useState<SortType>("desc");
+  const { data, isLoading, isError, error } = api.payment.getSubscription.useQuery();
+  const {
+    data: remainingSubmissions,
+    isLoading: remainingSubmissionsLoading,
+    isError: isRemainingSubmissionsError,
+    error: remainingSubmissionsError,
+  } = api.form.getRemainingFormSubmissionsInFreePlan.useQuery();
 
   if (!form) return <GetStarted />;
+  if (isLoading || remainingSubmissionsLoading) {
+    return <Loader />;
+  }
+  if (isError || isRemainingSubmissionsError) {
+    return <ErrorMessage description={(error?.message || remainingSubmissionsError?.message)!} />;
+  }
 
   return (
     <Container maxW="container.xl">
@@ -525,6 +540,7 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
               form={form}
               trigger={
                 <IconButton
+                  variant="outline"
                   aria-label="Form Settings"
                   icon={<Icon name="Settings" />}
                   colorScheme="purple"
@@ -533,6 +549,15 @@ const FormPage: NextPageWithLayout<FormPageProps> = (
             />
           </HStack>
         </HStack>
+        {!data.isPro ? (
+          <Badge colorScheme="red" fontSize="md" textTransform="capitalize">
+            {remainingSubmissions} submission(s) left
+          </Badge>
+        ) : (
+          <Badge colorScheme="green" textTransform="capitalize" fontSize="md">
+            You are Limitless!
+          </Badge>
+        )}
         <FormSubmissionsTable sortType={sortType} form={form} />
       </VStack>
     </Container>
