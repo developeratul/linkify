@@ -168,6 +168,6 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (ctx) 
   const { isPro } = await getSubscription(user.id);
 
   return {
-    props: { profile: user satisfies Profile, isPro },
+    props: { profile: user satisfies Profile, isPro: !!isPro },
   };
 };
