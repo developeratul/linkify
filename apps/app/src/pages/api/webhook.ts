@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           where: { id: user.id },
           data: {
             // We maintain the currentPeriodEnd to allow access until subscription actually ends
-            // No need to update it as it will expire naturally
+            currentPeriodEnd: subscription.data.attributes.renews_at,
           },
         });
         break;

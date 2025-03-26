@@ -1,5 +1,6 @@
 import { formSubmissionSchema } from "@/components/profile/Form";
 import { getSubscription } from "@/lib/subscription";
+import { unkey } from "@/lib/unkey";
 import { formSchema } from "@/pages/form";
 import FormSubmissionService, { MAX_FORM_SUBMISSIONS } from "@/services/form-submission";
 import { TRPCError } from "@trpc/server";
@@ -121,8 +122,18 @@ const formRouter = createTRPCRouter({
   submit: publicProcedure
     .input(formSubmissionSchema.extend({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      console.log("called");
       const { userId, ...data } = input;
-      const subscription = await getSubscription(userId);
+
+      if (ctx.ip) {
+        const { success } = await unkey.limit(ctx.ip);
+        if (!success) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Please slow down and try after a while",
+          });
+        }
+      }
 
       const user = await ctx.prisma.user.findUnique({
         where: { id: userId },
@@ -131,6 +142,8 @@ const formRouter = createTRPCRouter({
 
       if (!user || !user.form) throw new TRPCError({ code: "NOT_FOUND" });
       if (!user.form.isAcceptingSubmissions) throw new TRPCError({ code: "FORBIDDEN" });
+
+      const subscription = await getSubscription(userId);
 
       const hasExceeded = subscription.isPro
         ? await FormSubmissionService.checkIfLimitExceededInProPlan(userId)
