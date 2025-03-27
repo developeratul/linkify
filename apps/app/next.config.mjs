@@ -14,6 +14,7 @@ const config = {
     defaultLocale: "en",
   },
   transpilePackages: ["components"],
+  optimizeFonts: false,
   images: {
     remotePatterns: [
       { hostname: "placehold.co" },
